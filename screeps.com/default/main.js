@@ -18,6 +18,8 @@ var mapActions = require('map.scriptHandler');
 
 var defender = require('role.defender');
 var claimer = require('role.claimer');
+var reserver = require('role.reserver');
+var attack = require('role.attack');
 
  const structurePriorities = {
         [STRUCTURE_WALL]: 0.0005,
@@ -47,7 +49,7 @@ module.exports.loop = function () {
     //Memory.rooms.E59N9.contOfMiner = 0;
   //newRoom.add('E59N9', true, true, true, true, 'E59N9');
     
-    var towers = ['65043f57f265d290da2a0899','64f483648bfafd0f57771802','64fc6a640286a021f3e07364']
+    var towers = ['65043f57f265d290da2a0899','64f483648bfafd0f57771802','64fc6a640286a021f3e07364','65088f252d96f8835cf7adbc']
     
     
     for(var t in towers)
@@ -105,6 +107,7 @@ module.exports.loop = function () {
                 creep.memory.role != 'claimer' &&
                  creep.memory.role != 'defender' &&
                    creep.memory.role != 'dropper' &&
+                    creep.memory.role != 'reserver' &&
                (creep.room.name == room.name || creep.room.name == room2.name))
             {
                 creep.say('⬜');
@@ -154,6 +157,14 @@ module.exports.loop = function () {
             case 'bob':
                 roleBuilder.run(creep);
             break;
+            
+            case 'reserver':
+                reserver.run(creep);
+                break;
+                
+                case 'attacker':
+                    attack.run(creep)
+                    break;
             
             default:
                 {

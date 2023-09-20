@@ -18,6 +18,7 @@ module.exports =
         if(creepBase.goToMyHome(creep))return;
         if(creepBase.TransportEnergyToHomeSpawn(creep))return;
         if(creepBase.TransportEnergyToHomeTower(creep))return;
+        if(creepBase.TransportEnergyToHomeStorage(creep))return;
     },
     /**
      * 
@@ -28,50 +29,77 @@ module.exports =
         return Array(max).fill(CARRY).concat(Array(max).fill(MOVE));
     },
     /**
+    * 
+    * @param {StructureSpawn} spawn 
+    * @param {String} workroom 
+    * @returns 
+    */
+    spawn: function(spawn,workroom)
+    {
+        if(!global.room[workroom].sendMiner)
+            return false;
+
+        for(var id in global.room[workroom].energySources)
+        {
+            if(this._spawn(spawn,workroom, global.room[workroom].energySources[id]))
+                return true;
+        }
+
+        if(this._spawn(spawn,workroom,'')) //Freelancer B)
+            return true;
+
+        return false;  
+    },
+    /**
      * 
      * @param {StructureSpawn} spawn 
      * @param {String} workroom 
      * @param {String} container
      */
-    spawn: function (spawn, workroom, container) {
-        var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
-                                                    creep.memory.workroom == workroom && 
-                                                    creep.memory.home == spawn.room.name && 
-                                                    creep.memory.container == container).length;
+    _spawn: function (spawn, workroom, source) {
 
-        if (global.room[workroom].debitorProSource <= count)
-            return false;
+        let containerId = ''
+        if(source != '')
+        {
+            var source = Game.getObjectById(source);
+            let container = source.pos.findInRange(FIND_STRUCTURES, 1, {
+                filter: { structureType: STRUCTURE_CONTAINER }
+            });
+    
+            if(container.length == 0)
+            {
+                return  this._spawn(spawn,workroom,'');
+            }
+            containerId = container[0].id;
+
+            var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
+                                                        creep.memory.workroom == workroom && 
+                                                        creep.memory.home == spawn.room.name && 
+                                                        creep.memory.container == containerId).length;
+    
+            if (global.room[workroom].debitorProSource <= count)
+                return false;
+   
+        }
+        else
+        {
+            var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
+                                                        creep.memory.workroom == workroom && 
+                                                        creep.memory.home == spawn.room.name && 
+                                                        creep.memory.container == '').length;
+            if (global.room[workroom].debitorAsFreelancer <= count)
+                return false;
+
+            containerId = '';
+        }
 
         var profil = this.getProfil(spawn);
         var newName = role + '_' + Game.time;
         if (spawn.spawnCreep(profil, newName, { dryRun: true }) === 0) {
-            spawn.spawnCreep(profil, newName, { memory: { role: role, workroom: workroom, home: spawn.room.name, container: container } });
+            spawn.spawnCreep(profil, newName, { memory: { role: role, workroom: workroom, home: spawn.room.name, container: containerId } });
             console.log("[" + spawn.room.name + "|" + workroom + "] spawn " + newName + " cost: " + creepBase.calcProfil(profil));
             return true;
         }
         return false;
     },
-    /**
-    * 
-    * @param {StructureSpawn} spawn 
-    * @param {String} workroom 
-    */
-    spawn: function (spawn, workroom) {
-        var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
-                                                    creep.memory.workroom == workroom && 
-                                                    creep.memory.home == spawn.room.name && 
-                                                    creep.memory.container == '').length;
-
-        if (global.room[workroom].debitorAsFreelancer <= count)
-            return false;
-
-        var profil = this.getProfil(spawn);
-        var newName = role + '_' + Game.time;
-        if (spawn.spawnCreep(profil, newName, { dryRun: true }) === 0) {
-            spawn.spawnCreep(profil, newName, { memory: { role: role, workroom: workroom, home: spawn.room.name, container: '' } });
-            console.log("[" + spawn.room.name + "|" + workroom + "] spawn " + newName + " cost: " + creepBase.calcProfil(profil));
-            return true;
-        }
-        return false;
-    }
 }

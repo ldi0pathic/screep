@@ -1,4 +1,4 @@
-const prioBuilds = ['64fb3dc4b140246d9bd1f0dd','64faa4011ae98a0ce014fda8','6503899d63cdd5c5b24f986e'];
+const prioBuilds = ['64fb3dc4b140246d9bd1f0dd','64faa4011ae98a0ce014fda8','650a6cba9335d88d2ef0626a','650ac99435aeaf9ee6d7a5b0'];
 
 module.exports = {
     run: function(creep) {
@@ -122,12 +122,11 @@ module.exports = {
         const priorities = {
             [STRUCTURE_RAMPART]: 1,
             [STRUCTURE_EXTENSION]: 1,
-            [STRUCTURE_SPAWN]: 2,
+            [STRUCTURE_SPAWN]: 1,
             [STRUCTURE_TOWER]: 3,
             [STRUCTURE_STORAGE]: 4,
             [STRUCTURE_CONTAINER]: 5,
-            [STRUCTURE_ROAD]:6,
-            
+            [STRUCTURE_ROAD]:6,         
         };
 
         return priorities[structureType] || 7; // Standardpriorität, wenn nicht definiert

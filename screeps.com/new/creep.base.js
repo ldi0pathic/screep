@@ -128,4 +128,5 @@ module.exports =
     goToWorkroom: function(creep){return creepBaseGoTo.goToWorkroom(creep)},
     TransportEnergyToHomeSpawn: function(creep){ return creepBaseTransport.TransportEnergyToHomeSpawn(creep);},
     TransportEnergyToHomeTower: function(creep) {return creepBaseTransport.TransportEnergyToHomeTower(creep);},  
+    TransportEnergyToHomeStorage: function(creep) {return creepBaseTransport.TransportEnergyToHomeStorage(creep);},  
 };

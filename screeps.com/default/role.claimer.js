@@ -34,6 +34,7 @@ module.exports = {
 						creep.moveTo(controller, { visualizePathStyle: { stroke: '#ffffff' } });
 					}
 				}
+				creep.signController(controller,'Claimed :o)')
 			}
 			else if(controller && controller.my)
 			{

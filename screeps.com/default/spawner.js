@@ -1,5 +1,8 @@
 var upgrader = require('role.upgrader');
 var debitor  = require('role.debitor');
+var reserver = require('role.reserver');
+var attack = require('role.attack');
+
 
 var spawner = 
 {
@@ -18,15 +21,6 @@ var spawner =
    
     spawn: function() 
     {
-        //console.log(calcProfil([WORK, WORK, WORK, CARRY,CARRY, CARRY, CARRY, CARRY,MOVE, MOVE, MOVE, MOVE, MOVE]));
-        //------------
-        
-        let maxUppi  = 2;
-        let maxReps  = 6;
-        
-        let maxBob = 5;
-        
-        
         for(var spawnName in Game.spawns)
         {
             var spawn = Game.spawns[spawnName];
@@ -41,64 +35,44 @@ var spawner =
                 if(debitor.spawn(spawn,room))
                 {   
                     breaker = true;
-                    continue;
+                    break;
                 }
                     
                     
                 if(spawnMiner(spawn,room))
                 {   
                     breaker = true;
-                    continue;
+                    break;
                 }
-   
+                
+                 
+                if(Memory.rooms[room].claim && Memory.rooms[room].mainSpawn == spawn.room.name && reserver.spawn(spawn,room))
+                {
+                    breaker = true;
+                    break;
+                }
             }     
               if(Memory.prioEnergie || breaker)
                 continue;
+                
+            if(spawnBob(spawn, 3)) 
+                continue;
+            //if(attack.spawn(spawn,'E58N6')) 
+              //  continue; 
             
-            if(spawnDropper(spawn,2)) 
+            if(spawnDropper(spawn,4)) 
                 continue; 
+                
             if(spawnReps(spawn,3))  
               continue;
               
-            if(spawnBob(spawn, maxBob)) 
-            continue;
-            
             if(upgrader.spawn(spawn))         
                 continue;
-           
                 
+            if(spawnTraveller(spawn,1))
+                continue;
           
         }
-        
-         if(Memory.prioEnergie)
-                return;
-       //*/ 
-       let spawn1 =  Game.spawns.P1;
-        
-        if(spawn1.spawning)
-        {
-            return;
-        }
-        
-        //------------
-        
-        
-        
-        if(spawnTraveller(spawn1,2)) {return;}
-       
-        
-        const targetRoom = 'E59N9';
-        
-     //   if(spawnAtt(spawn,true,1,targetRoom)){return;}
-      //  if(spawnAtt(spawn,false,10,targetRoom)){return;}
-    //    if(spawnClaimer(spawn,1, targetRoom)){return;}
-        
-        
-       
-       
-        if(spawnBob(spawn1, maxBob)) {return;}
-
-    //  */
     },
 }
 
@@ -126,7 +100,7 @@ function spawnClaimer(spawn, max, targetroom)
         if( spawn.spawnCreep(profil, newName,{dryRun: true}) === 0)
         {
             spawn.spawnCreep(profil, newName, {memory: {role: role, carry: false, target:targetroom}});
-            console.log('spawn '+newName+' cost: '+calcProfil(profil));
+            console.log(spawn.name+' spawn '+newName+' cost: '+calcProfil(profil));
             return true;
         }
         console.log('Prioblock für Claimer Spawn Raum '+targetroom+' cost: '+calcProfil(profil))
@@ -148,7 +122,7 @@ function spawnTraveller(spawn, max)
         if( spawn.spawnCreep(profil, newName,{dryRun: true}) === 0)
         {
             spawn.spawnCreep(profil, newName, {memory: {role: role, carry: false, index:0, target:spawn.room.name}});
-            console.log('spawn '+newName+' cost: '+calcProfil(profil));
+            console.log(spawn.name+'spawn '+newName+' cost: '+calcProfil(profil));
             return true;
         }
     }
@@ -173,7 +147,7 @@ function spawnDropper(spawn, max)
         if( spawn.spawnCreep(profil, newName,{dryRun: true}) === 0)
         {
             spawn.spawnCreep(profil, newName, {memory: {role: role,storage:storage,home:spawn.room.name,  carry: false}});
-            console.log('spawn '+newName+' cost: '+calcProfil(profil))
+            console.log(spawn.name+'spawn '+newName+' cost: '+calcProfil(profil))
             return true;
         }
     }
@@ -191,7 +165,7 @@ function spawnBob(spawn, max)
         if( spawn.spawnCreep(profil, newName,{dryRun: true}) === 0)
         {
             spawn.spawnCreep(profil, newName, {memory: {role: role, carry: false}});
-            console.log('spawn '+newName+' cost: '+calcProfil(profil))
+            console.log(spawn.name+'spawn '+newName+' cost: '+calcProfil(profil))
             return true;
         }
     }
@@ -207,7 +181,7 @@ function spawnReps(spawn, max)
     {
         var newName = role + '_' + Game.time;
         const totalCost = 3 * BODYPART_COST[WORK] + 2 * BODYPART_COST[CARRY] + 2 * BODYPART_COST[MOVE];
-   var maxEnergy = spawn.room.energyCapacityAvailable;
+        var maxEnergy = spawn.room.energyCapacityAvailable;
         // Bestimme, wie viele Sets des ausgewählten Verhältnisses erstellt werden können.
         const numberOfSets = Math.floor(maxEnergy / totalCost);
         var profil = Array((numberOfSets*3)).fill(WORK).concat(Array((numberOfSets*2)).fill(CARRY).concat(Array((numberOfSets*2)).fill(MOVE)));
@@ -216,7 +190,7 @@ function spawnReps(spawn, max)
         if( spawn.spawnCreep(profil, newName,{dryRun: true}) === 0)
         {
             spawn.spawnCreep(profil, newName, {memory: {role: role, carry: false, home:spawn.room.name}});
-            console.log('spawn '+newName+' cost: '+calcProfil(profil));
+            console.log(spawn.name+'spawn '+newName+' cost: '+calcProfil(profil));
             return true;
         }
     }
@@ -236,7 +210,7 @@ function spawnMiner(spawn,  workroom)
        
         const maxWorkParts = Math.floor((maxEnergy-100) / BODYPART_COST[WORK]);
       
-        const numberOfWorkParts = Math.min(maxWorkParts, 7);
+        const numberOfWorkParts = Math.min(maxWorkParts, 5);
         
         let profil = [];
         
@@ -262,7 +236,7 @@ function spawnMiner(spawn,  workroom)
         if( spawn.spawnCreep(profil, newName,{dryRun: true}) === 0)
         {
             spawn.spawnCreep(profil, newName, {memory: {role: role, carry: false, workroom:workroom}});
-            console.log('spawn '+newName+' für Raum '+workroom+' cost: '+calcProfil(profil))
+            console.log(spawn.name+'spawn '+newName+' für Raum '+workroom+' cost: '+calcProfil(profil))
             Memory.prioEnergie = false;
             return true;
         }

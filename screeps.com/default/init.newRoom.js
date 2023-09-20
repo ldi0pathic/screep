@@ -58,6 +58,7 @@ var newRoom =
         Memory.rooms[newRoom.name].sendMiner = Memory.rooms[newRoom.name].sendMiner? true: false;
         Memory.rooms[newRoom.name].mainSpawn =  Memory.rooms[newRoom.name].mainSpawn ?  Memory.rooms[newRoom.name].mainSpawn : 'E58N7';
         Memory.rooms[newRoom.name].defend = Memory.rooms[newRoom.name].defend ? true: false;
+         Memory.rooms[newRoom.name].claim = Memory.rooms[newRoom.name].claim ? true: false;
        
     }
 }

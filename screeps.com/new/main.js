@@ -1,7 +1,6 @@
 const  spawnController = require('./controller.spawn');
-const jobs = {
-    debitor: require('./creep.debitor')
-}
+const jobs = require('./creep.jobs');
+
 module.exports.loop = function () {
 
     spawnController.spawn();
@@ -13,7 +12,7 @@ module.exports.loop = function () {
 
         if(!creep)
             continue;
-
+        
         jobs[creep.memory.role].doJob(creep);
 
     }

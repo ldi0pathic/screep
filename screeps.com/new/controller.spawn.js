@@ -1,6 +1,4 @@
-const jobs = {
-    debitor: require('./creep.debitor')
-}
+const jobs = require('./creep.jobs');
 
 module.exports = {
     
@@ -14,7 +12,7 @@ module.exports = {
         }
     },
     spawn: function()
-    {
+    { 
         for(var spawnName in Game.spawns)
         {
             var spawn = Game.spawns[spawnName];
@@ -22,10 +20,20 @@ module.exports = {
             if(spawn.spawning) 
                 continue;
 
-           if(jobs.debitor.spawn(spawn,spawn.room.name))
-            continue;
+             for(var room in global.room)
+             {
+                if( global.room[room].spawnRoom != spawn.room.name)
+                    continue;
 
+                for(var job in jobs)
+                {
+                    if(jobs[job].spawn(spawn,spawn.room.name))
+                        break;
+                }
 
+                if(spawn.spawning) 
+                    break;
+             }   
         }
     }
 }

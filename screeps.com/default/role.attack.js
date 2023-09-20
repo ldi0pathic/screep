@@ -1,8 +1,7 @@
 module.exports = {
     run: function (creep) {
         // Überprüfe, ob das Flag "startAttack" auf "true" gesetzt ist
-        if (Memory.startAttack) 
-        {
+        return;
             if (creep.memory.target !== creep.room.name) 
             {
                 creep.say('⏩')
@@ -11,34 +10,50 @@ module.exports = {
             }
             else
             {
-                const hostileCreep = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-
-                if (hostileCreep) {
-                    // Greife den nächstgelegenen feindlichen Creep an
-                    if (creep.attack(hostileCreep) === ERR_NOT_IN_RANGE) {
-                        creep.moveTo(hostileCreep, { visualizePathStyle: { stroke: '#ff0000' } });
-                    }
-                    return;
-                } 
-                
+                creep.say('hey')
                 var controller = creep.room.controller;
-                
+                //console.log(controller.my)
                  if (controller && !controller.my) {
                 
-                    if (creep.attackController(controller) === ERR_NOT_IN_RANGE) 
+                var state = creep.attackController(controller);
+                //console.log(state)
+                    if ( state === ERR_NOT_IN_RANGE) 
                     {
                         creep.say('🪓')
                         creep.moveTo(controller, { visualizePathStyle: { stroke: '#ff0000' } });
                     }
+                    else
+                    {
+                        creep.signController(controller,"Signed by Idiopathic :o)")
+                    }
                  }
             
             }
-        } else {
-            // Wenn das Flag "startAttack" auf "false" gesetzt wurde, kehre zum Spawn zurück
-            const spawn = Game.spawns['P1'];
-            if (creep.transfer(spawn, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(spawn, { visualizePathStyle: { stroke: '#ffffff' } });
+       
+    },
+     spawn: function(spawn,room)
+    {
+       var body = [CLAIM,CLAIM, MOVE]
+       if (!Game.creeps['ATT_'+room]) {
+        
+         if( spawn.spawnCreep(body, 'ATT_'+room,{dryRun: true}) === 0)
+            {
+                spawn.spawnCreep(body, 'ATT_'+room, {memory: {role: 'attacker',  target: room, spawn:spawn.name}});
+                console.log(spawn.name+'spawn Attacker_'+room+' für Raum'+room+' cost: '+calcProfil(body));
+                return true;
             }
-        }
-    }
+         return false;
+       }
+      
+    },
 };
+
+function calcProfil(creepProfile) {
+    let energyCost = 0;
+
+    for (const bodyPart of creepProfile) {
+        energyCost += BODYPART_COST[bodyPart];
+    }
+
+    return energyCost;
+}

@@ -163,9 +163,9 @@ var roleDebitor = {
                         {
                            
                             var newName = role + '_' + Game.time;
-                            var max = parseInt(spawn.room.energyCapacityAvailable/100);
+                            var max = parseInt(spawn.room.energyCapacityAvailable/150);
                             var profil = Array(max).fill(CARRY).concat(Array(max).fill(MOVE));
-                            console.log(room);
+                            //console.log(room);
                             if(c == 0 && room == spawn.room.name && spawn.room.energyAvailable < 301)
                             {
                                 profil = [CARRY,CARRY,MOVE];
@@ -175,7 +175,7 @@ var roleDebitor = {
                             if( spawn.spawnCreep(profil, newName,{dryRun: true}) === 0)
                             {
                                 spawn.spawnCreep(profil, newName, {memory: {role: role, workroom: room, home:spawn.room.name  ,container: container, carry: false}});
-                                console.log('spawn '+newName+' für Raum '+room+' cost: '+calcProfil(profil))
+                                console.log(spawn.name+'spawn '+newName+' für Raum '+room+' cost: '+calcProfil(profil))
                                 return true;
                             }
                             if(room == spawn.room.name )

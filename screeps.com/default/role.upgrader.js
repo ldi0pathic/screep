@@ -70,7 +70,7 @@ var roleUpgrader = {
             if( spawn.spawnCreep(profil, newName,{dryRun: true}) === 0)
             {
                 spawn.spawnCreep(profil, newName, {memory: {role: role, carry: false, target: spawn.room.name, spawn:spawn.name}});
-                console.log('spawn '+newName+' für Raum'+spawn.room.name+' cost: '+calcProfil(profil));
+                console.log(spawn.name+'spawn '+newName+' für Raum'+spawn.room.name+' cost: '+calcProfil(profil));
                 return true;
             }
            

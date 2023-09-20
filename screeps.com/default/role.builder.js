@@ -1,5 +1,3 @@
-
-
 module.exports = {
     run: function(creep) {
         if (creep.memory.building && creep.store[RESOURCE_ENERGY] === 0) {
@@ -15,6 +13,10 @@ module.exports = {
         {
            if(!creep.memory.prioId)
            { 
+              
+               //creep.memory.prioId = '650aa12b631b853a0fef22f4';
+               //return;
+               
                // Wenn der Creep im Baumodus ist, überprüfe, ob er Baustellen im Speicher hat
                 const constructionSites = Memory.rooms[creep.room.name].constructionSites;
                 if (Object.keys(constructionSites).length > 0) 
@@ -37,7 +39,6 @@ module.exports = {
                     if (sitesWithPriority.length > 0) 
                     {
                         creep.memory.prioId = sitesWithPriority[0].site.id;
-                        creep.say('1');
                     }
                 }
                 else
