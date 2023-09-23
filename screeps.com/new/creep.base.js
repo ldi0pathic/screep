@@ -139,5 +139,16 @@ module.exports =
                 return true;
         }
         return false;
-    }
+    },
+    upgradeController: function(creep)
+    {
+        if(!creep.room.controller.my)
+            return;
+        
+        const state = creep.upgradeController(creep.room.controller);
+        if (state === ERR_NOT_IN_RANGE ) {
+            creep.moveTo(creep.room.controller);
+        }  
+        return;
+    },
 };

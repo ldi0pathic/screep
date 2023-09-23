@@ -16,9 +16,10 @@ module.exports = {
         
         if(creepBase.goToWorkroom(creep)) return;
         if(creepBase.checkWorkroomPrioSpawn(creep)) return;
-        
+
         if(this._build(creep)) return;
-        this._upgradeController(creep);
+
+        creepBase.upgradeController(creep);
     },
     /**
      * 
@@ -71,17 +72,6 @@ module.exports = {
             creep.memory.id = null;
         }
         return false;
-    },
-    _upgradeController: function(creep)
-    {
-        if(!creep.room.controller.my)
-            return;
-        
-        const state = creep.upgradeController(creep.room.controller);
-        if (state === ERR_NOT_IN_RANGE ) {
-            creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: '#ffffff' } });
-        }  
-        return;
     },
     _getProfil: function(spawn)
     {
