@@ -39,10 +39,10 @@ module.exports = {
 			else if(controller && controller.my)
 			{
 			     var updateState = creep.upgradeController(controller);
-        if(updateState == ERR_NOT_IN_RANGE || updateState == ERR_NOT_OWNER) 
-        {
-            creep.moveTo(controller, {visualizePathStyle: {stroke: '#ffffff'}});
-        }
+				if(updateState == ERR_NOT_IN_RANGE || updateState == ERR_NOT_OWNER) 
+				{
+					creep.moveTo(controller, {visualizePathStyle: {stroke: '#ffffff'}});
+				}
 			}
 		}
 		else

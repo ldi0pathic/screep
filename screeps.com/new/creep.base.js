@@ -135,8 +135,10 @@ module.exports =
     checkWorkroomPrioSpawn: function(creep){
         if(Memory.rooms[creep.memory.workroom].aktivPrioSpawn)
         {
-            if(creepBase.TransportEnergyToHomeSpawn(creep))
+            if(this.TransportEnergyToHomeSpawn(creep)){ 
+                creep.say('🚨');
                 return true;
+            }       
         }
         return false;
     },

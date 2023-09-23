@@ -24,16 +24,8 @@ module.exports = {
 
         if(this._repairPrio(creep)) return;
         if(this._repair(creep)) return;
-        
+
         creepBase.upgradeController(creep);
-    },
-    /**
-     * 
-     * @param {StructureSpawn} spawn 
-     */
-    _getProfil(spawn) {
-        var max = parseInt(spawn.room.energyCapacityAvailable / 100);
-        return Array(max).fill(CARRY).concat(Array(max).fill(MOVE));
     },
     _getPriority: function(structureType) {
         return global.prio.repair[structureType] || 99;
