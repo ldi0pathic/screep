@@ -1,6 +1,6 @@
 var carry = require('role.carry');
 
-const maxSpawn = 2;
+const maxSpawn = 1;
 const role = 'uppi';
 const bodyPartCosts = {
         WORK: BODYPART_COST[WORK],

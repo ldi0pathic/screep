@@ -55,7 +55,7 @@ var spawner =
               if(Memory.prioEnergie || breaker)
                 continue;
                 
-            if(spawnBob(spawn, 3)) 
+            if(spawnBob(spawn, 2)) 
                 continue;
             //if(attack.spawn(spawn,'E58N6')) 
               //  continue; 
@@ -63,13 +63,13 @@ var spawner =
             if(spawnDropper(spawn,4)) 
                 continue; 
                 
-            if(spawnReps(spawn,3))  
+            if(spawnReps(spawn,2))  
               continue;
               
             if(upgrader.spawn(spawn))         
                 continue;
                 
-            if(spawnTraveller(spawn,1))
+            if(spawnTraveller(spawn,0))
                 continue;
           
         }

@@ -1,5 +1,5 @@
 var newRoom = require('init.newRoom');
-const places = ['E58N6','E58N5','E59N4','E58N5','E59N5','E59N6','E59N7','E59N8','E58N8','E59N8','E59N7','E58N7']
+const places = ['E58N6','E58N5','E59N5','E59N6','E59N7','E59N8','E58N8','E59N8','E59N7','E58N7']
 
 var roletraveller = {
 

@@ -1,8 +1,11 @@
 const  spawnController = require('./controller.spawn');
+const memoryController = require('./controller.Memory');
 const jobs = require('./creep.jobs');
 
 module.exports.loop = function () {
 
+    memoryController.init();
+    memoryController.writeStatus();
     spawnController.spawn();
     spawnController.clear();
 

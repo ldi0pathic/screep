@@ -1,6 +1,11 @@
 'use strict';
 global.room = global.room || {};
 global.prio = global.prio || {};
+global.const = global.const || {};
+global.const =
+{
+   maxRepairs: 5,
+}
 global.room =
 {
    sim:
@@ -16,25 +21,37 @@ global.room =
       debitorProSource: 1,  
       debitorAsFreelancer: 1,  
       energySources: [
-         'e29f4fbdeaf306bc749dc709',
-         '94167ccb7437b20b1f5e2d96',
-         '67c65e37e98d75ab397d5fc1'
+       '821cfdbd97ffa5580e28a02c',
+       'b436fdfba84424303114821e',
+      ],
+      mineralSources:[
+        
       ],
 
-      //repair
+      //structures
       repairer: 2,
-      buildings: [
-         '091112d2e5ff9d872bd43027',
-         'd0777af13fff3409b999d5ac'
-        ],
+      maxbuilder: 5,
+      prioBuildings: [
+        
+      ],
 
+      //controller  
       upgrader: 2,
-
-
    }
 },
 global.prio =
 {
+   build: {
+      [STRUCTURE_RAMPART]: 1,
+      [STRUCTURE_WALL]: 1,
+      [STRUCTURE_EXTENSION]: 2,
+      [STRUCTURE_SPAWN]: 2,
+      [STRUCTURE_TOWER]: 2,
+      [STRUCTURE_CONTAINER]: 3,
+      [STRUCTURE_LINK]:3,
+      [STRUCTURE_STORAGE]: 4,
+      [STRUCTURE_ROAD]:5,   
+   },
    repair: {
       [STRUCTURE_RAMPART]: 1,
       [STRUCTURE_EXTENSION]: 1,
@@ -49,7 +66,7 @@ global.prio =
       [STRUCTURE_STORAGE]: 0.75,     
       [STRUCTURE_CONTAINER]: 0.75,    
       [STRUCTURE_WALL]: 0.0005,
-      [STRUCTURE_RAMPART]: 0.999,      
+      [STRUCTURE_RAMPART]: 0.1,      
       [STRUCTURE_ROAD]:0.75,  
   }
 }

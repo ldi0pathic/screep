@@ -41,6 +41,9 @@ module.exports =
 
         for(var id in global.room[workroom].energySources)
         {
+            if(!Game.getObjectById(global.room[workroom].energySources[id]))
+                continue;
+
             if(this._spawn(spawn,workroom, global.room[workroom].energySources[id]))
                 return true;
         }

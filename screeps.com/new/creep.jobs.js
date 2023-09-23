@@ -1,5 +1,6 @@
 module.exports = {
-    debitor: require('./creep.debitor'),
     miner: require('./creep.miner'),
+    debitor: require('./creep.debitor'),
+    builder: require('./creep.builder'),
     repairer: require('./creep.reparier'),
 }

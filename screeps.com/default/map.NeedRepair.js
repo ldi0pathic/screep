@@ -6,7 +6,7 @@
             [STRUCTURE_STORAGE]: 0.75,     
             [STRUCTURE_CONTAINER]: 0.75,    
             [STRUCTURE_WALL]: 0.0005,
-            [STRUCTURE_RAMPART]: 0.999,
+            [STRUCTURE_RAMPART]: 0.1,
           
         };
         return priorities[structureType] || 0.5;

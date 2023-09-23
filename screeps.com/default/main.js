@@ -24,7 +24,7 @@ var attack = require('role.attack');
  const structurePriorities = {
         [STRUCTURE_WALL]: 0.0005,
         [STRUCTURE_CONTAINER]: 1,
-        [STRUCTURE_RAMPART]: 0.99
+        [STRUCTURE_RAMPART]: 0.33
     };
     
 module.exports.loop = function () {

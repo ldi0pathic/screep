@@ -34,31 +34,24 @@ module.exports = {
                 } 
                 else
                 {
-                     let c = creep.room.find(FIND_CONSTRUCTION_SITES, 
-                    {
-                        filter: (x) => 
-                        {
-                            return x.structureType == STRUCTURE_CONTAINER;
-                        },
-                    });
+                    let build = source.pos.findInRange(FIND_CONSTRUCTION_SITES, 1, {
+                        filter: { structureType: STRUCTURE_CONTAINER }
+                    })[0];
                     
-                    if(c.length > 0)
+                    if(build)
                     {
-                        finalLocation = c[0].pos;
-                        creep.memory.pos = c[0].pos;
-                        creep.memory.container = c[0].id;
+                        finalLocation = build.pos;
+                        creep.memory.pos = build.pos;
+                        creep.memory.container = build.id;
                     }
                     else
                     {
                         const sourcePos = source.pos;
-        
-                        // Berechne die benachbarten Plätze zur Energy Source
                         const adjacentSpots = [];
                         
                         for (let xOffset = -1; xOffset <= 1; xOffset++) {
                             for (let yOffset = -1; yOffset <= 1; yOffset++) {
                                 if (xOffset === 0 && yOffset === 0) {
-                                    // Überspringe die Position der Energy Source selbst
                                     continue;
                                 }
                                 
@@ -68,8 +61,7 @@ module.exports = {
                                 adjacentSpots.push(new RoomPosition(x, y, creep.memory.workroom));
                             }
                         }
-                        
-                        // Überprüfe, ob ein Bauarbeiter den Container platzieren kann
+
                         for (const spot of adjacentSpots) {
                             if (spot.createConstructionSite(STRUCTURE_CONTAINER) === OK) {
                                 return;
@@ -85,56 +77,57 @@ module.exports = {
             
             if (creep.pos.x == creep.memory.pos.x && creep.pos.y == creep.memory.pos.y) 
             {
-              creep.memory.onPosition = true;
-              delete creep.memory.pos;
+                creep.memory.onPosition = true;
+                delete creep.memory.pos;
               
-              var source = creep.pos.findClosestByPath(FIND_SOURCES);
-              if (creep.harvest(source) === ERR_NOT_IN_RANGE) 
-              {
-                creep.say('⁉');
-              }
-              else
-              {
-                  creep.memory.miningSource = source.id;
-              }
-              
+                var source = creep.pos.findClosestByPath(creep.memory.mineEnergy ? FIND_SOURCES : FIND_MINERALS); 
+                var state = creep.harvest(source);
+                if (state === ERR_NOT_IN_RANGE) 
+                {
+                    console.log(state);
+                    creep.say('⁉');
+                }
+                else
+                {
+                    creep.memory.miningSource = source.id;
+                } 
             } 
-            else if(!creep.moveTo(new RoomPosition(finalLocation.x, finalLocation.y,finalLocation.roomName) , {visualizePathStyle: {stroke: '#ffaa00'},reusePath: 10,}) == OK)
+            else if(!creep.moveTo(new RoomPosition(finalLocation.x, finalLocation.y,finalLocation.roomName) , {reusePath: 5,}) == OK)
             {
                   const blockingCreep = creep.pos.findInRange(FIND_MY_CREEPS, 1, {
                     filter: (otherCreep) => otherCreep.memory.role !== 'miner'
                 })[0];
     
                 if (blockingCreep) 
-                {
-                    // Der Miner ist blockiert, fordern Sie den blockierenden Creep auf, sich zu bewegen
-                    const direction = creep.pos.getDirectionTo(blockingCreep);
-                    const oppositeDirection = (direction + 3) % 8 + 1; // Berechnen Sie die entgegengesetzte Richtung
-                    creep.say('\'-.-')
-                    // Bewegen Sie den blockierenden Creep in die entgegengesetzte Richtung
-                    blockingCreep.move(oppositeDirection);
+                { 
+                    blockingCreep.move(TOP_LEFT);
                 }
             } 
         }
         else
         {
-            const container = Game.getObjectById(creep.memory.container);
+            if(creep.memory.mineEnergy)
+            {
+                const container = Game.getObjectById(creep.memory.container);
             
-            if(container && container.progressTotal == undefined && container.hits < container.hitsMax && !Memory.prioEnergie)
-            {
-                creep.say('🛠');
-                creep.repair(container);
-            }
-            else if(container && container.progressTotal != undefined && container.progressTotal > container.progress && !Memory.prioEnergie)
-            {
-                creep.say('🛠');
-                creep.build(container); 
+                if(container && container.progressTotal == undefined && container.hits < container.hitsMax && !Memory.prioEnergie)
+                {
+                    creep.say('🛠');
+                    creep.repair(container);
+                }
+                else if(container && container.progressTotal != undefined && container.progressTotal > container.progress && !Memory.prioEnergie)
+                {
+                    creep.say('🛠');
+                    creep.build(container); 
+                }
             }
             
-            const source = Game.getObjectById(creep.memory.miningSource);
-            if(creep.harvest(source) != OK)
+            let source = Game.getObjectById(creep.memory.miningSource);
+            let state = creep.harvest(source);
+            if( state != OK)
             {
-               creep.say('⁉'); 
+                console.log(state);
+                creep.say('⁉!'); 
             }
         }
     },
@@ -174,10 +167,22 @@ module.exports = {
 
         for(var id in global.room[workroom].energySources)
         {
-            if(this._spawn(spawn,workroom, global.room[workroom].energySources[id]))
+            if(!Game.getObjectById(global.room[workroom].energySources[id]))
+                continue;
+
+            if(this._spawn(spawn,workroom, global.room[workroom].energySources[id], true))
                 return true;
         }
 
+        var controller = Game.rooms[workroom].controller;
+        if(controller.my && controller.level >= 6)
+        {
+            for(var id in global.room[workroom].mineralSources)
+            {
+                if(this._spawn(spawn,workroom, global.room[workroom].mineralSources[id], false))
+                    return true;
+            }
+        }
         return false;  
     },
     /**
@@ -187,7 +192,7 @@ module.exports = {
      * @param {String} source 
      * @returns 
      */
-    _spawn: function (spawn, workroom, source) {
+    _spawn: function (spawn, workroom, source, mineEnergy) {
         var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
                                                     creep.memory.workroom == workroom && 
                                                     creep.memory.home == spawn.room.name && 
@@ -199,10 +204,12 @@ module.exports = {
         var profil = this._getProfil(spawn);
         var newName = role + '_' + Game.time;
         if (spawn.spawnCreep(profil, newName, { dryRun: true }) === 0) {
-            spawn.spawnCreep(profil, newName, { memory: { role: role, workroom: workroom, home: spawn.room.name, source: source } });
+            spawn.spawnCreep(profil, newName, { memory: { role: role, workroom: workroom, home: spawn.room.name, source: source, mineEnergy:mineEnergy } });
             console.log("[" + spawn.room.name + "|" + workroom + "] spawn " + newName + " cost: " + creepBase.calcProfil(profil));
+            Memory.rooms[spawn.room.name].aktivPrioSpawn = false;
             return true;
         }
-        return false;
+        Memory.rooms[spawn.room.name].aktivPrioSpawn = true;
+        return true;
     },
 };

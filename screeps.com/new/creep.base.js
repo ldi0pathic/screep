@@ -4,10 +4,13 @@ const creepBaseGoTo = require('./creep.base.goto');
 
 module.exports = 
 {
-    checkHarvest: function(creep)
+    checkHarvest: function(creep, action)
     {
         if (!creep.memory.harvest && creep.store[RESOURCE_ENERGY] === 0) 
         {
+            if(typeof(action) == "function") 
+                action();
+            
             creep.memory.harvest = true;
             creep.say('🛒');
         }
