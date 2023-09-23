@@ -15,6 +15,8 @@ module.exports = {
         } 
         
         if(creepBase.goToWorkroom(creep)) return;
+        if(creepBase.checkWorkroomPrioSpawn(creep)) return;
+        
         if(this._build(creep)) return;
         this._upgradeController(creep);
     },

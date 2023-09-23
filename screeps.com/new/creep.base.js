@@ -10,7 +10,7 @@ module.exports =
         {
             if(typeof(action) == "function") 
                 action();
-            
+
             creep.memory.harvest = true;
             creep.say('🛒');
         }
@@ -132,4 +132,12 @@ module.exports =
     TransportEnergyToHomeSpawn: function(creep){ return creepBaseTransport.TransportEnergyToHomeSpawn(creep);},
     TransportEnergyToHomeTower: function(creep) {return creepBaseTransport.TransportEnergyToHomeTower(creep);},  
     TransportEnergyToHomeStorage: function(creep) {return creepBaseTransport.TransportEnergyToHomeStorage(creep);},  
+    checkWorkroomPrioSpawn: function(creep){
+        if(Memory.rooms[creep.memory.workroom].aktivPrioSpawn)
+        {
+            if(creepBase.TransportEnergyToHomeSpawn(creep))
+                return true;
+        }
+        return false;
+    }
 };
