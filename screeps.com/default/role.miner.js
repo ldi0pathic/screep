@@ -101,17 +101,28 @@ var roleMiner = {
             
             if (creep.pos.x == creep.memory.pos.x && creep.pos.y == creep.memory.pos.y) 
             {
-              creep.memory.onPosition = true;
-              delete creep.memory.pos;
+             
               
               var source = creep.pos.findClosestByPath(FIND_SOURCES);
               if (creep.harvest(source) === ERR_NOT_IN_RANGE) 
               {
-                creep.say('⁉');
+                    var mineral = creep.pos.findClosestByPath(FIND_MINERALS);
+                    if (creep.harvest(mineral) === ERR_NOT_IN_RANGE) 
+                    {
+                        creep.say('HELP!')
+                    }
+                    else
+                    {
+                        creep.memory.miningSource = mineral.id;
+                        creep.memory.onPosition = true;
+                        delete creep.memory.pos;
+                    }
               }
               else
               {
-                  creep.memory.miningSource = source.id;
+                    creep.memory.miningSource = source.id;
+                    creep.memory.onPosition = true;
+                    delete creep.memory.pos;
               }
               
             } 
@@ -134,24 +145,38 @@ var roleMiner = {
         }
         else
         {
-            const container = Game.getObjectById(creep.memory.container);
-            
-            if(container && container.progressTotal == undefined && container.hits < container.hitsMax && !Memory.prioEnergie)
-            {
-                creep.say('🛠');
-                creep.repair(container);
-            }
-            else if(container && container.progressTotal != undefined && container.progressTotal > container.progress && !Memory.prioEnergie)
-            {
-                creep.say('🛠');
-                creep.build(container); 
-            }
-            
             const source = Game.getObjectById(creep.memory.miningSource);
-            if(creep.harvest(source) != OK)
+            var state = creep.harvest(source) ;
+            if(state != OK)
             {
-               creep.say('⁉'); 
+                if(state == ERR_TIRED)
+                {
+                    creep.say('😴')
+                }
+                else
+                {
+                    creep.say(state+' :('); 
+                }
             }
+            
+            if(creep.store[RESOURCE_ENERGY] > 0 )
+            {
+                const container = Game.getObjectById(creep.memory.container);
+            
+                if(container && container.progressTotal == undefined && container.hits < container.hitsMax)
+                {
+                    creep.say('🛠');
+                    creep.repair(container);
+                }
+                else if(container && container.progressTotal != undefined && container.progressTotal > container.progress)
+                {
+                    creep.say('🛠');
+                    creep.build(container); 
+                } 
+            }
+           
+            
+            
         }
     }
 };

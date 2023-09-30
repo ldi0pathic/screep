@@ -35,8 +35,17 @@ module.exports = {
     	{
     	    
     	    const controller = Game.rooms[creep.memory.target].controller;
+    	    
+    	    
 
             if (controller) {
+                
+                if(creep.name == 'E58N6')
+                {
+                    	var s = creep.claimController(controller);
+                    	creep.say(s);
+                    	return;
+                }
                 var state = creep.reserveController(controller);
                 if (state === ERR_NOT_IN_RANGE) {
                     creep.moveTo(controller, { visualizePathStyle: { stroke: "#ffaa00" } });

@@ -21,11 +21,11 @@ global.room =
       debitorProSource: 1,  
       debitorAsFreelancer: 1,  
       energySources: [
-       '821cfdbd97ffa5580e28a02c',
-       'b436fdfba84424303114821e',
+       '1f7929356b48513d5418a844',
+       '25ac5d6d7baee0b09ad3d3da',
       ],
       mineralSources:[
-        
+        '0a164da07ca059c5f95e6f29'
       ],
 
       //structures

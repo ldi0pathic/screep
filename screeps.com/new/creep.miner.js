@@ -79,6 +79,7 @@ module.exports = {
             {
                 creep.memory.onPosition = true;
                 delete creep.memory.pos;
+                delete creep.memory._move;
               
                 var source = creep.pos.findClosestByPath(creep.memory.mineEnergy ? FIND_SOURCES : FIND_MINERALS); 
                 var state = creep.harvest(source);
@@ -89,7 +90,7 @@ module.exports = {
                 }
                 else
                 {
-                    creep.memory.miningSource = source.id;
+                    creep.memory.source = source.id;        
                 } 
             } 
             else if(!creep.moveTo(new RoomPosition(finalLocation.x, finalLocation.y,finalLocation.roomName) , {reusePath: 5,}) == OK)
@@ -122,12 +123,18 @@ module.exports = {
                 }
             }
             
-            let source = Game.getObjectById(creep.memory.miningSource);
+            let source = Game.getObjectById(creep.memory.source);
             let state = creep.harvest(source);
             if( state != OK)
             {
-                console.log(state);
-                creep.say('⁉!'); 
+                if(state == ERR_TIRED)
+                {
+                    creep.say('😴')
+                }
+                else
+                {
+                    creep.say(state+' :('); 
+                }
             }
         }
     },
@@ -179,6 +186,10 @@ module.exports = {
         {
             for(var id in global.room[workroom].mineralSources)
             {
+               
+               if( Game.getObjectById(global.room[workroom].mineralSources[id]).mineralAmount < 1)
+                    return false;
+
                 if(this._spawn(spawn,workroom, global.room[workroom].mineralSources[id], false))
                     return true;
             }

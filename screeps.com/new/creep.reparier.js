@@ -115,17 +115,6 @@ module.exports = {
         }
         return false;
     },
-    _upgradeController: function(creep)
-    {
-        if(!creep.room.controller.my)
-            return;
-        
-        const state = creep.upgradeController(creep.room.controller);
-        if (state === ERR_NOT_IN_RANGE ) {
-            creep.moveTo(creep.room.controller);
-        }  
-        return;
-    },
     _getProfil: function(spawn)
     {
         const totalCost = 3 * BODYPART_COST[WORK] + 2 * BODYPART_COST[CARRY] + 2 * BODYPART_COST[MOVE];

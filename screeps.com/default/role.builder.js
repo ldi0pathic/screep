@@ -14,12 +14,12 @@ module.exports = {
            if(!creep.memory.prioId)
            { 
               
-               //creep.memory.prioId = '650aa12b631b853a0fef22f4';
+               //creep.memory.prioId = '65173253fbeacecb3765a85a';
                //return;
                
                // Wenn der Creep im Baumodus ist, überprüfe, ob er Baustellen im Speicher hat
                 const constructionSites = Memory.rooms[creep.room.name].constructionSites;
-                if (Object.keys(constructionSites).length > 0) 
+                if (Object.keys(constructionSites).length > 0 && Memory.rooms[creep.room.name].sendBuilder) 
                 {
                     const sitesWithPriority = Object.values(constructionSites)
                         .map(site => ({
@@ -49,7 +49,7 @@ module.exports = {
                         {
                             const otherConstructionSites = Memory.rooms[roomName].constructionSites;
                            
-                            if (otherConstructionSites && Object.keys(otherConstructionSites).length > 0) 
+                            if (Memory.rooms[roomName].sendBuilder && otherConstructionSites && Object.keys(otherConstructionSites).length > 0) 
                             {
                                 creep.say('⏩')
                                 creep.moveTo(new RoomPosition(25, 25, roomName), { visualizePathStyle: { stroke: '#ffffff' } });
@@ -115,9 +115,10 @@ module.exports = {
     getPriority: function(structureType) {
         // Je niedriger die Priorität, desto wichtiger ist das Gebäude.
         const priorities = {
-             [STRUCTURE_RAMPART]: 1,
-            [STRUCTURE_EXTENSION]: 1,
-            [STRUCTURE_SPAWN]: 2,
+             [STRUCTURE_RAMPART]: 2,
+            [STRUCTURE_EXTENSION]: 2,
+            [STRUCTURE_SPAWN]: 1,
+            [STRUCTURE_WALL]:2,
             [STRUCTURE_TOWER]: 3,
             [STRUCTURE_STORAGE]: 4,
             [STRUCTURE_CONTAINER]: 5,

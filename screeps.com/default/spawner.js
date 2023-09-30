@@ -2,6 +2,7 @@ var upgrader = require('role.upgrader');
 var debitor  = require('role.debitor');
 var reserver = require('role.reserver');
 var attack = require('role.attack');
+var wall = require('role.wall')
 
 
 var spawner = 
@@ -25,13 +26,23 @@ var spawner =
         {
             var spawn = Game.spawns[spawnName];
             
-            if(spawn.spawning) 
+            
+            if(spawn.spawning ) 
                 continue;
+             
+            if(spawn.name == 'P3' && wall.spawn(spawn,'E58N6'))    
+              continue;
+                
                 
             var breaker = false;
             for(var room in Memory.rooms)
             { 
-               
+                if(spawnMiner(spawn,room))
+                {   
+                    breaker = true;
+                    break;
+                }
+                
                 if(debitor.spawn(spawn,room))
                 {   
                     breaker = true;
@@ -39,37 +50,33 @@ var spawner =
                 }
                     
                     
-                if(spawnMiner(spawn,room))
-                {   
-                    breaker = true;
-                    break;
-                }
+               
                 
-                 
                 if(Memory.rooms[room].claim && Memory.rooms[room].mainSpawn == spawn.room.name && reserver.spawn(spawn,room))
                 {
                     breaker = true;
                     break;
                 }
+                 
+            
             }     
               if(Memory.prioEnergie || breaker)
                 continue;
-                
-            if(spawnBob(spawn, 2)) 
+          if(spawnBob(spawn, 2)) 
                 continue;
             //if(attack.spawn(spawn,'E58N6')) 
               //  continue; 
             
-            if(spawnDropper(spawn,4)) 
+            if(spawnDropper(spawn,1)) 
                 continue; 
                 
             if(spawnReps(spawn,2))  
               continue;
               
-            if(upgrader.spawn(spawn))         
+            if(upgrader.spawn(spawn,spawn.room.name))         
                 continue;
                 
-            if(spawnTraveller(spawn,0))
+            if(spawnTraveller(spawn,1))
                 continue;
           
         }

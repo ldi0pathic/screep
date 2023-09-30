@@ -20,18 +20,25 @@ var defender = require('role.defender');
 var claimer = require('role.claimer');
 var reserver = require('role.reserver');
 var attack = require('role.attack');
+var wall = require('role.wall')
 
  const structurePriorities = {
-        [STRUCTURE_WALL]: 0.0005,
+        [STRUCTURE_WALL]: 0.0015,
         [STRUCTURE_CONTAINER]: 1,
-        [STRUCTURE_RAMPART]: 0.33
+        [STRUCTURE_RAMPART]: 0.4
     };
     
+    
+var test = 1;    
 module.exports.loop = function () {
 
     spawner.clear();
     spawner.spawn();
     mapActions.handle();
+    
+    if(Game.cpu.bucket == 10000) {
+        Game.cpu.generatePixel();
+    }
     
    /* 
     var newName = 'reps_' + Game.time;
@@ -45,6 +52,10 @@ module.exports.loop = function () {
         return true;
     }
     */
+    
+   
+    //newRoom.add('E58N6');
+    
     
     //Memory.rooms.E59N9.contOfMiner = 0;
   //newRoom.add('E59N9', true, true, true, true, 'E59N9');
@@ -72,10 +83,24 @@ module.exports.loop = function () {
                 }
             }
             
-            var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-            if(closestHostile) {
-                tower.attack(closestHostile);
-                Memory.prioAttack = true;
+          var hostileCreeps = tower.room.find(FIND_HOSTILE_CREEPS);
+
+            if (hostileCreeps.length > 0) {
+                // Sortiere die feindlichen Creeps nach ihren Bodypart-Kosten in absteigender Reihenfolge
+                hostileCreeps.sort(function (a, b) {
+                    var costA = a.body.reduce(function (total, part) {
+                        return total + BODYPART_COST[part.type];
+                    }, 0);
+    
+                    var costB = b.body.reduce(function (total, part) {
+                        return total + BODYPART_COST[part.type];
+                    }, 0);
+    
+                    return costB - costA;
+                });
+    
+                // Greife den teuersten feindlichen Creep an
+                tower.attack(hostileCreeps[0]);
             }
             else
             {
@@ -87,8 +112,9 @@ module.exports.loop = function () {
     
     var room = Game.spawns.P1.room;
     var room2 = Game.spawns.P2.room;
+    var room3 = Game.spawns.P3.room;
 
-    if(room.energyAvailable == room.energyCapacityAvailable && room2.energyAvailable == room2.energyCapacityAvailable)
+    if(room.energyAvailable == room.energyCapacityAvailable && room2.energyAvailable == room2.energyCapacityAvailable && room3.energyAvailable == room3.energyCapacityAvailable)
     {
         Memory.prioEnergie = false;
     }
@@ -108,7 +134,7 @@ module.exports.loop = function () {
                  creep.memory.role != 'defender' &&
                    creep.memory.role != 'dropper' &&
                     creep.memory.role != 'reserver' &&
-               (creep.room.name == room.name || creep.room.name == room2.name))
+               (creep.room.name == room.name || creep.room.name == room2.name || creep.room.name == room3.name))
             {
                 creep.say('⬜');
                 roleHarvester.run(creep);
@@ -162,9 +188,13 @@ module.exports.loop = function () {
                 reserver.run(creep);
                 break;
                 
-                case 'attacker':
-                    attack.run(creep)
-                    break;
+            case 'attacker':
+                attack.run(creep)
+                break;
+                    
+            case 'wally':
+                wall.run(creep)
+            break;
             
             default:
                 {

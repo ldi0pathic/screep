@@ -1,51 +1,49 @@
 var carry = require('role.carry');
-
-const maxSpawn = 1;
-const role = 'uppi';
+var role = 'wally';
+var maxSpawn = 5;
 const bodyPartCosts = {
         WORK: BODYPART_COST[WORK],
         CARRY: BODYPART_COST[CARRY],
         MOVE: BODYPART_COST[MOVE],
     };
-
-var roleUpgrader = {
-
-    /** @param {Creep} creep **/
-    run: function(creep) 
-    {   
-        carry.checkCarry(creep);
+module.exports = {
+    run: function(creep) {
+        // Liste der Wall-IDs, die repariert werden sollen
+        const targetWallIds = ['6517870c7aa421287cb2698f','651786f5ed3100748def55d0','651786d31cb6f66594ff4d6d','65178121cb5f90fc0701217b','651784fdfa7469e81b525939','65178615f050f54a1e6ca286','651787ab43ffc307779e7028','651780aadec6014f27373075','6517865491cfa5dd00f9ca49','6517c20e43ffc37e789e7fda','6517c2c0bfcd9c23386dd415'];
+        
+         carry.checkCarry(creep);
 
         if (!creep.memory.carry) {
+            creep.memory.wall = null;
             return; 
         }
         
-    	if (creep.memory.target && creep.memory.target !== creep.room.name) 
-    	{
-    		creep.say('⏩')
-    		creep.moveTo(new RoomPosition(25, 25, creep.memory.target), { visualizePathStyle: { stroke: '#ffffff' } });
-    		return;
-    	}
-    
-        const updateState = creep.upgradeController(creep.room.controller);
-        if (updateState === OK) {
-            // Erfolgreich aktualisiert, keine weiteren Maßnahmen erforderlich.
-            return;
+        if(!creep.memory.wall)
+        {
+             const sortedWalls = targetWallIds
+                .map(id => Game.getObjectById(id))
+                .filter(wall => wall && wall.hits < wall.hitsMax)
+                .sort((a, b) => a.hits - b.hits);
+                
+            if (sortedWalls.length > 0) {
+                creep.memory.wall = sortedWalls[0].id;
+            }
         }
-    
-        if (updateState === ERR_NOT_IN_RANGE || updateState === ERR_NOT_OWNER) {
-            creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: '#ffffff' } });
-        }  
+        if(creep.memory.wall)
+        {
+           var targetWall = Game.getObjectById(creep.memory.wall);
+            const repairResult = creep.repair(targetWall );
+
+            if (repairResult === ERR_NOT_IN_RANGE) {
+                creep.moveTo(targetWall, { visualizePathStyle: { stroke: '#ffffff' } });
+            }
+        }
+        
     },
-    
-    spawn: function(spawn, target)
+     spawn: function(spawn, target)
     {
         var c = _.filter(Game.creeps, (creep) => creep.memory.role == role && creep.memory.target == target).length;
         var max = maxSpawn;
-        
-        if(target == 'E58N7' )
-        {
-            max = 2;
-        }
         
         if(c < max) 
         {
@@ -82,7 +80,6 @@ var roleUpgrader = {
         }
          return false;
     },
-    
 };
 function calcProfil(creepProfile) {
     let energyCost = 0;
@@ -93,5 +90,3 @@ function calcProfil(creepProfile) {
 
     return energyCost;
 }
-
-module.exports = roleUpgrader;
