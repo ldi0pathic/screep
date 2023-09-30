@@ -21,22 +21,26 @@ global.room =
       debitorProSource: 1,  
       debitorAsFreelancer: 1,  
       energySources: [
-       '1f7929356b48513d5418a844',
-       '25ac5d6d7baee0b09ad3d3da',
+       '481895d35d031f922f1fa099',
+       'e9871f2d3509c7e6038cddac',
       ],
       mineralSources:[
-        '0a164da07ca059c5f95e6f29'
+        '54084c8eea510d5c045ccfeb'
       ],
 
       //structures
       repairer: 2,
+      maxwallRepairer : 2,
       maxbuilder: 5,
       prioBuildings: [
         
       ],
-
+      walls: [
+        'd60d01ac0b68e403d9045333'
+   ],
+ 
       //controller  
-      upgrader: 2,
+      upgrader: 1,
    }
 },
 global.prio =

@@ -54,7 +54,7 @@ module.exports.loop = function () {
     */
     
    
-    //newRoom.add('E58N6');
+    //newRoom.add('E58N8');
     
     
     //Memory.rooms.E59N9.contOfMiner = 0;

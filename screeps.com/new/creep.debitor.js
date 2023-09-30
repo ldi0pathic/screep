@@ -5,28 +5,46 @@ module.exports =
 {
     sayJob() { this.creep.say('🚛') },
     doJob: function (creep) {
-        creepBase.checkHarvest(creep);
+        creepBase.checkHarvest(creep, creep.memory.mineral);
 
         if (creep.memory.harvest) {
             if(creepBase.goToWorkroom(creep)) return;
-            if(creepBase.harvestMyContainer(creep)) return;
-            if(creepBase.harvestRoomContainer(creep)) return;
+            if(creepBase.harvestMyContainer(creep, creep.memory.mineral)) return;
+            if(creepBase.harvestRoomContainer(creep,creep.memory.mineral)) return;
 
             return;
         }
 
         if(creepBase.goToMyHome(creep))return;
-        if(creepBase.TransportEnergyToHomeSpawn(creep))return;
-        if(creepBase.TransportEnergyToHomeTower(creep))return;
-        if(creepBase.TransportEnergyToHomeStorage(creep))return;
+
+        if(creep.memory.mineral != RESOURCE_ENERGY)
+        {
+            if(creepBase.TransportToHomeTerminal(creep,creep.memory.mineral))return;
+            if(creepBase.TransportToHomeStorage(creep, creep.memory.mineral))return;
+        }
+        else
+        {
+            if(creepBase.TransportEnergyToHomeSpawn(creep))return;
+            if(creepBase.TransportEnergyToHomeTower(creep))return;
+            if(creepBase.TransportToHomeStorage(creep, creep.memory.mineral))return;
+        }
+      
     },
     /**
      * 
      * @param {StructureSpawn} spawn 
      */
-    getProfil(spawn) {
-        var max = parseInt(spawn.room.energyCapacityAvailable / 100);
-        return Array(max).fill(CARRY).concat(Array(max).fill(MOVE));
+    getProfil(spawn, mineraltype) {
+        if(mineraltype == RESOURCE_ENERGY)
+        {
+            var max = Math.min(25,parseInt(spawn.room.energyCapacityAvailable / 100));
+            return Array(max).fill(CARRY).concat(Array(max).fill(MOVE));
+        }
+        else
+        {
+            var mineral = 2;
+            return Array(mineral).fill(CARRY).concat(Array(mineral).fill(MOVE));
+        }
     },
     /**
     * 
@@ -36,19 +54,38 @@ module.exports =
     */
     spawn: function(spawn,workroom)
     {
-        if(!global.room[workroom].sendMiner)
+       
+        if(!global.room[workroom].sendDebitor)
             return false;
-
-        for(var id in global.room[workroom].energySources)
+            
+        if(global.room[workroom].sendMiner)
         {
-            if(!Game.getObjectById(global.room[workroom].energySources[id]))
-                continue;
+            for(var id in global.room[workroom].energySources)
+            {
+                if(!Game.getObjectById(global.room[workroom].energySources[id]))
+                    continue;
+                    
+                if(this._spawn(spawn,workroom, global.room[workroom].energySources[id],RESOURCE_ENERGY))
+                    return true;
+            }
 
-            if(this._spawn(spawn,workroom, global.room[workroom].energySources[id]))
-                return true;
+            var controller = Game.rooms[workroom].controller;
+            if(controller.my && controller.level >= 6)
+            {
+                for(var id in global.room[workroom].mineralSources)
+                {
+                    var mineral = Game.getObjectById(global.room[workroom].mineralSources[id]);
+                    if(mineral.mineralAmount < 1) //nur wenn die mineralquelle derzeit aktiv ist
+                        return false;
+
+                    if(this._spawn(spawn,workroom, global.room[workroom].mineralSources[id], mineral.mineralType))
+                        return true;
+                }
+            }
         }
+        
 
-        if(this._spawn(spawn,workroom,'')) //Freelancer B)
+        if(this._spawn(spawn,workroom,'',RESOURCE_ENERGY)) //Freelancer B)
             return true;
 
         return false;  
@@ -59,8 +96,8 @@ module.exports =
      * @param {String} workroom 
      * @param {String} container
      */
-    _spawn: function (spawn, workroom, source) {
-
+    _spawn: function (spawn, workroom, source, mineraltype) 
+    { 
         let containerId = ''
         if(source != '')
         {
@@ -79,10 +116,10 @@ module.exports =
                                                         creep.memory.workroom == workroom && 
                                                         creep.memory.home == spawn.room.name && 
                                                         creep.memory.container == containerId).length;
-    
+                                                      
             if (global.room[workroom].debitorProSource <= count)
                 return false;
-   
+               
         }
         else
         {
@@ -96,13 +133,27 @@ module.exports =
             containerId = '';
         }
 
-        var profil = this.getProfil(spawn);
+        var profil = this.getProfil(spawn, mineraltype);
+        
+        console.log(profil.length);
+        //wenn im aktuellen raum kein Debitor ist
+        if(_.filter(Game.creeps, (creep) => creep.memory.role == role && creep.memory.workroom == workroom).length == 0)
+        {
+            console.log('Notfallspawn '+role);
+            var min = Math.max(parseInt(spawn.room.energyAvailable/ 100),1);  
+            profil = Array(min).fill(CARRY).concat(Array(min).fill(MOVE));
+            containerId = '';
+        }
+       
         var newName = role + '_' + Game.time;
-        if (spawn.spawnCreep(profil, newName, { dryRun: true }) === 0) {
-            spawn.spawnCreep(profil, newName, { memory: { role: role, workroom: workroom, home: spawn.room.name, container: containerId } });
+        var state = spawn.spawnCreep(profil, newName, { dryRun: true })
+        if (state == 0) {
+            spawn.spawnCreep(profil, newName, { memory: { role: role, workroom: workroom, home: spawn.room.name, container: containerId, mineral: mineraltype} });
             console.log("[" + spawn.room.name + "|" + workroom + "] spawn " + newName + " cost: " + creepBase.calcProfil(profil));
+            
             return true;
         }
+        console.log('5 :( '+ state);
         return false;
     },
 }

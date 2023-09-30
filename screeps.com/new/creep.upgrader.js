@@ -5,7 +5,7 @@ const role = "upgrader";
 module.exports = {
     sayJob: function() { this.creep.say('🔑') },
     doJob: function (creep) {
-        creepBase.checkHarvest(creep);
+        creepBase.checkHarvest(creep, RESOURCE_ENERGY);
 
         if (creep.memory.harvest) {
             if(creepBase.harvest(creep)) return;
@@ -22,7 +22,7 @@ module.exports = {
     {
         const totalCost = 3 * BODYPART_COST[WORK] + 2 * BODYPART_COST[CARRY] + 2 * BODYPART_COST[MOVE];
         var maxEnergy = spawn.room.energyCapacityAvailable;
-        const numberOfSets = Math.floor(maxEnergy / totalCost);
+        const numberOfSets = Math.min(7,Math.floor(maxEnergy / totalCost));
         if(numberOfSets == 0)
         {
             return [WORK,CARRY,CARRY,MOVE,MOVE];

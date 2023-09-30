@@ -5,7 +5,6 @@ const jobs = require('./creep.jobs');
 module.exports.loop = function () {
 
     memoryController.init();
-    memoryController.writeStatus();
     spawnController.spawn();
     spawnController.clear();
 
@@ -19,5 +18,7 @@ module.exports.loop = function () {
         jobs[creep.memory.role].doJob(creep);
 
     }
+
+    memoryController.writeStatus();
 
 }

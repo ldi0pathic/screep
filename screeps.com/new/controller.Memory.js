@@ -33,5 +33,7 @@ module.exports = {
                 msg += "PrioSpawn im Raum "+room+"\n";
            }
         }
+        if(msg != "")
+            console.log(msg);
     }
 }

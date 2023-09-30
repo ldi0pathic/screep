@@ -4,9 +4,9 @@ const creepBaseGoTo = require('./creep.base.goto');
 
 module.exports = 
 {
-    checkHarvest: function(creep, action)
+    checkHarvest: function(creep,type, action)
     {
-        if (!creep.memory.harvest && creep.store[RESOURCE_ENERGY] === 0) 
+        if (!creep.memory.harvest && creep.store[type] === 0) 
         {
             if(typeof(action) == "function") 
                 action();
@@ -27,7 +27,7 @@ module.exports =
         if(this.harvestRoomStorage(creep))
             return;
 
-        if(this.harvestRoomContainer(creep))
+        if(this.harvestRoomContainer(creep, RESOURCE_ENERGY))
             return;
 
         if(this.harvestRoomEnergySource(creep))
@@ -48,14 +48,14 @@ module.exports =
         }
         return false;
     },
-    harvestRoomContainer: function(creep)
+    harvestRoomContainer: function(creep, type)
     {
         const containers = creep.room.find(FIND_STRUCTURES, {
             filter: (structure) => {
                 return (
                     structure.structureType === STRUCTURE_CONTAINER ||
                     structure.structureType === STRUCTURE_STORAGE
-                    ) && structure.store[RESOURCE_ENERGY] > 0
+                    ) && structure.store[type] > 0
                 ;
             }
         });
@@ -63,7 +63,7 @@ module.exports =
         if (containers.length > 0) 
         {
             const closestContainer = creep.pos.findClosestByRange(containers);
-            if (creep.withdraw(closestContainer, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) 
+            if (creep.withdraw(closestContainer, type) === ERR_NOT_IN_RANGE) 
             {
                 creep.moveTo(closestContainer);
             }
@@ -71,7 +71,7 @@ module.exports =
         }
         return false;
     },
-    harvestMyContainer: function(creep)
+    harvestMyContainer: function(creep, type)
     {
         if(creep.memory.workroom != creep.room.name || creep.memory.container == '')
             return false;
@@ -80,7 +80,7 @@ module.exports =
 
         if (container) 
         {
-            if(container.store[RESOURCE_ENERGY] < 50)
+            if(container.store[type] < 50)
             {
                 if(creep.store.getUsedCapacity() > creep.store.getFreeCapacity())
                 {
@@ -92,7 +92,7 @@ module.exports =
                     return true;
             }
 
-            var state = creep.withdraw(container, RESOURCE_ENERGY);
+            var state = creep.withdraw(container, type);
             if (state === ERR_NOT_IN_RANGE) 
             {
                 creep.moveTo(container);
@@ -129,9 +129,12 @@ module.exports =
     goToMyHome:   function(creep){return creepBaseGoTo.goToMyHome(creep)},
     goToRoomFlag: function(creep){return creepBaseGoTo.goToRoomFlag(creep)},
     goToWorkroom: function(creep){return creepBaseGoTo.goToWorkroom(creep)},
+
     TransportEnergyToHomeSpawn: function(creep){ return creepBaseTransport.TransportEnergyToHomeSpawn(creep);},
     TransportEnergyToHomeTower: function(creep) {return creepBaseTransport.TransportEnergyToHomeTower(creep);},  
-    TransportEnergyToHomeStorage: function(creep) {return creepBaseTransport.TransportEnergyToHomeStorage(creep);},  
+    TransportToHomeTerminal: function(creep, type) {return creepBaseTransport.TransportToHomeTerminal(creep, type);},  
+    TransportToHomeStorage: function(creep, type) {return creepBaseTransport.TransportToHomeStorage(creep, type);},  
+
     checkWorkroomPrioSpawn: function(creep){
         if(Memory.rooms[creep.memory.workroom].aktivPrioSpawn)
         {
