@@ -42,9 +42,13 @@ var roleUpgrader = {
         var c = _.filter(Game.creeps, (creep) => creep.memory.role == role && creep.memory.target == target).length;
         var max = maxSpawn;
         
-        if(target == 'E58N7' || target == 'E58N6')
+        if(target == 'E58N7' )
         {
             max = 3;
+        }
+          if(target == 'E58N6')
+        {
+            max = 2;
         }
         
         if(c < max) 

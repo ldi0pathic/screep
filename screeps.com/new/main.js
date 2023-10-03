@@ -1,12 +1,7 @@
-const  spawnController = require('./controller.spawn');
-const memoryController = require('./controller.Memory');
+const  timer = require('./controller.timing');
 const jobs = require('./creep.jobs');
 
 module.exports.loop = function () {
-
-    memoryController.init();
-    spawnController.spawn();
-    spawnController.clear();
 
     for(var name in Game.creeps) 
     {
@@ -19,6 +14,6 @@ module.exports.loop = function () {
 
     }
 
-    memoryController.writeStatus();
+    timer.controll();
 
 }

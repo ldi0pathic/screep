@@ -25,7 +25,8 @@ var wall = require('role.wall')
  const structurePriorities = {
         [STRUCTURE_WALL]: 0.0015,
         [STRUCTURE_CONTAINER]: 1,
-        [STRUCTURE_RAMPART]: 0.4
+        [STRUCTURE_RAMPART]: 0.45,
+        [STRUCTURE_ROAD]:0.5,
     };
     
     
@@ -133,7 +134,9 @@ module.exports.loop = function () {
                 creep.memory.role != 'claimer' &&
                  creep.memory.role != 'defender' &&
                    creep.memory.role != 'dropper' &&
-                    creep.memory.role != 'reserver' &&
+                    creep.memory.role != 'reserver' &
+                     creep.memory.role != 'wally' &
+                      creep.memory.role != '' &
                (creep.room.name == room.name || creep.room.name == room2.name || creep.room.name == room3.name))
             {
                 creep.say('⬜');
@@ -150,7 +153,8 @@ module.exports.loop = function () {
             break;
             
             case 'defender':
-                defender.run(creep);
+               creep.memory.role = ''
+               // defender.run(creep);
             break;
             
             case 'claimer':
@@ -199,6 +203,7 @@ module.exports.loop = function () {
             default:
                 {
                     creep.say('💀')
+                    creep.role = null;
                      if(Game.spawns.P1.recycleCreep(creep) == ERR_NOT_IN_RANGE)
                      {
                          creep.moveTo(Game.spawns.P1);

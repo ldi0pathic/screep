@@ -38,20 +38,11 @@ module.exports = {
         var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
                                                     creep.memory.workroom == workroom && 
                                                     creep.memory.home == spawn.room.name).length;
-
-                                                   
+                                           
         if ( uppis <= count)
             return false;
 
-        var profil = this._getProfil(spawn);
-        var newName = role + '_' + Game.time;
-        if (spawn.spawnCreep(profil, newName, { dryRun: true }) === 0) {
-            spawn.spawnCreep(profil, newName, { memory: { role: role, workroom: workroom, home: spawn.room.name, repairs:0} });
-            console.log("[" + spawn.room.name + "|" + workroom + "] spawn " + newName + " cost: " + creepBase.calcProfil(profil));
-            return true;
-        }
-
-        return false;  
+        return creepBase.spawn(spawn, this._getProfil(spawn), role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name, repairs:0});
     },
    
 };

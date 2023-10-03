@@ -42,14 +42,7 @@ module.exports = {
         if ( 1 <= count)
             return false;
 
-        var profil = this._getProfil();
-        var newName = role + '_' + Game.time;
-        if (spawn.spawnCreep(profil, newName, { dryRun: true }) === 0) {
-            spawn.spawnCreep(profil, newName, { memory: { role: role, workroom: workroom, home: spawn.room.name} });
-            console.log("[" + spawn.room.name + "|" + workroom + "] spawn " + newName + " cost: " + creepBase.calcProfil(profil));
-            return true;
-        }
-        return false;  
+        return creepBase.spawn(spawn, this._getProfil(), role + '_' + Game.time, { role: role, workroom: workroom, home: spawn.room.name});
     },
    
 };

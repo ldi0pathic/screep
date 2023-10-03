@@ -156,4 +156,13 @@ module.exports =
         }  
         return;
     },
+    spawn: function(spawn, profil, newName, memory)
+    {
+        if (spawn.spawnCreep(profil, newName, { dryRun: true }) === 0) {
+            spawn.spawnCreep(profil, newName, { memory: memory });
+            console.log("[" + spawn.room.name + "|" + memory.workroom + "] spawn " + newName + " cost: " + this.calcProfil(profil));
+            return true;
+        }
+        return false;
+    }
 };

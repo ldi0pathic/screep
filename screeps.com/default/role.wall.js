@@ -1,6 +1,6 @@
 var carry = require('role.carry');
 var role = 'wally';
-var maxSpawn = 5;
+var maxSpawn = 2;
 const bodyPartCosts = {
         WORK: BODYPART_COST[WORK],
         CARRY: BODYPART_COST[CARRY],
@@ -9,7 +9,7 @@ const bodyPartCosts = {
 module.exports = {
     run: function(creep) {
         // Liste der Wall-IDs, die repariert werden sollen
-        const targetWallIds = ['651787ab43ffc307779e7028','651780d1e7ad816ee36abdab','6205837417753b1dc1948afa','651786327d4de84f1c71d636', '6517870c7aa421287cb2698f','651786f5ed3100748def55d0','651786d31cb6f66594ff4d6d','65178121cb5f90fc0701217b','651784fdfa7469e81b525939','65178615f050f54a1e6ca286','651787ab43ffc307779e7028','651780aadec6014f27373075','6517865491cfa5dd00f9ca49','6517c20e43ffc37e789e7fda','6517c2c0bfcd9c23386dd415'];
+        const targetWallIds = ['62059f01a6913fbf31e8cb56','62058377ca7d2d0e94453681','6257e82234865ad3ee670704','651787ab43ffc307779e7028','651780d1e7ad816ee36abdab','6205837417753b1dc1948afa','651786327d4de84f1c71d636', '6517870c7aa421287cb2698f','651786f5ed3100748def55d0','651786d31cb6f66594ff4d6d','65178121cb5f90fc0701217b','651784fdfa7469e81b525939','65178615f050f54a1e6ca286','651787ab43ffc307779e7028','651780aadec6014f27373075','6517865491cfa5dd00f9ca49','6517c20e43ffc37e789e7fda','6517c2c0bfcd9c23386dd415'];
         
          carry.checkCarry(creep);
 

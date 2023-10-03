@@ -37,6 +37,15 @@ var spawner =
             var breaker = false;
             for(var room in Memory.rooms)
             { 
+                var gameRoom = Game.rooms[room];
+                if(!gameRoom) continue;
+                
+                let invaderCore = gameRoom.find(FIND_HOSTILE_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_INVADER_CORE})[0]
+                if (invaderCore) {
+                    console.log("Core in Raum "+ room);
+                    continue;
+                }
+                
                 if(spawnMiner(spawn,room))
                 {   
                     breaker = true;
@@ -76,9 +85,9 @@ var spawner =
             if(upgrader.spawn(spawn,spawn.room.name))         
                 continue;
                 
-            if(spawnTraveller(spawn,1))
+          /*  if(spawnTraveller(spawn,1))
                 continue;
-          
+          */
         }
     },
 }

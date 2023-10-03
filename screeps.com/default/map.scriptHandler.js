@@ -44,7 +44,7 @@ module.exports =
             default:
             {
                
-                if(tickCounter > 10)
+                if(tickCounter > 20)
                 {
                     tickCounter = 0;
                 }

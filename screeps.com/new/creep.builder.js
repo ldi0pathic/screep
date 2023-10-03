@@ -92,15 +92,7 @@ module.exports = {
         if(Math.max(Game.rooms[workroom].find(FIND_CONSTRUCTION_SITES).length / 5, 1) <= count)
             return false;
 
-        var profil = this._getProfil(spawn);
-        var newName = role + '_' + Game.time;
-        if (spawn.spawnCreep(profil, newName, { dryRun: true }) === 0) {
-            spawn.spawnCreep(profil, newName, { memory: { role: role, workroom: workroom, home: spawn.room.name} });
-            console.log("[" + spawn.room.name + "|" + workroom + "] spawn " + newName + " cost: " + creepBase.calcProfil(profil));
-            return true;
-        }
-
-        return false;  
+        return creepBase.spawn(spawn, this._getProfil(spawn), role + '_' + Game.time, { role: role, workroom: workroom, home: spawn.room.name});   
     },
    
 };

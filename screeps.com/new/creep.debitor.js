@@ -127,6 +127,7 @@ module.exports =
                                                         creep.memory.workroom == workroom && 
                                                         creep.memory.home == spawn.room.name && 
                                                         creep.memory.container == '').length;
+                                                        
             if (global.room[workroom].debitorAsFreelancer <= count)
                 return false;
 
@@ -135,7 +136,6 @@ module.exports =
 
         var profil = this.getProfil(spawn, mineraltype);
         
-        console.log(profil.length);
         //wenn im aktuellen raum kein Debitor ist
         if(_.filter(Game.creeps, (creep) => creep.memory.role == role && creep.memory.workroom == workroom).length == 0)
         {
@@ -144,16 +144,6 @@ module.exports =
             profil = Array(min).fill(CARRY).concat(Array(min).fill(MOVE));
             containerId = '';
         }
-       
-        var newName = role + '_' + Game.time;
-        var state = spawn.spawnCreep(profil, newName, { dryRun: true })
-        if (state == 0) {
-            spawn.spawnCreep(profil, newName, { memory: { role: role, workroom: workroom, home: spawn.room.name, container: containerId, mineral: mineraltype} });
-            console.log("[" + spawn.room.name + "|" + workroom + "] spawn " + newName + " cost: " + creepBase.calcProfil(profil));
-            
-            return true;
-        }
-        console.log('5 :( '+ state);
-        return false;
+        return creepBase.spawn(spawn,profil, role + '_' + Game.time, { role: role, workroom: workroom, home: spawn.room.name, container: containerId, mineral: mineraltype})
     },
 }

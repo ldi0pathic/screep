@@ -84,8 +84,7 @@ module.exports = {
                 var source = creep.pos.findClosestByPath(creep.memory.mineEnergy ? FIND_SOURCES : FIND_MINERALS); 
                 var state = creep.harvest(source);
                 if (state === ERR_NOT_IN_RANGE) 
-                {
-                    console.log(state);
+                { 
                     creep.say('⁉');
                 }
                 else
@@ -210,17 +209,13 @@ module.exports = {
                                                     creep.memory.source == source).length;
 
         if (1 <= count)
-            return false;
-
-        var profil = this._getProfil(spawn);
-        var newName = role + '_' + Game.time;
-        if (spawn.spawnCreep(profil, newName, { dryRun: true }) === 0) {
-            spawn.spawnCreep(profil, newName, { memory: { role: role, workroom: workroom, home: spawn.room.name, source: source, mineEnergy:mineEnergy } });
-            console.log("[" + spawn.room.name + "|" + workroom + "] spawn " + newName + " cost: " + creepBase.calcProfil(profil));
+        {
             Memory.rooms[spawn.room.name].aktivPrioSpawn = false;
-            return true;
+            return false;
         }
-        Memory.rooms[spawn.room.name].aktivPrioSpawn = true;
+           
+        Memory.rooms[spawn.room.name].aktivPrioSpawn = !creepBase.spawn(spawn, this._getProfil(spawn), role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name, source: source, mineEnergy:mineEnergy });
+        
         return true;
     },
 };
