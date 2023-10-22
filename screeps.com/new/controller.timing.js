@@ -28,7 +28,7 @@ module.exports = {
             spawnControll.spawn();
         }
 
-        if(tick % 7)
+        if(tick % 7 == 0)
         {
             defenceControll.check();
         }
