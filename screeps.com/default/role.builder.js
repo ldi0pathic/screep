@@ -71,11 +71,11 @@ module.exports = {
 
                     if (result === ERR_NOT_IN_RANGE) 
                     {
-                       var r =  creep.moveTo(target,{ visualizePathStyle: { stroke: '#ffffff' } });
+                       creep.moveTo(target,{ visualizePathStyle: { stroke: '#ffffff' } });
                     } 
                     return;
                 } 
-                else 
+                else
                 {
                     creep.memory.prioId = null;
                 }

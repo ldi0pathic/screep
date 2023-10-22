@@ -4,7 +4,7 @@ const creepBaseGoTo = require('./creep.base.goto');
 
 module.exports = 
 {
-    checkHarvest: function(creep,type, action)
+    checkHarvest: function(creep, type, action)
     {
         if (!creep.memory.harvest && creep.store[type] === 0) 
         {
@@ -23,11 +23,20 @@ module.exports =
     {
         if(!creep.memory.harvest)
             return;
-        
-        if(this.harvestRoomStorage(creep))
+
+        if(this.harvestRoomStorage(creep, RESOURCE_ENERGY))
             return;
 
         if(this.harvestRoomContainer(creep, RESOURCE_ENERGY))
+            return;
+
+        if(this.harvestRoomDrops(creep, RESOURCE_ENERGY))
+            return; 
+
+        if(this.harvestRoomTombstones(creep,RESOURCE_ENERGY))
+            return;
+
+        if(this.harvestRoomRuins(creep,RESOURCE_ENERGY))
             return;
 
         if(this.harvestRoomEnergySource(creep))
@@ -35,12 +44,51 @@ module.exports =
 
         this.goToMyHome(creep);    
     },
-    harvestRoomStorage: function(creep)
+    harvestRoomDrops: function(creep,type)
+    {
+        const drop = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {filter: (d) => d.resourceType === type});
+
+        if (drop) {
+            var s = creep.pickup(drop)
+           
+            if (s  === ERR_NOT_IN_RANGE) {
+               var c =  creep.moveTo(drop);   
+            }
+            return true;
+        }
+        return false;  
+    },
+    harvestRoomTombstones: function(creep,type)
+    {
+        const tombstone = creep.pos.findClosestByRange(FIND_TOMBSTONES, {filter: (d) =>  d.store.getUsedCapacity(type) > 0});
+       
+        if (tombstone) {
+            if (creep.withdraw(tombstone, type) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(tombstone);
+            }
+            return true;
+        }
+        return false;  
+    },
+    harvestRoomRuins: function(creep,type)
+    {
+        const ruin = creep.pos.findClosestByRange(FIND_RUINS, {filter: (d) =>  d.store.getUsedCapacity(type) > 0});
+        
+        if (ruin) {
+            if (creep.withdraw(ruin, type) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(ruin);
+            }
+            return true;
+        }
+        return false;  
+    },
+    harvestRoomStorage: function(creep, type)
     {
         let storage = creep.room.storage;
-        if (storage && storage.store[RESOURCE_ENERGY] > 0) 
+
+        if (storage && storage.store[type] > 0) 
         {
-            if (creep.withdraw(storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) 
+            if (creep.withdraw(storage, type) === ERR_NOT_IN_RANGE) 
             {
                 creep.moveTo(storage);
             }
@@ -49,23 +97,62 @@ module.exports =
         return false;
     },
     harvestRoomContainer: function(creep, type)
-    {
+    { 
         const containers = creep.room.find(FIND_STRUCTURES, {
             filter: (structure) => {
                 return (
-                    structure.structureType === STRUCTURE_CONTAINER ||
-                    structure.structureType === STRUCTURE_STORAGE
-                    ) && structure.store[type] > 0
+                    structure.structureType === STRUCTURE_CONTAINER        
+                    ) && structure.store[type] > 100
                 ;
             }
         });
-
+        
         if (containers.length > 0) 
         {
             const closestContainer = creep.pos.findClosestByRange(containers);
             if (creep.withdraw(closestContainer, type) === ERR_NOT_IN_RANGE) 
             {
                 creep.moveTo(closestContainer);
+            }
+            return true;
+        }
+        return false;
+    },
+    harvestSpawnLink: function(creep, type)
+    {  
+        if(creep.memory.workroom != creep.room.name || 
+           !Memory.rooms[creep.memory.workroom].hasLinks ||
+           !global.room[creep.memory.workroom].spawnLink)
+            return false;
+
+        var link = Game.getObjectById(global.room[creep.memory.workroom].spawnLink);
+
+        if(link && link.store[type] > 100)
+        {
+            var state = creep.withdraw(link, type);
+            if (state === ERR_NOT_IN_RANGE) 
+            {
+                creep.moveTo(link);
+            }
+            return true;
+        }
+        return false;
+    },
+    harvestControllerLink: function(creep, type)
+    {  
+        if(creep.memory.workroom != creep.room.name || 
+           !Memory.rooms[creep.memory.workroom].hasLinks ||
+           !global.room[creep.memory.workroom].controllerLink)
+            return false;
+
+        var link = Game.getObjectById(global.room[creep.memory.workroom].controllerLink);
+
+        if(link && link.store[type] > 100)
+        {
+            var state = creep.withdraw(link, type);
+            if (state === ERR_NOT_IN_RANGE) 
+            {
+                creep.moveTo(link);
             }
             return true;
         }
@@ -80,16 +167,9 @@ module.exports =
 
         if (container) 
         {
-            if(container.store[type] < 50)
+            if(container.store[type] < 100)
             {
-                if(creep.store.getUsedCapacity() > creep.store.getFreeCapacity())
-                {
-                      creep.memory.harvest = false;
-                      return false;
-                }
-                
-                if(this.goToRoomFlag(creep))
-                    return true;
+                return false;
             }
 
             var state = creep.withdraw(container, type);

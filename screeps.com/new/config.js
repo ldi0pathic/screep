@@ -7,12 +7,14 @@ global.const =
    maxRepairs: 5,
 }
 global.room =
-{
-   sim:
+{ 
+   E58N6:
    {
-      spawnRoom: 'sim',
+      room:'E58N6',
+      spawnRoom: 'E58N6',
       sendMiner: true,
       sendDebitor: true,
+      sendFreeDebitor: true,
       sendBuilder: true,
       sendDefender: true,
       sendClaimer: false,
@@ -21,26 +23,221 @@ global.room =
       debitorProSource: 1,  
       debitorAsFreelancer: 1,  
       energySources: [
-       '7fd5a40028c697da1b889b09',
-       'a80f64cc231629438dde5d44',
+       '5bbcb08d9099fc012e63c58f',
+       '5bbcb08d9099fc012e63c590',
       ],
-      mineralSources:[
-        '54084c8eea510d5c045ccfeb'
+      mineralSources:[],
+      targetLinks:[
+         '653061f5498787762ff9e447'
       ],
+      spawnLink:null,
+      controllerLink: null,
 
       //structures
-      repairer: 2,
-      maxwallRepairer : 2,
-      maxbuilder: 5,
-      prioBuildings: [
-        
+      repairer: 0,
+      maxwallRepairer : 1,
+      maxbuilder: 1,
+      prioBuildings: [ ],
+      walls: [],
+ 
+      //controller  
+      upgrader: 2,
+
+      //profils
+      profilDebitor: 16,
+   },
+   E58N7:
+   {
+      room:'E58N7',
+      spawnRoom: 'E58N7',
+      sendMiner: true,
+      sendDebitor: true,
+      sendFreeDebitor: true,
+      sendBuilder: true,
+      sendDefender: true,
+      sendClaimer: false,
+
+      //mining
+      debitorProSource: 1,  
+      debitorAsFreelancer: 3,  
+      energySources: [
+       '5bbcb08d9099fc012e63c58c',
+       '5bbcb08d9099fc012e63c58a',
       ],
-      walls: [
-        'd60d01ac0b68e403d9045333'
-   ],
+      mineralSources:[],
+      targetLinks:[
+         '6530dae9fccc5c674ec24f79',
+         '6531075e1e110d1af495c3ab'
+      ],
+      spawnLink:null,
+      controllerLink: null,
+
+      //structures
+      repairer: 0,
+      maxwallRepairer : 1,
+      maxbuilder: 2,
+      prioBuildings: [ ],
+      walls: [],
  
       //controller  
       upgrader: 1,
+
+      //profils
+      profilDebitor: null,
+   },
+   E58N8:
+   {
+      room:'E58N8',
+      spawnRoom: 'E59N9',
+      sendMiner: true,
+      sendDebitor: true,
+      sendFreeDebitor: false,
+      sendBuilder: false,
+      sendDefender: true,
+      sendClaimer: true,
+
+      //mining
+      debitorProSource: 2,  
+      debitorAsFreelancer: 0,  
+      energySources: [
+       '5bbcb08d9099fc012e63c588',  
+      ],
+      mineralSources:[],
+      targetLinks:[
+        
+      ],
+      spawnLink: null,
+      controllerLink: null,
+
+      //structures
+      repairer: 0,
+      maxwallRepairer : 0,
+      maxbuilder: 1,
+      prioBuildings: [      
+      ],
+      walls: [],
+ 
+      //controller  
+      upgrader: 0,
+
+      //profils
+      profilDebitor: 20,
+   },
+   E59N7:
+   {
+      room:'E59N7',
+      spawnRoom: 'E58N7',
+      sendMiner: true,
+      sendDebitor: true,
+      sendFreeDebitor: false,
+      sendBuilder: true,
+      sendDefender: true,
+      sendClaimer: true,
+
+      //mining
+      debitorProSource: 1,  
+      debitorAsFreelancer: 0,  
+      energySources: [
+       '5bbcb09e9099fc012e63c711',  
+      ],
+      mineralSources:[],
+      targetLinks:[
+        
+      ],
+      spawnLink: null,
+      controllerLink: null,
+
+      //structures
+      repairer: 1,
+      maxwallRepairer : 0,
+      maxbuilder: 1,
+      prioBuildings: [ ],
+      walls: [],
+ 
+      //controller  
+      upgrader: 0,
+
+      //profils
+      profilDebitor: null,
+   },
+   E59N8:
+   {
+      room:'E59N8',
+      spawnRoom: 'E59N9',
+      sendMiner: true,
+      sendDebitor: true,
+      sendFreeDebitor: false,
+      sendBuilder: false,
+      sendDefender: true,
+      sendClaimer: true,
+
+      //mining
+      debitorProSource: 2,  
+      debitorAsFreelancer: 0,  
+      energySources: [
+       '5bbcb09e9099fc012e63c70e',  
+      ],
+      mineralSources:[],
+      targetLinks:[
+        
+      ],
+      spawnLink: null,
+      controllerLink: null,
+
+      //structures
+      repairer: 1,
+      maxwallRepairer : 0,
+      maxbuilder: 1,
+      prioBuildings: [ 
+         '64faa4011ae98a0ce014fda8',
+         '64fb3dc4b140246d9bd1f0dd',
+      ],
+      walls: [],
+ 
+      //controller  
+      upgrader: 0,
+
+      //profils
+      profilDebitor: 20,
+   },
+   E59N9:
+   {
+      room:'E59N9',
+      spawnRoom: 'E59N9',
+      sendMiner: true,
+      sendDebitor: true,
+      sendFreeDebitor: true,
+      sendBuilder: true,
+      sendDefender: true,
+      sendClaimer: false,
+
+      //mining
+      debitorProSource: 1,  
+      debitorAsFreelancer: 1,  
+      energySources: [
+       '5bbcb09e9099fc012e63c70a',
+       '5bbcb09e9099fc012e63c70b',
+      ],
+      mineralSources:[],
+      targetLinks:[
+         '653098a7cb8a243ec9ae4d6d',
+         '65354f9aade2340fef294995'
+      ],
+      spawnLink:'653098a7cb8a243ec9ae4d6d',
+      controllerLink: '65354f9aade2340fef294995',
+
+      //structures
+      repairer: 0,
+      maxwallRepairer : 1,
+      maxbuilder: 1,
+      prioBuildings: [ ],
+      walls: [],
+ 
+      //controller  
+      upgrader: 1,
+
+      //profils
+      profilDebitor: 16,
    }
 },
 global.prio =
@@ -54,7 +251,7 @@ global.prio =
       [STRUCTURE_CONTAINER]: 3,
       [STRUCTURE_LINK]:3,
       [STRUCTURE_STORAGE]: 4,
-      [STRUCTURE_ROAD]:5,   
+      [STRUCTURE_ROAD]:1,   
    },
    repair: {
       [STRUCTURE_RAMPART]: 1,
@@ -70,7 +267,7 @@ global.prio =
       [STRUCTURE_STORAGE]: 0.75,     
       [STRUCTURE_CONTAINER]: 0.75,    
       [STRUCTURE_WALL]: 0.0005,
-      [STRUCTURE_RAMPART]: 0.1,      
+      [STRUCTURE_RAMPART]: 0.13,      
       [STRUCTURE_ROAD]:0.75,  
   }
 }

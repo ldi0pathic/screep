@@ -5,12 +5,28 @@ module.exports =
 {
     sayJob() { this.creep.say('🚛') },
     doJob: function (creep) {
+
+        if(!creep.memory.mineral)
+            creep.memory.mineral = RESOURCE_ENERGY;
+
         creepBase.checkHarvest(creep, creep.memory.mineral);
 
         if (creep.memory.harvest) {
+          
             if(creepBase.goToWorkroom(creep)) return;
-            if(creepBase.harvestMyContainer(creep, creep.memory.mineral)) return;
+            if(creepBase.harvestSpawnLink(creep,creep.memory.mineral))return;
+            if(creepBase.harvestMyContainer(creep, creep.memory.mineral)) return;     
+            if(creepBase.harvestRoomDrops(creep,creep.memory.mineral)) return;
+            if(creepBase.harvestRoomTombstones(creep,creep.memory.mineral)) return;
+            if(creepBase.harvestRoomRuins(creep,creep.memory.mineral)) return;
             if(creepBase.harvestRoomContainer(creep,creep.memory.mineral)) return;
+
+            if(creep.store.getUsedCapacity() > creep.store.getFreeCapacity())
+            {
+                creep.memory.harvest = false;
+            }
+
+            if(creepBase.harvestRoomStorage(creep,creep.memory.mineral)) return;
 
             return;
         }
@@ -19,24 +35,38 @@ module.exports =
 
         if(creep.memory.mineral != RESOURCE_ENERGY)
         {
-            if(creepBase.TransportToHomeTerminal(creep,creep.memory.mineral))return;
-            if(creepBase.TransportToHomeStorage(creep, creep.memory.mineral))return;
-        }
-        else
+            if(creepBase.TransportToHomeTerminal(creep,creep.memory.mineral))return;        
+        }   
+        else if(creep.memory.home == creep.memory.workroom)
         {
             if(creepBase.TransportEnergyToHomeSpawn(creep))return;
             if(creepBase.TransportEnergyToHomeTower(creep))return;
-            if(creepBase.TransportToHomeStorage(creep, creep.memory.mineral))return;
         }
-      
+           
+        if(creepBase.TransportToHomeStorage(creep, creep.memory.mineral))return;
+        
+        return;        
     },
     /**
      * 
      * @param {StructureSpawn} spawn 
      */
-    getProfil(spawn, mineraltype) {
+    getProfil(spawn, workroom, mineraltype,containerId) 
+    {
         if(mineraltype == RESOURCE_ENERGY)
         {
+            if(global.room[workroom].profilDebitor != null)
+            {
+                var max = global.room[workroom].profilDebitor;
+                return Array(max).fill(CARRY).concat(Array(max).fill(MOVE));
+            }
+
+            if(containerId == '' || spawn.room.name != workroom)
+            {
+                var max = Math.min(Math.max(parseInt(spawn.room.energyCapacityAvailable/ 100),1),16);  
+                return Array(max).fill(CARRY).concat(Array(max).fill(MOVE));
+            }
+
             var max = Math.min(25,parseInt(spawn.room.energyCapacityAvailable / 100));
             return Array(max).fill(CARRY).concat(Array(max).fill(MOVE));
         }
@@ -60,22 +90,25 @@ module.exports =
             
         if(global.room[workroom].sendMiner)
         {
-            for(var id in global.room[workroom].energySources)
+            if(!Memory.rooms[workroom].hasLinks)
             {
-                if(!Game.getObjectById(global.room[workroom].energySources[id]))
-                    continue;
-                    
-                if(this._spawn(spawn,workroom, global.room[workroom].energySources[id],RESOURCE_ENERGY))
-                    return true;
+                for(var id in global.room[workroom].energySources)
+                {
+                    if(!Game.getObjectById(global.room[workroom].energySources[id]))
+                        continue;
+                        
+                    if(this._spawn(spawn,workroom, global.room[workroom].energySources[id],RESOURCE_ENERGY))
+                        return true;
+                }
             }
 
-            var controller = Game.rooms[workroom].controller;
-            if(controller.my && controller.level >= 6)
+            var room = Game.rooms[workroom]
+            if(room && room.controller && room.controller.my && room.controller.level >= 6)
             {
                 for(var id in global.room[workroom].mineralSources)
                 {
                     var mineral = Game.getObjectById(global.room[workroom].mineralSources[id]);
-                    if(mineral.mineralAmount < 1) //nur wenn die mineralquelle derzeit aktiv ist
+                    if(!mineral || mineral.mineralAmount < 1) //nur wenn die mineralquelle derzeit aktiv ist
                         return false;
 
                     if(this._spawn(spawn,workroom, global.room[workroom].mineralSources[id], mineral.mineralType))
@@ -83,7 +116,9 @@ module.exports =
                 }
             }
         }
-        
+
+        if(!global.room[workroom].sendFreeDebitor)
+            return false;
 
         if(this._spawn(spawn,workroom,'',RESOURCE_ENERGY)) //Freelancer B)
             return true;
@@ -95,6 +130,7 @@ module.exports =
      * @param {StructureSpawn} spawn 
      * @param {String} workroom 
      * @param {String} container
+     * @param {String} mineraltype
      */
     _spawn: function (spawn, workroom, source, mineraltype) 
     { 
@@ -107,9 +143,8 @@ module.exports =
             });
     
             if(container.length == 0)
-            {
-                return  this._spawn(spawn,workroom,'');
-            }
+                return  false;
+            
             containerId = container[0].id;
 
             var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
@@ -119,7 +154,17 @@ module.exports =
                                                       
             if (global.room[workroom].debitorProSource <= count)
                 return false;
-               
+
+            let link = container[0].pos.findInRange(FIND_STRUCTURES, 1, {
+                filter: { structureType: STRUCTURE_LINK }
+            });
+
+            if(link.length > 0)
+            {
+                Memory.rooms[workroom].hasLinks = true; 
+                return false;      
+            }
+                     
         }
         else
         {
@@ -134,16 +179,23 @@ module.exports =
             containerId = '';
         }
 
-        var profil = this.getProfil(spawn, mineraltype);
+        var profil = this.getProfil(spawn, workroom, mineraltype, containerId);
         
         //wenn im aktuellen raum kein Debitor ist
-        if(_.filter(Game.creeps, (creep) => creep.memory.role == role && creep.memory.workroom == workroom).length == 0)
-        {
-            console.log('Notfallspawn '+role);
-            var min = Math.max(parseInt(spawn.room.energyAvailable/ 100),1);  
-            profil = Array(min).fill(CARRY).concat(Array(min).fill(MOVE));
-            containerId = '';
-        }
-        return creepBase.spawn(spawn,profil, role + '_' + Game.time, { role: role, workroom: workroom, home: spawn.room.name, container: containerId, mineral: mineraltype})
+        
+       if(!creepBase.spawn(spawn,profil, role + '_' + Game.time, { role: role, harvest: true, workroom: workroom, home: spawn.room.name, mineral: mineraltype, container: containerId }))
+       {
+            if(_.filter(Game.creeps, (creep) => creep.memory.role == role && creep.memory.workroom == workroom).length == 0 && spawn.room.name == workroom)
+            {
+                console.log('Notfallspawn '+role);
+                var min = Math.min(Math.max(parseInt(spawn.room.energyAvailable/ 100),1),16);  
+                profil = Array(min).fill(CARRY).concat(Array(min).fill(MOVE));
+                containerId = '';
+                mineraltype = RESOURCE_ENERGY;
+                return creepBase.spawn(spawn,profil, role + '_' + Game.time, { role: role, harvest: true, workroom: workroom, home: spawn.room.name, mineral: mineraltype, container: containerId })
+            }
+            return false;
+       }
+       return true;
     },
 }

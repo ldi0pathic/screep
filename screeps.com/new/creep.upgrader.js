@@ -7,8 +7,21 @@ module.exports = {
     doJob: function (creep) {
         creepBase.checkHarvest(creep, RESOURCE_ENERGY);
 
-        if (creep.memory.harvest) {
-            if(creepBase.harvest(creep)) return;
+        if (creep.memory.harvest) 
+        {
+            if(global.room[creep.memory.workroom].controllerLink)
+            {
+                if(creepBase.harvestControllerLink(creep,RESOURCE_ENERGY)) return;
+            }
+            else
+            {
+                if(creepBase.harvest(creep)) return;
+            }
+
+            if(creep.store.getUsedCapacity() > creep.store.getFreeCapacity())
+            {
+                creep.memory.harvest = false;
+            }
 
             return;
         } 
@@ -18,16 +31,31 @@ module.exports = {
 
         creepBase.upgradeController(creep);
     },
-    _getProfil: function(spawn)
-    {
-        const totalCost = 3 * BODYPART_COST[WORK] + 2 * BODYPART_COST[CARRY] + 2 * BODYPART_COST[MOVE];
-        var maxEnergy = spawn.room.energyCapacityAvailable;
-        const numberOfSets = Math.min(7,Math.floor(maxEnergy / totalCost));
-        if(numberOfSets == 0)
+    _getProfil: function(spawn, link)
+    {   var numberOfSets = 0;
+        
+        if(link)
         {
-            return [WORK,CARRY,CARRY,MOVE,MOVE];
+            const totalCost = 3 * BODYPART_COST[WORK] + BODYPART_COST[CARRY] + 2 * BODYPART_COST[MOVE];
+            var maxEnergy = spawn.room.energyCapacityAvailable;
+            numberOfSets = Math.min(3,Math.floor(maxEnergy / totalCost));
+            if(numberOfSets == 0)
+            {
+                return [WORK,CARRY,MOVE,MOVE];
+            }
+            return Array((numberOfSets*3)).fill(WORK).concat(Array((numberOfSets)).fill(CARRY).concat(Array((numberOfSets*2)).fill(MOVE)));
         }
-        return Array((numberOfSets*3)).fill(WORK).concat(Array((numberOfSets*2)).fill(CARRY).concat(Array((numberOfSets*2)).fill(MOVE)));
+        else
+        {
+            const totalCost = 3 * BODYPART_COST[WORK] + 2 * BODYPART_COST[CARRY] + 2 * BODYPART_COST[MOVE];
+            var maxEnergy = spawn.room.energyCapacityAvailable;
+            numberOfSets = Math.min(5,Math.floor(maxEnergy / totalCost));
+            if(numberOfSets == 0)
+            {
+                return [WORK,CARRY,CARRY,MOVE,MOVE];
+            }
+            return Array((numberOfSets*3)).fill(WORK).concat(Array((numberOfSets*2)).fill(CARRY).concat(Array((numberOfSets*2)).fill(MOVE)));
+        }   
     },
     spawn: function(spawn,workroom)
     {
@@ -42,7 +70,9 @@ module.exports = {
         if ( uppis <= count)
             return false;
 
-        return creepBase.spawn(spawn, this._getProfil(spawn), role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name, repairs:0});
+        var profil = this._getProfil(spawn, global.room[workroom].controllerLink);
+
+        return creepBase.spawn(spawn, profil, role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name, repairs:0});
     },
    
 };

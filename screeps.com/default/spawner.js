@@ -37,6 +37,12 @@ var spawner =
             var breaker = false;
             for(var room in Memory.rooms)
             { 
+                if(Memory.rooms[room].claim && Memory.rooms[room].mainSpawn == spawn.room.name && reserver.spawn(spawn,room))
+                {
+                    breaker = true;
+                    break;
+                }
+                
                 var gameRoom = Game.rooms[room];
                 if(!gameRoom) continue;
                 
@@ -46,32 +52,23 @@ var spawner =
                     continue;
                 }
                 
+                if(debitor.spawn(spawn,room))
+                {   
+                    breaker = true;
+                    break;
+                }
+                
                 if(spawnMiner(spawn,room))
                 {   
                     breaker = true;
                     break;
                 }
                 
-                if(debitor.spawn(spawn,room))
-                {   
-                    breaker = true;
-                    break;
-                }
-                    
-                    
-               
-                
-                if(Memory.rooms[room].claim && Memory.rooms[room].mainSpawn == spawn.room.name && reserver.spawn(spawn,room))
-                {
-                    breaker = true;
-                    break;
-                }
-                 
-            
+             
             }     
               if(Memory.prioEnergie || breaker)
                 continue;
-          if(spawnBob(spawn, 2)) 
+          if(spawnBob(spawn, 4)) 
                 continue;
             //if(attack.spawn(spawn,'E58N6')) 
               //  continue; 
@@ -79,15 +76,15 @@ var spawner =
             if(spawnDropper(spawn,1)) 
                 continue; 
                 
-            if(spawnReps(spawn,2))  
+            if(spawnReps(spawn,4))  
               continue;
               
             if(upgrader.spawn(spawn,spawn.room.name))         
                 continue;
                 
-          /*  if(spawnTraveller(spawn,1))
+            if(spawnTraveller(spawn,1))
                 continue;
-          */
+          
         }
     },
 }

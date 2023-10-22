@@ -33,18 +33,27 @@ module.exports = {
         if(creep.memory.wall)
         {
            var targetWall = Game.getObjectById(creep.memory.wall);
+
+           if(!targetWall)
+           {
+                creep.memory.wall = null;
+                return true;
+           }
             const repairResult = creep.repair(targetWall );
 
             if (repairResult === ERR_NOT_IN_RANGE) {
                 creep.moveTo(targetWall, { visualizePathStyle: { stroke: '#ffffff' } });
+                return true;
             }
+
+            return repairResult == OK;
         }
     },
     _getProfil: function(spawn)
     {
         const totalCost =  BODYPART_COST[WORK] + BODYPART_COST[CARRY] + BODYPART_COST[MOVE];
         var maxEnergy = spawn.room.energyCapacityAvailable;
-        const numberOfSets = Math.min(4,Math.floor(maxEnergy / totalCost));
+        const numberOfSets = Math.max(4,Math.floor(maxEnergy / totalCost));
         if(numberOfSets == 0)
         {
             return [WORK,CARRY,CARRY,MOVE,MOVE];

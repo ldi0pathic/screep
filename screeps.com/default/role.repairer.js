@@ -107,12 +107,14 @@ module.exports = {
             }
         } else {
            
-            const source = creep.pos.findClosestByPath(FIND_SOURCES);
-            if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(source, { visualizePathStyle: { stroke: '#ffaa00' } });
-                return;
+            let invaderCore = creep.room.find(FIND_HOSTILE_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_INVADER_CORE})[0]
+            if (!invaderCore) {
+                const source = creep.pos.findClosestByPath(FIND_SOURCES);
+                if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(source, { visualizePathStyle: { stroke: '#ffaa00' } });
+                    return;
+                }
             }
-            
             creep.moveTo(new RoomPosition(25, 25,Game.spawns.P1.room.name), {visualizePathStyle: {stroke: '#ffffff'},reusePath: 10});
         }
     },

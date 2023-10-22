@@ -18,34 +18,25 @@ module.exports = {
                 
                 var c = _.filter(Game.creeps, (creep) => creep.memory.role == 'defender' && creep.memory.target == roomName).length;
                 
-                if(c > (count*5))
+                if(c > (count*3))
                 {
                     Memory.prioAttack = false;
                      return;
                 }
                Memory.prioAttack = true; 
-                    
-                // Erstelle einen bewaffneten Creep
-                let spawn = Game.spawns['P1']; // Ersetze 'Spawn1' durch den Namen deines Spawns
-                let r = spawn.spawnCreep(profil, 'defender' + Game.time, { memory: { role: 'defender', target:roomName} });
-    
-                if (r === OK) {
-                    console.log(`P1: Verteidiger für Raum ${roomName} erstellt.`);
-                }
-                
-                let spawn2 = Game.spawns['P2']; // Ersetze 'Spawn1' durch den Namen deines Spawns
-                let r2 = spawn2.spawnCreep(profil, 'defender' + Game.time, { memory: { role: 'defender', target:roomName } });
-    
-                if (r2 === OK) {
-                    console.log(`P2: Verteidiger für Raum ${roomName} erstellt.`);
-                }
-                
-                 let spawn3 = Game.spawns['P3']; // Ersetze 'Spawn1' durch den Namen deines Spawns
-                let r3 = spawn3.spawnCreep(profil, 'defender' + Game.time, { memory: { role: 'defender', target:roomName } });
-    
-                if (r3 === OK) {
-                    console.log(`P3: Verteidiger für Raum ${roomName} erstellt.`);
-                }
+               
+               for(var name in Game.spawns)
+               {
+                    let spawn = Game.spawns[name]; 
+                    if(spawn)
+                    {
+                        let r = spawn.spawnCreep(profil, 'defender' + Game.time, { memory: { role: 'defender', target:roomName} });
+        
+                        if (r === OK) {
+                            console.log(name+': Verteidiger für Raum ' +roomName+' erstellt.');
+                        }
+                    }
+               }
             }
         }
         

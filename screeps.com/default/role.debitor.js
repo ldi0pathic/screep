@@ -196,19 +196,27 @@ var roleDebitor = {
                    {
                       
                         var c = _.filter(Game.creeps, (creep) => creep.memory.role == role && creep.memory.workroom == room && creep.memory.container == container).length;
+                       
                         if(c < Memory.rooms[room].mulDebitor) 
                         {
-                           
+                            var call = _.filter(Game.creeps, (creep) => creep.memory.role == role && creep.memory.workroom == room).length;
                             var newName = role + '_' + Game.time;
-                            var max = parseInt(spawn.room.energyCapacityAvailable/150);
+                            var max = Math.min(20,parseInt(spawn.room.energyCapacityAvailable/150));
+                            
                             var profil = Array(max).fill(CARRY).concat(Array(max).fill(MOVE));
                             //console.log(room);
-                            if(c == 0 && room == spawn.room.name && spawn.room.energyAvailable < 301)
+                            if(call == 0 && room == spawn.room.name && spawn.room.energyAvailable < 301)
                             {
                                 profil = [CARRY,CARRY,MOVE];
                                 console.log("Notfallprofil für Debitor!!!");
                             }
+                            else if(call == 0 && room == spawn.room.name && spawn.room.energyAvailable >= 301)
+                            {
+                                max = parseInt(spawn.room.energyAvailable/150);
+                                profil = Array(max).fill(CARRY).concat(Array(max).fill(MOVE));
+                            }
                         
+                        console.log(profil.length)
                             if( spawn.spawnCreep(profil, newName,{dryRun: true}) === 0)
                             {
                                 spawn.spawnCreep(profil, newName, {memory: {role: role, workroom: room, home:spawn.room.name  ,container: container, carry: false, mineral:false}});

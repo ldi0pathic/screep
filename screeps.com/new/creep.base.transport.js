@@ -3,7 +3,7 @@ module.exports =
     TransportToHomeTerminal: function(creep, type)
     {
         if(creep.memory.home != creep.room.name)
-            return;
+            return false;
 
         var target = creep.pos.findClosestByPath(FIND_STRUCTURES,
             {
@@ -25,7 +25,7 @@ module.exports =
     TransportEnergyToHomeSpawn: function(creep)
     {
         if(creep.memory.home != creep.room.name)
-            return;
+            return false;
 
         var target = creep.pos.findClosestByPath(FIND_STRUCTURES,
             {
@@ -48,7 +48,7 @@ module.exports =
     TransportEnergyToHomeTower: function(creep)
     {
         if(creep.memory.home != creep.room.name)
-            return;
+            return false;
         
         var target = creep.pos.findClosestByPath(FIND_STRUCTURES,
             {
@@ -70,13 +70,13 @@ module.exports =
     TransportToHomeStorage: function(creep, type)
     {
         if(creep.memory.home != creep.room.name)
-            return;
+            return false;
         
         var target = creep.pos.findClosestByPath(FIND_STRUCTURES,
             {
                 filter: (structure) => {
                     return (
-                        structure.structureType === StructureStorage    
+                        structure.structureType === STRUCTURE_STORAGE    
                     ) && structure.store.getFreeCapacity([type]) > 0;
                 }
             });

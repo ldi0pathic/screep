@@ -7,8 +7,8 @@ module.exports = {
     doJob: function (creep) {
         
         if(creepBase.goToWorkroom(creep)) return;
-
-        const controller = Game.rooms[creep.memory.target].controller;
+        
+        const controller = Game.rooms[creep.memory.workroom].controller;
 
         if (controller) {
             var state = creep.reserveController(controller);

@@ -42,14 +42,8 @@ var roleUpgrader = {
         var c = _.filter(Game.creeps, (creep) => creep.memory.role == role && creep.memory.target == target).length;
         var max = maxSpawn;
         
-        if(target == 'E58N7' )
-        {
-            max = 3;
-        }
-          if(target == 'E58N6')
-        {
-            max = 2;
-        }
+       
+        
         
         if(c < max) 
         {
@@ -59,7 +53,7 @@ var roleUpgrader = {
            
             const fullBodyCost = bodyPartCosts.WORK + bodyPartCosts.CARRY + bodyPartCosts.MOVE;
            
-            const maxWorkParts = Math.floor((maxEnergy / fullBodyCost)); // Maximal 50 Teile pro Creep
+            const maxWorkParts = Math.min(25,Math.floor((maxEnergy / fullBodyCost))); // Maximal 50 Teile pro Creep
           
             const numberOfWorkParts = Math.max(1, maxWorkParts);
             const numberOfCarryParts = Math.floor(numberOfWorkParts / 2);

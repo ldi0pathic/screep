@@ -13,7 +13,7 @@ module.exports =
     },
     goToRoomFlag:function(creep)
     {
-        const flags =creep.room.find(FIND_FLAGS);
+        const flags = creep.room.find(FIND_FLAGS);
         if (flags.length > 0)
         {
             creep.moveTo(flags[0]);

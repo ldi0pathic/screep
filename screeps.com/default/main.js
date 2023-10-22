@@ -23,9 +23,9 @@ var attack = require('role.attack');
 var wall = require('role.wall')
 
  const structurePriorities = {
-        [STRUCTURE_WALL]: 0.0015,
+        [STRUCTURE_WALL]: 0.00001,
         [STRUCTURE_CONTAINER]: 1,
-        [STRUCTURE_RAMPART]: 0.45,
+        [STRUCTURE_RAMPART]: 0.1,
         [STRUCTURE_ROAD]:0.5,
     };
     
@@ -61,7 +61,7 @@ module.exports.loop = function () {
     //Memory.rooms.E59N9.contOfMiner = 0;
   //newRoom.add('E59N9', true, true, true, true, 'E59N9');
     
-    var towers = ['65043f57f265d290da2a0899','64f483648bfafd0f57771802','64fc6a640286a021f3e07364','65088f252d96f8835cf7adbc']
+    var towers = ['65043f57f265d290da2a0899','64f483648bfafd0f57771802','64fc6a640286a021f3e07364','65088f252d96f8835cf7adbc','6519806365d810feb3057d57','65216e233f4dce97e75b50f3']
     
     
     for(var t in towers)
@@ -70,7 +70,7 @@ module.exports.loop = function () {
    
         if(tower) 
         {
-            if(!Memory.prioEnergie && ! Memory.prioAttack)
+            if(!Memory.prioEnergie && ! Memory.prioAttack && tower.store.getUsedCapacity([RESOURCE_ENERGY]) > tower.store.getFreeCapacity([RESOURCE_ENERGY]))
             {
                 var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
                  filter: (structure) => 
@@ -112,7 +112,7 @@ module.exports.loop = function () {
    
     
     var room = Game.spawns.P1.room;
-    var room2 = Game.spawns.P2.room;
+    var room2 = Game.spawns['P2.1'].room;
     var room3 = Game.spawns.P3.room;
 
     if(room.energyAvailable == room.energyCapacityAvailable && room2.energyAvailable == room2.energyCapacityAvailable && room3.energyAvailable == room3.energyCapacityAvailable)
@@ -153,8 +153,7 @@ module.exports.loop = function () {
             break;
             
             case 'defender':
-               creep.memory.role = ''
-               // defender.run(creep);
+                defender.run(creep);
             break;
             
             case 'claimer':

@@ -21,13 +21,22 @@ module.exports = {
                 continue;
 
              for(var room in global.room)
-             {
+             {   
+                if(Memory.rooms[global.room[room].room].needDefence)
+                {
+                    if(jobs.defender.spawn(spawn,global.room[room].room))
+                        continue;
+                }
+                
                 if( global.room[room].spawnRoom != spawn.room.name)
                     continue;
 
+                if(Memory.rooms[global.room[room].room].invaderCore)
+                    continue;
+
                 for(var job in jobs)
-                {
-                    if(jobs[job].spawn(spawn,spawn.room.name))
+                {     
+                    if(jobs[job].spawn(spawn,global.room[room].room))
                         break;
                 }
 

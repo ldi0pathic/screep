@@ -8,8 +8,13 @@ module.exports = {
         creepBase.checkHarvest(creep, RESOURCE_ENERGY);
 
         if (creep.memory.harvest) {
-            
+            creep.memory.repId = null;
             if(creepBase.harvest(creep)) return;
+
+            if(creep.store.getUsedCapacity() > creep.store.getFreeCapacity())
+            {
+                creep.memory.harvest = false;
+            }
 
             return;
         } 
@@ -25,7 +30,7 @@ module.exports = {
         return global.prio.build[structureType] || 99;
     },  
     _build: function(creep){
-        if(!creep.memory.id)
+        if(!creep.memory.id && !creep.memory.repId)
         {
             let structuresToBuild = creep.room.find(FIND_CONSTRUCTION_SITES);
  
@@ -47,34 +52,70 @@ module.exports = {
                 return true;
             }
         }
-        else
+        else if(!creep.memory.repId)
         {
             let target = Game.getObjectById(creep.memory.id);
-                
+            var struc =  '';   
             if (target && target.progressTotal != undefined) 
             {
                 let state = creep.build(target);
+                struc = target.structureType;
                 
                 if (state === ERR_NOT_IN_RANGE) 
                 {
                     creep.moveTo(target);
                 } 
+                else if(state === OK)
+                {        
+                    if(struc == STRUCTURE_RAMPART)
+                    {
+                        let rampart = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                            filter: (structure) => {
+                                return (structure.structureType == STRUCTURE_RAMPART && structure.hits < 10)
+                        }});
+                        if(rampart)
+                        {
+                            creep.memory.repId = rampart.id;
+                            creep.memory.id = null;        
+                        }
+                    }
+                }
                 return true;   
+            }
+            else
+            {
+                creep.memory.id = null;   
+            }       
+        }
+        else
+        {
+            let target = Game.getObjectById(creep.memory.repId);
+            if(target && target.hits < 1000)
+            {
+                let state = creep.repair(target)
+                if (state === ERR_NOT_IN_RANGE) 
+                {
+                    creep.moveTo(target);
+                } 
             } 
-            creep.memory.id = null;
+            else
+            {
+                creep.memory.repId = null;   
+            } 
+            return true;
         }
         return false;
     },
     _getProfil: function(spawn)
     {
-        const totalCost = 3 * BODYPART_COST[WORK] + 2 * BODYPART_COST[CARRY] + 2 * BODYPART_COST[MOVE];
+        const totalCost = 3 * BODYPART_COST[WORK] + 2 * BODYPART_COST[CARRY] + 3 * BODYPART_COST[MOVE];
         var maxEnergy = spawn.room.energyCapacityAvailable;
-        const numberOfSets = Math.min(7,Math.floor(maxEnergy / totalCost));
+        const numberOfSets = Math.min(3,Math.floor(maxEnergy / totalCost));
         if(numberOfSets == 0)
         {
             return [WORK,CARRY,CARRY,MOVE,MOVE];
         }
-        return Array((numberOfSets*3)).fill(WORK).concat(Array((numberOfSets*2)).fill(CARRY).concat(Array((numberOfSets*2)).fill(MOVE)));
+        return Array((numberOfSets*3)).fill(WORK).concat(Array((numberOfSets*2)).fill(CARRY).concat(Array((numberOfSets*3)).fill(MOVE)));
     },
     spawn: function(spawn,workroom)
     {
@@ -88,8 +129,10 @@ module.exports = {
                                   
         if ( maxbuilder <= count)
             return false;
-        
-        if(Math.max(Game.rooms[workroom].find(FIND_CONSTRUCTION_SITES).length / 5, 1) <= count)
+
+        var sites = Game.rooms[workroom].find(FIND_CONSTRUCTION_SITES).length;
+
+        if(sites == 0 || Math.max(sites / 5, 1) <= count)
             return false;
 
         return creepBase.spawn(spawn, this._getProfil(spawn), role + '_' + Game.time, { role: role, workroom: workroom, home: spawn.room.name});   
