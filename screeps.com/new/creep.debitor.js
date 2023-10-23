@@ -42,6 +42,12 @@ module.exports =
             if(creepBase.TransportEnergyToHomeSpawn(creep))return;
             if(creepBase.TransportEnergyToHomeTower(creep))return;
         }
+        else
+        {
+            if(creepBase.TransportToHomeStorage(creep, creep.memory.mineral))return;
+            if(creepBase.TransportEnergyToHomeTower(creep))return;
+            if(creepBase.TransportEnergyToHomeSpawn(creep))return;
+        }
            
         if(creepBase.TransportToHomeStorage(creep, creep.memory.mineral))return;
         

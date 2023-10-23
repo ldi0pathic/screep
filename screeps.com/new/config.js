@@ -8,6 +8,82 @@ global.const =
 }
 global.room =
 { 
+   E57N6:
+   {
+      room:'E57N6',
+      spawnRoom: 'E58N6',
+      sendMiner: true,
+      sendDebitor: true,
+      sendFreeDebitor: false,
+      sendBuilder: false,
+      sendDefender: true,
+      sendClaimer: true,
+
+      //mining
+      debitorProSource: 1,  
+      debitorAsFreelancer: 0,  
+      energySources: [
+       '5bbcb07b9099fc012e63c406',  
+      ],
+      mineralSources:[],
+      targetLinks:[
+        
+      ],
+      spawnLink: null,
+      controllerLink: null,
+
+      //structures
+      repairer: 0,
+      maxwallRepairer : 0,
+      maxbuilder: 1,
+      prioBuildings: [      
+      ],
+      walls: [],
+ 
+      //controller  
+      upgrader: 0,
+
+      //profils
+      profilDebitor: 20,
+   },
+   E58N5:
+   {
+      room:'E58N5',
+      spawnRoom: 'E58N6',
+      sendMiner: true,
+      sendDebitor: true,
+      sendFreeDebitor: false,
+      sendBuilder: false,
+      sendDefender: true,
+      sendClaimer: true,
+
+      //mining
+      debitorProSource: 1,  
+      debitorAsFreelancer: 0,  
+      energySources: [
+       '5bbcb08d9099fc012e63c593',  
+      ],
+      mineralSources:[],
+      targetLinks:[
+        
+      ],
+      spawnLink: null,
+      controllerLink: null,
+
+      //structures
+      repairer: 0,
+      maxwallRepairer : 0,
+      maxbuilder: 1,
+      prioBuildings: [      
+      ],
+      walls: [],
+ 
+      //controller  
+      upgrader: 0,
+
+      //profils
+      profilDebitor: 20,
+   },
    E58N6:
    {
       room:'E58N6',
@@ -66,10 +142,10 @@ global.room =
       ],
       mineralSources:[],
       targetLinks:[
-         '6530dae9fccc5c674ec24f79',
-         '6531075e1e110d1af495c3ab'
+         '6536132f35ce1252bbb1e817',
+         
       ],
-      spawnLink:null,
+      spawnLink:'6536132f35ce1252bbb1e817',
       controllerLink: null,
 
       //structures
@@ -148,7 +224,7 @@ global.room =
       controllerLink: null,
 
       //structures
-      repairer: 1,
+      repairer: 0,
       maxwallRepairer : 0,
       maxbuilder: 1,
       prioBuildings: [ ],
@@ -185,7 +261,7 @@ global.room =
       controllerLink: null,
 
       //structures
-      repairer: 1,
+      repairer: 0,
       maxwallRepairer : 0,
       maxbuilder: 1,
       prioBuildings: [ 
@@ -213,7 +289,7 @@ global.room =
 
       //mining
       debitorProSource: 1,  
-      debitorAsFreelancer: 1,  
+      debitorAsFreelancer: 2,  
       energySources: [
        '5bbcb09e9099fc012e63c70a',
        '5bbcb09e9099fc012e63c70b',
@@ -250,8 +326,8 @@ global.prio =
       [STRUCTURE_TOWER]: 2,
       [STRUCTURE_CONTAINER]: 3,
       [STRUCTURE_LINK]:3,
-      [STRUCTURE_STORAGE]: 4,
-      [STRUCTURE_ROAD]:1,   
+      [STRUCTURE_STORAGE]: 1,
+      [STRUCTURE_ROAD]:2   
    },
    repair: {
       [STRUCTURE_RAMPART]: 1,

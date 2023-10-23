@@ -68,6 +68,8 @@ module.exports = {
                                 return;
                             }
                         }
+
+                        return false;
                     }
                 }
             }
