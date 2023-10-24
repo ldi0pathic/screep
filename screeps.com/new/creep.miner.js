@@ -208,16 +208,12 @@ module.exports = {
                     var link = Game.getObjectById( creep.memory.link);
 
                    if(creep.transfer(link,RESOURCE_ENERGY) == ERR_FULL)
-                   {
-                        for(var id in global.room[creep.room.name].targetLinks)
-                        {               
-                            var target = Game.getObjectById(global.room[creep.room.name].targetLinks[id]);   
-                            if(target && target.store.getFreeCapacity(RESOURCE_ENERGY) > 50)
-                            {
-                                link.transferEnergy(target);
-                                break;
-                            }
-                        }
+                   {     
+                        var target = Game.getObjectById(global.room[creep.room.name].targetLinks[[Math.floor((Math.random()*global.room[creep.room.name].targetLinks.length))]]);   
+                        if(target && target.store.getFreeCapacity(RESOURCE_ENERGY) > 50)
+                        {
+                            link.transferEnergy(target);
+                        }    
                    }
                 }
             }

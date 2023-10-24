@@ -15,7 +15,7 @@ global.room =
       sendMiner: true,
       sendDebitor: true,
       sendFreeDebitor: false,
-      sendBuilder: false,
+      sendBuilder: true,
       sendDefender: true,
       sendClaimer: true,
 
@@ -44,7 +44,7 @@ global.room =
       upgrader: 0,
 
       //profils
-      profilDebitor: 20,
+      profilDebitor: null,
    },
    E58N5:
    {
@@ -53,7 +53,7 @@ global.room =
       sendMiner: true,
       sendDebitor: true,
       sendFreeDebitor: false,
-      sendBuilder: false,
+      sendBuilder: true,
       sendDefender: true,
       sendClaimer: true,
 
@@ -82,7 +82,7 @@ global.room =
       upgrader: 0,
 
       //profils
-      profilDebitor: 20,
+      profilDebitor: null,
    },
    E58N6:
    {
@@ -117,7 +117,7 @@ global.room =
       walls: [],
  
       //controller  
-      upgrader: 2,
+      upgrader: 3,
 
       //profils
       profilDebitor: 16,
@@ -135,7 +135,7 @@ global.room =
 
       //mining
       debitorProSource: 1,  
-      debitorAsFreelancer: 3,  
+      debitorAsFreelancer: 1,  
       energySources: [
        '5bbcb08d9099fc012e63c58c',
        '5bbcb08d9099fc012e63c58a',
@@ -143,15 +143,16 @@ global.room =
       mineralSources:[],
       targetLinks:[
          '6536132f35ce1252bbb1e817',
+         '65380c0c74becf6de75f0370'
          
       ],
       spawnLink:'6536132f35ce1252bbb1e817',
-      controllerLink: null,
+      controllerLink: '65380c0c74becf6de75f0370',
 
       //structures
       repairer: 0,
       maxwallRepairer : 1,
-      maxbuilder: 2,
+      maxbuilder: 1,
       prioBuildings: [ ],
       walls: [],
  
@@ -168,7 +169,7 @@ global.room =
       sendMiner: true,
       sendDebitor: true,
       sendFreeDebitor: false,
-      sendBuilder: false,
+      sendBuilder: true,
       sendDefender: true,
       sendClaimer: true,
 
@@ -243,7 +244,7 @@ global.room =
       sendMiner: true,
       sendDebitor: true,
       sendFreeDebitor: false,
-      sendBuilder: false,
+      sendBuilder: true,
       sendDefender: true,
       sendClaimer: true,
 
@@ -346,4 +347,9 @@ global.prio =
       [STRUCTURE_RAMPART]: 0.13,      
       [STRUCTURE_ROAD]:0.75,  
   }
+}
+global.log = function(bool, msg)
+{
+   if(bool)
+   console.log(msg)
 }

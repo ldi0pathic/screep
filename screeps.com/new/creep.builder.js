@@ -15,6 +15,8 @@ module.exports = {
             {
                 creep.memory.harvest = false;
             }
+            
+            if(creepBase.harvestSpawnLink(creep,creep.memory.mineral))return;
 
             return;
         } 
@@ -122,11 +124,13 @@ module.exports = {
         var maxbuilder = global.room[workroom].maxbuilder
         if(!global.room[workroom].sendBuilder || maxbuilder < 1)
             return false;
-           
+          
         var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
                                                     creep.memory.workroom == workroom && 
                                                     creep.memory.home == spawn.room.name).length;
-                                  
+        if(count == undefined)
+            count = 0;
+                                        
         if ( maxbuilder <= count)
             return false;
 
@@ -134,8 +138,10 @@ module.exports = {
 
         if(sites == 0 || Math.max(sites / 5, 1) <= count)
             return false;
-
-        return creepBase.spawn(spawn, this._getProfil(spawn), role + '_' + Game.time, { role: role, workroom: workroom, home: spawn.room.name});   
+    
+        return creepBase.spawn(spawn, this._getProfil(spawn), role + '_' + Game.time, { role: role, workroom: workroom, home: spawn.room.name});      
     },
+
+   
    
 };

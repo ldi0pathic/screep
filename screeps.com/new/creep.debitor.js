@@ -35,12 +35,15 @@ module.exports =
 
         if(creep.memory.mineral != RESOURCE_ENERGY)
         {
-            if(creepBase.TransportToHomeTerminal(creep,creep.memory.mineral))return;        
+            if(creepBase.TransportToHomeTerminal(creep,creep.memory.mineral))return;   
+            if(creepBase.TransportToHomeStorage(creep, creep.memory.mineral))return;
+            return;     
         }   
         else if(creep.memory.home == creep.memory.workroom)
         {
             if(creepBase.TransportEnergyToHomeSpawn(creep))return;
             if(creepBase.TransportEnergyToHomeTower(creep))return;
+            if(creepBase.TransportToHomeStorage(creep, creep.memory.mineral))return;
         }
         else
         {
@@ -48,8 +51,8 @@ module.exports =
             if(creepBase.TransportEnergyToHomeTower(creep))return;
             if(creepBase.TransportEnergyToHomeSpawn(creep))return;
         }
-           
-        if(creepBase.TransportToHomeStorage(creep, creep.memory.mineral))return;
+
+        if(creepBase.TransportToHomeContainer(creep, creep.memory.mineral))return;
         
         return;        
     },

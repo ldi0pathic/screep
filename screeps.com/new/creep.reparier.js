@@ -135,8 +135,18 @@ module.exports = {
         var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
                                                     creep.memory.workroom == workroom && 
                                                     creep.memory.home == spawn.room.name).length;
-                                           
-        if ( minRepairer<= count)
+        if(count == undefined)
+            count = 0;      
+
+        if ( minRepairer <= count)
+            return false;
+
+            let structuresToRepair = creep.room.find(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return (structure.hits < this._getMinHitRange(structure.structureType) * structure.hitsMax)
+            }});
+
+        if(structuresToRepair <= 1)
             return false;
 
         return creepBase.spawn(spawn, this._getProfil(spawn), role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name, repairs:0}) 

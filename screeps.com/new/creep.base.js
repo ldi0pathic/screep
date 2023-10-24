@@ -214,6 +214,7 @@ module.exports =
     TransportEnergyToHomeTower: function(creep) {return creepBaseTransport.TransportEnergyToHomeTower(creep);},  
     TransportToHomeTerminal: function(creep, type) {return creepBaseTransport.TransportToHomeTerminal(creep, type);},  
     TransportToHomeStorage: function(creep, type) {return creepBaseTransport.TransportToHomeStorage(creep, type);},  
+    TransportToHomeContainer: function(creep, type) {return creepBaseTransport.TransportToHomeContainer(creep, type);},  
 
     checkWorkroomPrioSpawn: function(creep){
         if(Memory.rooms[creep.memory.workroom].aktivPrioSpawn)

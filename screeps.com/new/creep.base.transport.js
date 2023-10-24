@@ -1,5 +1,27 @@
 module.exports = 
 {
+    TransportToHomeContainer: function(creep, type)
+    {
+        if(creep.memory.home != creep.room.name)
+            return false;
+
+        var target = creep.pos.findClosestByPath(FIND_STRUCTURES,
+            {
+                filter: (structure) => {
+                    return (
+                        structure.structureType === STRUCTURE_CONTAINER 
+                    ) && structure.store.getFreeCapacity([type]) > 0;
+                }
+            });
+
+        if (target) {
+            if (creep.transfer(target, type) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(target);
+            }
+            return true;
+        }
+        return false;
+    },
     TransportToHomeTerminal: function(creep, type)
     {
         if(creep.memory.home != creep.room.name)
