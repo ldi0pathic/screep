@@ -26,6 +26,8 @@ global.room =
        '5bbcb07b9099fc012e63c406',  
       ],
       mineralSources:[],
+
+      useLinks: false,
       targetLinks:[
         
       ],
@@ -103,8 +105,10 @@ global.room =
        '5bbcb08d9099fc012e63c590',
       ],
       mineralSources:[],
+
+      useLinks: false,
       targetLinks:[
-         '653061f5498787762ff9e447'
+         ''
       ],
       spawnLink:null,
       controllerLink: null,
@@ -141,6 +145,8 @@ global.room =
        '5bbcb08d9099fc012e63c58a',
       ],
       mineralSources:[],
+
+      useLinks: true,
       targetLinks:[
          '6536132f35ce1252bbb1e817',
          '65380c0c74becf6de75f0370'
@@ -180,6 +186,8 @@ global.room =
        '5bbcb08d9099fc012e63c588',  
       ],
       mineralSources:[],
+
+      useLinks: false,
       targetLinks:[
         
       ],
@@ -218,6 +226,7 @@ global.room =
        '5bbcb09e9099fc012e63c711',  
       ],
       mineralSources:[],
+      useLinks: false,
       targetLinks:[
         
       ],
@@ -255,6 +264,8 @@ global.room =
        '5bbcb09e9099fc012e63c70e',  
       ],
       mineralSources:[],
+
+      useLinks: false,
       targetLinks:[
         
       ],
@@ -296,6 +307,8 @@ global.room =
        '5bbcb09e9099fc012e63c70b',
       ],
       mineralSources:[],
+
+      useLinks: true,
       targetLinks:[
          '653098a7cb8a243ec9ae4d6d',
          '65354f9aade2340fef294995'

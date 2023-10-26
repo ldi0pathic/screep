@@ -32,7 +32,7 @@ module.exports = {
        return  [CLAIM, CLAIM, MOVE,MOVE];
     },
     spawn: function(spawn,workroom)
-    {
+    { 
         if(!global.room[workroom].sendClaimer)
             return false;
            
@@ -41,7 +41,7 @@ module.exports = {
                                   
         if ( 1 <= count)
             return false;
-
+          
         return creepBase.spawn(spawn, this._getProfil(), role + '_' + Game.time, { role: role, workroom: workroom, home: spawn.room.name});
     },
    

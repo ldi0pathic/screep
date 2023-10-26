@@ -99,7 +99,7 @@ module.exports =
             
         if(global.room[workroom].sendMiner)
         {
-            if(!Memory.rooms[workroom].hasLinks)
+            if(!Memory.rooms[workroom].hasLinks && Memory.rooms[workroom].useLinks)
             {
                 for(var id in global.room[workroom].energySources)
                 {
