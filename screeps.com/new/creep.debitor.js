@@ -96,16 +96,16 @@ module.exports =
        
         if(!global.room[workroom].sendDebitor)
             return false;
-            
+       
         if(global.room[workroom].sendMiner)
         {
-            if(!Memory.rooms[workroom].hasLinks && Memory.rooms[workroom].useLinks)
+            if(!Memory.rooms[workroom].hasLinks || !Memory.rooms[workroom].useLinks )    
             {
                 for(var id in global.room[workroom].energySources)
                 {
                     if(!Game.getObjectById(global.room[workroom].energySources[id]))
                         continue;
-                        
+                     
                     if(this._spawn(spawn,workroom, global.room[workroom].energySources[id],RESOURCE_ENERGY))
                         return true;
                 }
@@ -145,25 +145,25 @@ module.exports =
     { 
         let containerId = ''
         if(source != '')
-        {
+        { 
             var source = Game.getObjectById(source);
             let container = source.pos.findInRange(FIND_STRUCTURES, 1, {
                 filter: { structureType: STRUCTURE_CONTAINER }
             });
-    
+            
             if(container.length == 0)
                 return  false;
-            
+           
             containerId = container[0].id;
 
             var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
                                                         creep.memory.workroom == workroom && 
                                                         creep.memory.home == spawn.room.name && 
                                                         creep.memory.container == containerId).length;
-                                                      
+                                                 
             if (global.room[workroom].debitorProSource <= count)
                 return false;
-
+            
             let link = container[0].pos.findInRange(FIND_STRUCTURES, 1, {
                 filter: { structureType: STRUCTURE_LINK }
             });
@@ -171,9 +171,10 @@ module.exports =
             if(link.length > 0)
             {
                 Memory.rooms[workroom].hasLinks = true; 
-                return false;      
-            }
-                     
+
+                if(Memory.rooms[workroom].useLinks)
+                    return false;      
+            }             
         }
         else
         {

@@ -108,10 +108,10 @@ global.room =
 
       useLinks: false,
       targetLinks:[
-         ''
+         '653aed0d2fa32d1c887ab4e7'
       ],
       spawnLink:null,
-      controllerLink: null,
+      controllerLink: '653aed0d2fa32d1c887ab4e7',
 
       //structures
       repairer: 0,
@@ -189,7 +189,7 @@ global.room =
 
       useLinks: false,
       targetLinks:[
-        
+      
       ],
       spawnLink: null,
       controllerLink: null,
@@ -345,8 +345,9 @@ global.prio =
    },
    repair: {
       [STRUCTURE_RAMPART]: 1,
-      [STRUCTURE_EXTENSION]: 1,
-      [STRUCTURE_SPAWN]: 1,
+      [STRUCTURE_WALL]: 1,
+      [STRUCTURE_EXTENSION]: 2,
+      [STRUCTURE_SPAWN]: 2,
       [STRUCTURE_TOWER]: 3,
       [STRUCTURE_STORAGE]: 4,
       [STRUCTURE_CONTAINER]: 5,
@@ -357,7 +358,7 @@ global.prio =
       [STRUCTURE_STORAGE]: 0.75,     
       [STRUCTURE_CONTAINER]: 0.75,    
       [STRUCTURE_WALL]: 0.0005,
-      [STRUCTURE_RAMPART]: 0.13,      
+      [STRUCTURE_RAMPART]: 0.2,      
       [STRUCTURE_ROAD]:0.75,  
   }
 }
