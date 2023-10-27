@@ -15,10 +15,14 @@ module.exports =
           
             if(creepBase.goToWorkroom(creep)) return;
             if(creepBase.harvestSpawnLink(creep,creep.memory.mineral))return;
-            if(creepBase.harvestMyContainer(creep, creep.memory.mineral)) return;     
+            if(creepBase.harvestMyContainer(creep, creep.memory.mineral)) return;   
+            if(creep.memory.container == '')
+            {
+                if(creepBase.harvestRoomStorage(creep,creep.memory.mineral)) return;
+            }  
             if(creepBase.harvestRoomDrops(creep,creep.memory.mineral)) return;
             if(creepBase.harvestRoomTombstones(creep,creep.memory.mineral)) return;
-            if(creepBase.harvestRoomRuins(creep,creep.memory.mineral)) return;
+            if(creepBase.harvestRoomRuins(creep,creep.memory.mineral)) return;    
             if(creepBase.harvestRoomContainer(creep,creep.memory.mineral)) return;
 
             if(creep.store.getUsedCapacity() > creep.store.getFreeCapacity())
@@ -99,8 +103,8 @@ module.exports =
        
         if(global.room[workroom].sendMiner)
         {
-            if(!Memory.rooms[workroom].hasLinks || !Memory.rooms[workroom].useLinks )    
-            {
+            if(!Memory.rooms[workroom].hasLinks || !global.room[workroom].useLinks )    
+            { 
                 for(var id in global.room[workroom].energySources)
                 {
                     if(!Game.getObjectById(global.room[workroom].energySources[id]))

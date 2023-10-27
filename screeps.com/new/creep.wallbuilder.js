@@ -53,7 +53,7 @@ module.exports = {
     {
         const totalCost =  BODYPART_COST[WORK] + BODYPART_COST[CARRY] + BODYPART_COST[MOVE];
         var maxEnergy = spawn.room.energyCapacityAvailable;
-        const numberOfSets = Math.max(4,Math.floor(maxEnergy / totalCost));
+        const numberOfSets = Math.min(4,Math.floor(maxEnergy / totalCost));
         if(numberOfSets == 0)
         {
             return [WORK,CARRY,CARRY,MOVE,MOVE];
@@ -71,15 +71,17 @@ module.exports = {
                                 
         if (global.room[workroom].maxwallRepairer <= count)
             return false;
-
+           
         let walls = global.room[workroom].walls
             .map(id => Game.getObjectById(id))
-            .filter(wall => wall && wall.hits < (wall.hitsMax*0.9));
+            .filter(wall => wall && wall.hits < (wall.hitsMax * (global.prio.hits[wall.structuretype] || 0.5)));
         
         if(walls.length == 0)
             return false;
-
-        return creepBase.spawn(spawn, this._getProfil(spawn), role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name});
+            
+        var p = this._getProfil(spawn);
+           
+        return creepBase.spawn(spawn, p, role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name});
     },
    
 };

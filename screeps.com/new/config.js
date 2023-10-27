@@ -66,6 +66,7 @@ global.room =
        '5bbcb08d9099fc012e63c593',  
       ],
       mineralSources:[],
+      useLinks: false,
       targetLinks:[
         
       ],
@@ -99,7 +100,7 @@ global.room =
 
       //mining
       debitorProSource: 1,  
-      debitorAsFreelancer: 1,  
+      debitorAsFreelancer: 2,  
       energySources: [
        '5bbcb08d9099fc012e63c58f',
        '5bbcb08d9099fc012e63c590',
@@ -121,10 +122,10 @@ global.room =
       walls: [],
  
       //controller  
-      upgrader: 3,
+      upgrader: 1,
 
       //profils
-      profilDebitor: 16,
+      profilDebitor: null,
    },
    E58N7:
    {
@@ -149,8 +150,7 @@ global.room =
       useLinks: true,
       targetLinks:[
          '6536132f35ce1252bbb1e817',
-         '65380c0c74becf6de75f0370'
-         
+         '65380c0c74becf6de75f0370'       
       ],
       spawnLink:'6536132f35ce1252bbb1e817',
       controllerLink: '65380c0c74becf6de75f0370',
@@ -300,8 +300,8 @@ global.room =
       sendClaimer: false,
 
       //mining
-      debitorProSource: 1,  
-      debitorAsFreelancer: 2,  
+      debitorProSource: 0,  
+      debitorAsFreelancer: 1,  
       energySources: [
        '5bbcb09e9099fc012e63c70a',
        '5bbcb09e9099fc012e63c70b',
@@ -321,7 +321,15 @@ global.room =
       maxwallRepairer : 1,
       maxbuilder: 1,
       prioBuildings: [ ],
-      walls: [],
+      walls: [
+         '65038dbf1634b02930a313c3',
+         '65357291aae590039f06b0b3',
+         '6509e5e006be381cbbac9b98',
+         '653c0b56d51f35114c9ec7b4',
+         '653c0b44e834a818088b4aaf',
+         '653c0b382e4fb965bc109fae',
+         '653c0b2fd0c65f86b50919f3',
+      ],
  
       //controller  
       upgrader: 1,
