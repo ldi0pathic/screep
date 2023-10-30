@@ -20,7 +20,7 @@ global.room =
       sendClaimer: true,
 
       //mining
-      debitorProSource: 1,  
+      debitorProSource: 2,  
       debitorAsFreelancer: 0,  
       energySources: [
        '5bbcb07b9099fc012e63c406',  
@@ -60,7 +60,7 @@ global.room =
       sendClaimer: true,
 
       //mining
-      debitorProSource: 1,  
+      debitorProSource: 2,  
       debitorAsFreelancer: 0,  
       energySources: [
        '5bbcb08d9099fc012e63c593',  
@@ -119,13 +119,22 @@ global.room =
       maxwallRepairer : 1,
       maxbuilder: 1,
       prioBuildings: [ ],
-      walls: [],
+      walls: [
+         '653d751a95252f57a7bdaa70',
+         '653c29ef45f887eae7d86ad4',
+         '653d74c0d65ed2056ceed33d',
+         '653d74c9076fff230b8e3c08',
+         '653d74d3733df640874326e9',
+         '653d74ddef992f6e232d6afe',
+         '653d74edcbf5a8fec337c8ff',
+         '653ec132b098db6a38b8ee7f'
+      ],
  
       //controller  
       upgrader: 1,
 
       //profils
-      profilDebitor: null,
+      profilDebitor: 16,
    },
    E58N7:
    {
@@ -200,7 +209,9 @@ global.room =
       maxbuilder: 1,
       prioBuildings: [      
       ],
-      walls: [],
+      walls: [
+        
+      ],
  
       //controller  
       upgrader: 0,
@@ -301,7 +312,7 @@ global.room =
 
       //mining
       debitorProSource: 0,  
-      debitorAsFreelancer: 1,  
+      debitorAsFreelancer: 2,  
       energySources: [
        '5bbcb09e9099fc012e63c70a',
        '5bbcb09e9099fc012e63c70b',
@@ -352,7 +363,7 @@ global.prio =
       [STRUCTURE_ROAD]:2   
    },
    repair: {
-      [STRUCTURE_RAMPART]: 1,
+      [STRUCTURE_RAMPART]: 7,
       [STRUCTURE_WALL]: 1,
       [STRUCTURE_EXTENSION]: 2,
       [STRUCTURE_SPAWN]: 2,

@@ -16,7 +16,7 @@ module.exports =
             if(creepBase.goToWorkroom(creep)) return;
             if(creepBase.harvestSpawnLink(creep,creep.memory.mineral))return;
             if(creepBase.harvestMyContainer(creep, creep.memory.mineral)) return;   
-            if(creep.memory.container == '')
+            if(creep.memory.container == '' && creep.room.name == creep.memory.workroom && creep.room.energyAvailable < (creep.room.energyCapacityAvailable * 0.75))
             {
                 if(creepBase.harvestRoomStorage(creep,creep.memory.mineral)) return;
             }  

@@ -5,7 +5,7 @@ module.exports =
         if(creep.memory.home != creep.room.name)
             return false;
 
-        var target = creep.pos.findClosestByPath(FIND_STRUCTURES,
+        var target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES,
             {
                 filter: (structure) => {
                     return (
@@ -27,7 +27,7 @@ module.exports =
         if(creep.memory.home != creep.room.name)
             return false;
 
-        var target = creep.pos.findClosestByPath(FIND_STRUCTURES,
+        var target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES,
             {
                 filter: (structure) => {
                     return (
@@ -49,7 +49,7 @@ module.exports =
         if(creep.memory.home != creep.room.name)
             return false;
 
-        var target = creep.pos.findClosestByPath(FIND_STRUCTURES,
+        var target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES,
             {
                 filter: (structure) => {
                     return (
@@ -72,18 +72,21 @@ module.exports =
         if(creep.memory.home != creep.room.name)
             return false;
         
-        var target = creep.pos.findClosestByPath(FIND_STRUCTURES,
+        var towers = creep.room.find(FIND_MY_STRUCTURES,
             {
                 filter: (structure) => {
                     return (
                         structure.structureType === STRUCTURE_TOWER    
-                    ) && structure.store.getFreeCapacity([RESOURCE_ENERGY]) > 0;
+                    ) && structure.store.getFreeCapacity([RESOURCE_ENERGY]) > 100;
                 }
             });
 
-        if (target) {
-            if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(target);
+        if (towers.length > 0) 
+        {
+            towers.sort((a, b) => b.store.getFreeCapacity(RESOURCE_ENERGY) - a.store.getFreeCapacity(RESOURCE_ENERGY));
+
+            if (creep.transfer(towers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(towers[0]);
             }
             return true;
         }
@@ -94,7 +97,7 @@ module.exports =
         if(creep.memory.home != creep.room.name)
             return false;
         
-        var target = creep.pos.findClosestByPath(FIND_STRUCTURES,
+        var target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES,
             {
                 filter: (structure) => {
                     return (

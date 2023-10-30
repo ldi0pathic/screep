@@ -14,6 +14,7 @@ module.exports = {
         } 
 
         if(creepBase.goToWorkroom(creep)) return;
+        if(creepBase.checkWorkroomPrioSpawn(creep)) return;
         if(this._repair(creep)) return;
 
         creepBase.upgradeController(creep);
@@ -53,7 +54,7 @@ module.exports = {
     {
         const totalCost =  BODYPART_COST[WORK] + BODYPART_COST[CARRY] + BODYPART_COST[MOVE];
         var maxEnergy = spawn.room.energyCapacityAvailable;
-        const numberOfSets = Math.min(4,Math.floor(maxEnergy / totalCost));
+        const numberOfSets = Math.min(6,Math.floor(maxEnergy / totalCost));
         if(numberOfSets == 0)
         {
             return [WORK,CARRY,CARRY,MOVE,MOVE];
@@ -78,6 +79,14 @@ module.exports = {
         
         if(walls.length == 0)
             return false;
+
+        if(spawn.room.name == workroom)
+        {
+            //Wenn keine Energiereserven vorhanden, kein Wallbuilder spawnen! 
+            var storage = Game.rooms[workroom].storage;
+            if(storage && storage.store[RESOURCE_ENERGY] < 10000)
+                return false;           
+        }
             
         var p = this._getProfil(spawn);
            

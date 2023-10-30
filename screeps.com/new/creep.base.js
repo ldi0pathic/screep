@@ -46,13 +46,13 @@ module.exports =
     },
     harvestRoomDrops: function(creep,type)
     {
-        const drop = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {filter: (d) => d.resourceType === type});
+        const drop = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {filter: (d) => d.resourceType === type && d.amount >= (creep.store.getFreeCapacity() * 0.5)});
 
         if (drop) {
             var s = creep.pickup(drop)
            
             if (s  === ERR_NOT_IN_RANGE) {
-               var c =  creep.moveTo(drop);   
+               creep.moveTo(drop);   
             }
             return true;
         }
@@ -60,7 +60,7 @@ module.exports =
     },
     harvestRoomTombstones: function(creep,type)
     {
-        const tombstone = creep.pos.findClosestByRange(FIND_TOMBSTONES, {filter: (d) =>  d.store.getUsedCapacity(type) > 0});
+        const tombstone = creep.pos.findClosestByPath(FIND_TOMBSTONES, {filter: (d) =>  d.store.getUsedCapacity(type) > (creep.store.getFreeCapacity() * 0.5)});
        
         if (tombstone) {
             if (creep.withdraw(tombstone, type) === ERR_NOT_IN_RANGE) {
@@ -72,7 +72,7 @@ module.exports =
     },
     harvestRoomRuins: function(creep,type)
     {
-        const ruin = creep.pos.findClosestByRange(FIND_RUINS, {filter: (d) =>  d.store.getUsedCapacity(type) > 0});
+        const ruin = creep.pos.findClosestByPath(FIND_RUINS, {filter: (d) =>  d.store.getUsedCapacity(type) > (creep.store.getFreeCapacity() * 0.5)});
         
         if (ruin) {
             if (creep.withdraw(ruin, type) === ERR_NOT_IN_RANGE) {
@@ -86,7 +86,7 @@ module.exports =
     {
         let storage = creep.room.storage;
 
-        if (storage && storage.store[type] > 0) 
+        if (storage && storage.store[type] > (creep.store.getCapacity() * 0.5)) //Creep sollte min halbvoll werden
         {
             if (creep.withdraw(storage, type) === ERR_NOT_IN_RANGE) 
             {
@@ -102,14 +102,14 @@ module.exports =
             filter: (structure) => {
                 return (
                     structure.structureType === STRUCTURE_CONTAINER        
-                    ) && structure.store[type] > 100
+                    ) && structure.store[type] > (creep.store.getCapacity() * 0.5) //Creep sollte min halbvoll werden
                 ;
             }
         });
         
         if (containers.length > 0) 
         {
-            const closestContainer = creep.pos.findClosestByRange(containers);
+            const closestContainer = creep.pos.findClosestByPath(containers);
             if (creep.withdraw(closestContainer, type) === ERR_NOT_IN_RANGE) 
             {
                 creep.moveTo(closestContainer);
@@ -186,7 +186,7 @@ module.exports =
         //prio3 selber abbauen
         if(this.canHarvestEnergy(creep))
         {
-            const source = creep.pos.findClosestByRange(FIND_SOURCES);
+            const source = creep.pos.findClosestByPath(FIND_SOURCES);
             if (creep.harvest(source) === ERR_NOT_IN_RANGE) 
             {
                 creep.moveTo(source);

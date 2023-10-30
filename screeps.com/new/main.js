@@ -9,7 +9,7 @@ module.exports.loop = function () {
     for(var t in towers)
     {
         var tower = Game.getObjectById(towers[t]);
-   
+      
         if(tower) 
         {
            
