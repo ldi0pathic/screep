@@ -28,7 +28,7 @@ module.exports = {
             else
             {
                 creep.say('✊')
-                creep.moveTo(target);
+                creep.moveTo(target, {reusePath: 5});
             }
         }
         else
@@ -66,7 +66,12 @@ module.exports = {
         if (6 <= count)
             return false;
 
-        return creepBase.spawn(spawn, this._getProfil(spawn), role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name});
+        if( creepBase.spawn(spawn, this._getProfil(spawn), role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name}))
+        {
+            Memory.cOfDefender += 1;
+            return true;
+        }
+        return false;
     },
    
 };

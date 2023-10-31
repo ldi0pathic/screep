@@ -64,7 +64,7 @@ module.exports =
        
         if (tombstone) {
             if (creep.withdraw(tombstone, type) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(tombstone);
+                creep.moveTo(tombstone, {reusePath: 5});
             }
             return true;
         }
@@ -76,7 +76,7 @@ module.exports =
         
         if (ruin) {
             if (creep.withdraw(ruin, type) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(ruin);
+                creep.moveTo(ruin, {reusePath: 5});
             }
             return true;
         }
@@ -90,7 +90,7 @@ module.exports =
         {
             if (creep.withdraw(storage, type) === ERR_NOT_IN_RANGE) 
             {
-                creep.moveTo(storage);
+                creep.moveTo(storage, {reusePath: 5});
             }
             return true;
         }
@@ -112,7 +112,7 @@ module.exports =
             const closestContainer = creep.pos.findClosestByPath(containers);
             if (creep.withdraw(closestContainer, type) === ERR_NOT_IN_RANGE) 
             {
-                creep.moveTo(closestContainer);
+                creep.moveTo(closestContainer, {reusePath: 5});
             }
             return true;
         }
@@ -132,7 +132,7 @@ module.exports =
             var state = creep.withdraw(link, type);
             if (state === ERR_NOT_IN_RANGE) 
             {
-                creep.moveTo(link);
+                creep.moveTo(link, {reusePath: 5});
             }
             return true;
         }
@@ -152,7 +152,7 @@ module.exports =
             var state = creep.withdraw(link, type);
             if (state === ERR_NOT_IN_RANGE) 
             {
-                creep.moveTo(link);
+                creep.moveTo(link, {reusePath: 5});
             }
             return true;
         }
@@ -175,7 +175,7 @@ module.exports =
             var state = creep.withdraw(container, type);
             if (state === ERR_NOT_IN_RANGE) 
             {
-                creep.moveTo(container);
+                creep.moveTo(container, {reusePath: 5});
             }
             return true;
         }
@@ -189,7 +189,7 @@ module.exports =
             const source = creep.pos.findClosestByPath(FIND_SOURCES);
             if (creep.harvest(source) === ERR_NOT_IN_RANGE) 
             {
-                creep.moveTo(source);
+                creep.moveTo(source, {reusePath: 5});
             }
             return true;
         }
@@ -233,7 +233,7 @@ module.exports =
         
         const state = creep.upgradeController(creep.room.controller);
         if (state === ERR_NOT_IN_RANGE ) {
-            creep.moveTo(creep.room.controller);
+            creep.moveTo(creep.room.controller, {reusePath: 5});
         }  
         return;
     },

@@ -66,6 +66,9 @@ module.exports = {
         if(!global.room[workroom].walls)
             return false;
 
+        if(spawn.room.name != workroom && !Memory.rooms[workroom].claimed)
+            return false;
+
         var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
                                                     creep.memory.workroom == workroom && 
                                                     creep.memory.home == spawn.room.name).length;

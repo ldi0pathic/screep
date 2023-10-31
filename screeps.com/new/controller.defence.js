@@ -5,6 +5,11 @@ module.exports = {
         {  
             if(! global.room[name].sendDefender)
                 continue;
+
+            if((Game.time + 10) > Memory.rooms[name].invaderCoreEndTick )
+            {
+                Memory.rooms[name].invaderCore = false;
+            }
             
             var room = Game.rooms[global.room[name].room];
 
@@ -16,6 +21,22 @@ module.exports = {
 
             Memory.rooms[name].needDefence = hostiles.length > 0;
             Memory.rooms[name].invaderCore = core.length > 0;
+            if(core.length > 0)
+            {
+                Memory.rooms[name].claimed = false;
+                var timeRemaining = 0;
+                for(var effect in core[0].effects) //todo gibt es cores mit meheren effekten? addieren sich diese? 
+                {
+                    var remainingTicks = core[0].effects[effect].ticksRemaining;
+                    var totalTicks = core[0].effects[effect].ticks;
+                    time = totalTicks - remainingTicks;
+                    if(time > timeRemaining)
+                    {
+                        timeRemaining = timeRemaining;
+                    }
+                }
+                Memory.rooms[name].invaderCoreEndTick = Game.time + timeRemaining;
+            }    
         }
     },
 };

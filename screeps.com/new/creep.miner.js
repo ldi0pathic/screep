@@ -12,7 +12,7 @@ module.exports = {
             if(creep.memory.workroom != creep.room.name)
             {
                 var room = new RoomPosition(25, 25, creep.memory.workroom); 
-                creep.moveTo(room, {visualizePathStyle: {stroke: '#ffffff'},reusePath: 10});
+                creep.moveTo(room, {reusePath: 5});
                 return;
             }
             
@@ -150,7 +150,7 @@ module.exports = {
                     }
                 } 
             } 
-            else if(!creep.moveTo(new RoomPosition(finalLocation.x, finalLocation.y,finalLocation.roomName) , {reusePath: 5,}) == OK)
+            else if(!creep.moveTo(new RoomPosition(finalLocation.x, finalLocation.y,finalLocation.roomName)) == OK)
             {
                   const blockingCreep = creep.pos.findInRange(FIND_MY_CREEPS, 1, {
                     filter: (otherCreep) => otherCreep.memory.role !== 'miner'
@@ -268,6 +268,9 @@ module.exports = {
         if(!global.room[workroom].sendMiner)
             return false;
 
+        if(spawn.room.name != workroom && !Memory.rooms[workroom].claimed)
+            return false;
+        
         for(var id in global.room[workroom].energySources)
         {
             if(!Game.getObjectById(global.room[workroom].energySources[id]))

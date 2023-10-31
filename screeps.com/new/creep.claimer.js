@@ -13,12 +13,17 @@ module.exports = {
         if (controller) {
             var state = creep.reserveController(controller);
             if (state === ERR_NOT_IN_RANGE) {
-                creep.moveTo(controller, { visualizePathStyle: { stroke: "#ffaa00" } });
+                creep.moveTo(controller, {reusePath: 5});
             }
             else if(state == ERR_INVALID_TARGET)
             {
                 creep.say('🪓')
                 creep.attackController(controller);
+                Memory.rooms[creep.memory.workroom].claimed = false;
+            }
+            else if(state == OK)
+            {
+                Memory.rooms[creep.memory.workroom].claimed = true;
             }
 
             if(controller.sign.username != creep.owner)

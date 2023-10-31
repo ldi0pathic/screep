@@ -65,7 +65,7 @@ module.exports = {
                 
                 if (state === ERR_NOT_IN_RANGE) 
                 {
-                    creep.moveTo(target);
+                    creep.moveTo(target, {reusePath: 5});
                 } 
                 else if(state === OK)
                 {        
@@ -97,7 +97,7 @@ module.exports = {
                 let state = creep.repair(target)
                 if (state === ERR_NOT_IN_RANGE) 
                 {
-                    creep.moveTo(target);
+                    creep.moveTo(target, {reusePath: 5});
                 } 
             } 
             else
@@ -124,6 +124,10 @@ module.exports = {
         var maxbuilder = global.room[workroom].maxbuilder
         if(!global.room[workroom].sendBuilder || maxbuilder < 1)
             return false;
+
+        if(spawn.room.name != workroom && !Memory.rooms[workroom].claimed)
+            return false;
+        
           
         var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
                                                     creep.memory.workroom == workroom && 

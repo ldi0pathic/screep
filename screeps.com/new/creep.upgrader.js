@@ -62,6 +62,9 @@ module.exports = {
         var uppis = global.room[workroom].upgrader
         if(!uppis || uppis < 1)
             return false;
+
+        if(spawn.room.name != workroom && !Memory.rooms[workroom].claimed)
+            return false;
            
         var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
                                                     creep.memory.workroom == workroom && 

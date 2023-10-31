@@ -6,7 +6,7 @@ module.exports =
         {
             const exitDir = creep.room.findExitTo(creep.memory.home);
             const exit = creep.pos.findClosestByRange(exitDir);
-            creep.moveTo(exit);
+            creep.moveTo(exit, {reusePath: 5});
             return true;
         }
         return false;
@@ -16,7 +16,7 @@ module.exports =
         const flags = creep.room.find(FIND_FLAGS);
         if (flags.length > 0)
         {
-            creep.moveTo(flags[0]);
+            creep.moveTo(flags[0], {reusePath: 5});
             return true;
         }
         return false;
@@ -26,7 +26,7 @@ module.exports =
         if(creep.memory.workroom && creep.memory.workroom != creep.room.name)
         {
             var room = new RoomPosition(25, 25, creep.memory.workroom); 
-            creep.moveTo(room);
+            creep.moveTo(room, {reusePath: 5});
             return true;
         }
         return false;

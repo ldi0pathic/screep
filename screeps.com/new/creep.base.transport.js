@@ -16,7 +16,7 @@ module.exports =
 
         if (target) {
             if (creep.transfer(target, type) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(target);
+                creep.moveTo(target, {reusePath: 5});
             }
             return true;
         }
@@ -38,7 +38,7 @@ module.exports =
 
         if (target) {
             if (creep.transfer(target, type) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(target);
+                creep.moveTo(target, {reusePath: 5});
             }
             return true;
         }
@@ -61,7 +61,7 @@ module.exports =
 
         if (target) {
             if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(target);
+                creep.moveTo(target, {reusePath: 5});
             }
             return true;
         }
@@ -86,7 +86,7 @@ module.exports =
             towers.sort((a, b) => b.store.getFreeCapacity(RESOURCE_ENERGY) - a.store.getFreeCapacity(RESOURCE_ENERGY));
 
             if (creep.transfer(towers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(towers[0]);
+                creep.moveTo(towers[0], {reusePath: 5});
             }
             return true;
         }
@@ -108,7 +108,7 @@ module.exports =
 
         if (target) {
             if (creep.transfer(target, type) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(target);
+                creep.moveTo(target, {reusePath: 5});
             }
             return true;
         }

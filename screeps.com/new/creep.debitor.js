@@ -97,8 +97,10 @@ module.exports =
     */
     spawn: function(spawn,workroom)
     {
-       
         if(!global.room[workroom].sendDebitor)
+            return false;
+
+        if(spawn.room.name != workroom && !Memory.rooms[workroom].claimed)
             return false;
        
         if(global.room[workroom].sendMiner)
