@@ -20,9 +20,9 @@ module.exports = {
 
             Memory.rooms[name].aktivPrioSpawn = Memory.rooms[name].aktivPrioSpawn ? true : false;
             Memory.rooms[name].hasLinks = Memory.rooms[name].hasLinks? true : false;
-            Memory.rooms[name].needDefence = false;
-            Memory.rooms[name].invaderCore = false;
-                        
+            Memory.rooms[name].needDefence = Memory.rooms[name].needDefence ? true: false;
+            Memory.rooms[name].invaderCore =  Memory.rooms[name].invaderCore ? true : false;
+        
             Memory.init = true;
         }
     },

@@ -158,7 +158,7 @@ module.exports = {
     
                 if (blockingCreep) 
                 { 
-                    blockingCreep.move(TOP_LEFT);
+                    blockingCreep.move(Math.round(Math.random()*7)+1);
                 }
             } 
         }

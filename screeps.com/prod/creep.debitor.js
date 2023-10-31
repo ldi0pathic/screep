@@ -9,7 +9,43 @@ module.exports =
         if(!creep.memory.mineral)
             creep.memory.mineral = RESOURCE_ENERGY;
 
-        creepBase.checkHarvest(creep, creep.memory.mineral);
+        creepBase.checkHarvest(creep, creep.memory.mineral,function()
+        {
+            if(creep.memory.home == creep.memory.workroom)
+                return;
+                    
+            if(!Memory.rooms[creep.memory.workroom].needDebitorSize)
+            {
+                if(creep.memory.distance > 0)
+                {
+                    
+                    if(!Memory.rooms[creep.memory.workroom].distances)
+                        Memory.rooms[creep.memory.workroom].distances = [];
+
+                    Memory.rooms[creep.memory.workroom].distances.push(creep.memory.distance)
+                    creep.memory.distance = 0
+                }   
+            }  
+        },
+        function()
+        {
+            if(creep.memory.home == creep.memory.workroom)
+            return;
+
+            if(!Memory.rooms[creep.memory.workroom].needDebitorSize)
+            {
+                if(creep.memory.distance > 0)
+                {
+                    if(!Memory.rooms[creep.memory.workroom].distances)
+                        Memory.rooms[creep.memory.workroom].distances = [];
+                    
+                    Memory.rooms[creep.memory.workroom].distances.push(creep.memory.distance)
+                    creep.memory.distance = 0
+                }  
+            } 
+        });
+
+        creep.memory.distance = creep.memory.distance + 1;
 
         if (creep.memory.harvest) {
           
@@ -66,23 +102,40 @@ module.exports =
      */
     getProfil(spawn, workroom, mineraltype,containerId) 
     {
-        if(containerId != '')
-        {
-            var cont = Game.getObjectById(containerId);
-            console.log(spawn.room.storage.pos)
-            var distance = spawn.room.storage.pos.getRangeTo(new RoomPosition(cont.x, cont.y, workroom));
-            console.log('---\n'+workroom+'\n'+distance+'\n---')
-            Memory.rooms[workroom].ContainerDIstance = distance;
-        }
         if(mineraltype == RESOURCE_ENERGY)
         {
-            
-            if(global.room[workroom].profilDebitor != null)
+            if(spawn.room.name != workroom)
             {
-                var max = global.room[workroom].profilDebitor;
-                return Array(max).fill(CARRY).concat(Array(max).fill(MOVE));
+                var carry = Memory.rooms[workroom].needDebitorSize;
+                if(!Memory.rooms[workroom].needDebitorSize)
+                {
+                    var distances = Memory.rooms[workroom].distances;
+                    var length = Math.ceil(distances.length *0.5)
+                    var meridian = distances.sort(function(a, b) {
+                            return a - b;
+                        })[length];
+                    carry = Math.ceil((2*meridian) / 5)
+                    var max = Math.min(25, parseInt(spawn.room.energyCapacityAvailable / 100));
+                    var c = 1;
+                    if( max >= carry)
+                    {
+                        Memory.rooms[workroom].needDebitors = 1;     
+                    }
+                    else
+                    {
+                        c = Memory.rooms[workroom].needDebitors =  Math.ceil(carry/max);
+                        carry = Math.ceil(carry/c);        
+                    }
+                    if(length > 30)
+                    {
+                        Memory.rooms[workroom].needDebitorSize = carry;
+                        delete Memory.rooms[workroom].distances;
+                    }
+                }
+                console.log('berechneter Debitor: '+workroom+'>'+ c + 'x '+carry);
+                return Array(carry).fill(CARRY).concat(Array(carry).fill(MOVE));
             }
-
+            
             if(containerId == '' || spawn.room.name != workroom)
             {
                 var max = Math.min(Math.max(parseInt(spawn.room.energyCapacityAvailable/ 100),1),16);  
@@ -175,10 +228,13 @@ module.exports =
                                                         creep.memory.workroom == workroom && 
                                                         creep.memory.home == spawn.room.name && 
                                                         creep.memory.container == containerId).length;
-                                                 
-            if (global.room[workroom].debitorProSource <= count)
+                                           
+            if(!Memory.rooms[workroom].needDebitors)
+                Memory.rooms[workroom].needDebitors = 1;
+
+            if (Memory.rooms[workroom].needDebitors <= count)
                 return false;
-            
+           
             let link = container[0].pos.findInRange(FIND_STRUCTURES, 1, {
                 filter: { structureType: STRUCTURE_LINK }
             });

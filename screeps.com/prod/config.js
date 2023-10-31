@@ -44,9 +44,6 @@ global.room =
  
       //controller  
       upgrader: 0,
-
-      //profils
-      profilDebitor: null,
    },
    E58N5:
    {
@@ -83,9 +80,6 @@ global.room =
  
       //controller  
       upgrader: 0,
-
-      //profils
-      profilDebitor: null,
    },
    E58N6:
    {
@@ -132,9 +126,6 @@ global.room =
  
       //controller  
       upgrader: 1,
-
-      //profils
-      profilDebitor: 16,
    },
    E58N7:
    {
@@ -173,9 +164,6 @@ global.room =
  
       //controller  
       upgrader: 1,
-
-      //profils
-      profilDebitor: null,
    },
    E58N8:
    {
@@ -215,9 +203,6 @@ global.room =
  
       //controller  
       upgrader: 0,
-
-      //profils
-      profilDebitor: 20,
    },
    E59N7:
    {
@@ -253,9 +238,6 @@ global.room =
  
       //controller  
       upgrader: 0,
-
-      //profils
-      profilDebitor: null,
    },
    E59N8:
    {
@@ -295,9 +277,6 @@ global.room =
  
       //controller  
       upgrader: 0,
-
-      //profils
-      profilDebitor: 20,
    },
    E59N9:
    {
@@ -344,9 +323,6 @@ global.room =
  
       //controller  
       upgrader: 1,
-
-      //profils
-      profilDebitor: 16,
    }
 },
 global.prio =
