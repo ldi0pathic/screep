@@ -98,13 +98,14 @@ module.exports =
         }
         return false;
     },
-    harvestRoomContainer: function(creep, type)
+    harvestRoomContainer: function(creep, type, mul)
     { 
+        if(!mul) mul = 0.5;
         const containers = creep.room.find(FIND_STRUCTURES, {
             filter: (structure) => {
                 return (
                     structure.structureType === STRUCTURE_CONTAINER        
-                    ) && structure.store[type] > (creep.store.getCapacity() * 0.5) //Creep sollte min halbvoll werden
+                    ) && structure.store[type] > (creep.store.getCapacity() * mul) //Creep sollte min halbvoll werden
                 ;
             }
         });

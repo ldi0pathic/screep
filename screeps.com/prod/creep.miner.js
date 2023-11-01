@@ -314,10 +314,27 @@ module.exports = {
             return false;
         }
            
-        Memory.rooms[spawn.room.name].aktivPrioSpawn = !creepBase.spawn(spawn, this._getProfil(spawn), role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name, source: source, mineEnergy:mineEnergy });
+        if(!creepBase.spawn(spawn, this._getProfil(spawn), role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name, source: source, mineEnergy:mineEnergy }))
+        {
+            Memory.rooms[spawn.room.name].aktivPrioSpawn = true;
+            Memory.rooms[spawn.room.name].aktivPrioSpawnCount = Memory.rooms[spawn.room.name].aktivPrioSpawnCount +1;
 
-        //creepBase.spawn(spawn, [WORK,CARRY,MOVE], role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name, source: source, mineEnergy:mineEnergy })
-        
+            if(Memory.rooms[spawn.room.name].aktivPrioSpawnCount > 25)
+            {
+               if(_.filter(Game.creeps, (creep) => creep.memory.role == role && 
+                                                    creep.memory.workroom == workroom && 
+                                                    creep.memory.home == spawn.room.name ).length > 0)
+                return false;
+
+                console.log("Spawn NotfallMiner!!!")
+                creepBase.spawn(spawn, [WORK,CARRY,MOVE], role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name, source: source, mineEnergy:mineEnergy })
+                Memory.rooms[spawn.room.name].aktivPrioSpawnCount = 0;
+                return true;
+            }
+            return false;        
+        }
+       
+        Memory.rooms[spawn.room.name].aktivPrioSpawnCount = 0;
         return true;
     },
 };

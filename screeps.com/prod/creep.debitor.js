@@ -50,6 +50,7 @@ module.exports =
         if (creep.memory.harvest) {
           
             if(creepBase.goToWorkroom(creep)) return;
+            
             if(creepBase.harvestSpawnLink(creep,creep.memory.mineral))return;
             if(creepBase.harvestMyContainer(creep, creep.memory.mineral)) return;   
             if(creep.memory.container == '' && creep.room.name == creep.memory.workroom && creep.room.energyAvailable < (creep.room.energyCapacityAvailable * 0.75))
@@ -59,14 +60,19 @@ module.exports =
             if(creepBase.harvestRoomDrops(creep,creep.memory.mineral)) return;
             if(creepBase.harvestRoomTombstones(creep,creep.memory.mineral)) return;
             if(creepBase.harvestRoomRuins(creep,creep.memory.mineral)) return;    
-            if(creepBase.harvestRoomContainer(creep,creep.memory.mineral)) return;
-
+           
             if(creep.store.getUsedCapacity() > creep.store.getFreeCapacity())
             {
                 creep.memory.harvest = false;
             }
 
             if(creepBase.harvestRoomStorage(creep,creep.memory.mineral)) return;
+            if(creepBase.harvestRoomContainer(creep,creep.memory.mineral,0.01)) return;   
+
+            if(creep.store.getUsedCapacity() > 0)
+            {
+                creep.memory.harvest = false;
+            }
 
             return;
         }
@@ -107,7 +113,8 @@ module.exports =
             if(spawn.room.name != workroom)
             {
                 var carry = Memory.rooms[workroom].needDebitorSize;
-                if(!Memory.rooms[workroom].needDebitorSize)
+                var c = 1;
+                if(!carry)
                 {
                     var distances = Memory.rooms[workroom].distances;
                     var length = Math.ceil(distances.length *0.5)
@@ -116,13 +123,14 @@ module.exports =
                         })[length];
                     carry = Math.ceil((2*meridian) / 5)
                     var max = Math.min(25, parseInt(spawn.room.energyCapacityAvailable / 100));
-                    var c = 1;
+                   
                     if( max >= carry)
                     {
                         Memory.rooms[workroom].needDebitors = 1;     
                     }
                     else
                     {
+                        console.log(carry);
                         c = Memory.rooms[workroom].needDebitors =  Math.ceil(carry/max);
                         carry = Math.ceil(carry/c);        
                     }
@@ -131,8 +139,7 @@ module.exports =
                         Memory.rooms[workroom].needDebitorSize = carry;
                         delete Memory.rooms[workroom].distances;
                     }
-                }
-                console.log('berechneter Debitor: '+workroom+'>'+ c + 'x '+carry);
+                } 
                 return Array(carry).fill(CARRY).concat(Array(carry).fill(MOVE));
             }
             
