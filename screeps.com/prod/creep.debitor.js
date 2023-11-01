@@ -67,13 +67,16 @@ module.exports =
             }
 
             if(creepBase.harvestRoomStorage(creep,creep.memory.mineral)) return;
-            if(creepBase.harvestRoomContainer(creep,creep.memory.mineral,0.01)) return;   
 
-            if(creep.store.getUsedCapacity() > 0)
+            if(creep.room.energyAvailable < 300)
             {
-                creep.memory.harvest = false;
-            }
+                if(creepBase.harvestRoomContainer(creep,creep.memory.mineral,0.01)) return;   
 
+                if(creep.store.getUsedCapacity() > 0)
+                {
+                    creep.memory.harvest = false;
+                }
+            }
             return;
         }
 
