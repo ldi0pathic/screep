@@ -6,6 +6,7 @@ module.exports = {
     sayJob: function() { this.creep.say('📌') },
     doJob: function (creep) {
         
+        if(creepBase.checkInvasion(creep)) return;
         if(creepBase.goToWorkroom(creep)) return;
         
         const controller = Game.rooms[creep.memory.workroom].controller;

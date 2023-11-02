@@ -24,8 +24,8 @@ module.exports = {
              {   
                 if(Memory.rooms[global.room[room].room].needDefence)
                 {
-                    if(jobs.defender.spawn(spawn,global.room[room].room))
-                        continue;
+                    jobs.defender.spawn(spawn,global.room[room].room);
+                    continue;
                 }
                 
                 if( global.room[room].spawnRoom != spawn.room.name)

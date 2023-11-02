@@ -21,6 +21,15 @@ module.exports =
             creep.memory.harvest = false; 
         }
     },
+    checkInvasion: function(creep)
+    {
+        if(Memory.rooms[creep.memory.workroom].needDefence ||  Memory.rooms[creep.memory.workroom].invaderCore)
+        {
+            creep.say('☎');
+            return true;
+        }
+        return false;
+    },
     harvest: function(creep)
     {
         if(!creep.memory.harvest)

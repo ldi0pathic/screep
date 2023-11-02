@@ -26,6 +26,7 @@ module.exports = {
             return;
         } 
 
+        if(creepBase.checkInvasion(creep)) return;
         if(creepBase.goToWorkroom(creep)) return;
         if(creepBase.checkWorkroomPrioSpawn(creep)) return;
 

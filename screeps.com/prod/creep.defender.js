@@ -47,30 +47,33 @@ module.exports = {
     _getProfil: function(spawn)
     {
         const totalCost =  BODYPART_COST[TOUGH] + 2*BODYPART_COST[MOVE] + BODYPART_COST[ATTACK] + BODYPART_COST[RANGED_ATTACK];
-        var maxEnergy = spawn.room.energyCapacityAvailable;
-        const numberOfSets = Math.max(5,Math.floor(maxEnergy / totalCost));
-        if(numberOfSets == 0)
+       
+        var max = Math.min(5, parseInt(spawn.room.energyAvailable / 100));
+     
+        if(max == 0 || max == null)
         {
             return [MOVE,MOVE,ATTACK,RANGED_ATTACK];
         }
-        return Array((numberOfSets)).fill(TOUGH).concat(Array((numberOfSets*2)).fill(MOVE).concat(Array((numberOfSets)).fill(ATTACK)).concat(Array((numberOfSets)).fill(RANGED_ATTACK)));
+        
+        return Array((max)).fill(TOUGH).concat(Array((max*2)).fill(MOVE).concat(Array((max)).fill(ATTACK)).concat(Array((max)).fill(RANGED_ATTACK)));
     },
     spawn: function(spawn,workroom)
     {
         if(!Memory.rooms[workroom].needDefence)
             return false;
-
+console.log('1');
         var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
                                                     creep.memory.workroom == workroom).length;
                                 
         if (6 <= count)
             return false;
-
+            console.log('2');
         if( creepBase.spawn(spawn, this._getProfil(spawn), role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name}))
         {
             Memory.cOfDefender += 1;
             return true;
         }
+        console.log('3');
         return false;
     },
    

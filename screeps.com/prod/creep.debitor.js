@@ -49,6 +49,7 @@ module.exports =
 
         if (creep.memory.harvest) {
           
+            if(creepBase.checkInvasion(creep)) return;
             if(creepBase.goToWorkroom(creep)) return;
             
             if(creepBase.harvestSpawnLink(creep,creep.memory.mineral))return;
@@ -116,10 +117,10 @@ module.exports =
             if(spawn.room.name != workroom)
             {
                 var carry = Memory.rooms[workroom].needDebitorSize;
+                var distances = Memory.rooms[workroom].distances;
                 var c = 1;
-                if(!carry)
+                if(!carry && distances)
                 {
-                    var distances = Memory.rooms[workroom].distances;
                     var length = Math.ceil(distances.length *0.5)
                     var meridian = distances.sort(function(a, b) {
                             return a - b;
@@ -237,7 +238,8 @@ module.exports =
             var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
                                                         creep.memory.workroom == workroom && 
                                                         creep.memory.home == spawn.room.name && 
-                                                        creep.memory.container == containerId).length;
+                                                        creep.memory.container == containerId&& 
+                                                        !creep.memory.notfall).length;
                                            
             if(!Memory.rooms[workroom].needDebitors)
                 Memory.rooms[workroom].needDebitors = 1;
@@ -262,7 +264,8 @@ module.exports =
             var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
                                                         creep.memory.workroom == workroom && 
                                                         creep.memory.home == spawn.room.name && 
-                                                        creep.memory.container == '').length;
+                                                        creep.memory.container == '' && 
+                                                        !creep.memory.notfall).length;
                                                         
             if (global.room[workroom].debitorAsFreelancer <= count)
                 return false;
@@ -274,16 +277,15 @@ module.exports =
         
         //wenn im aktuellen raum kein Debitor ist
         
-       if(!creepBase.spawn(spawn,profil, role + '_' + Game.time, { role: role, harvest: true, workroom: workroom, home: spawn.room.name, mineral: mineraltype, container: containerId }))
+       if(!creepBase.spawn(spawn,profil, role + '_' + Game.time, { role: role, harvest: true, workroom: workroom, home: spawn.room.name, mineral: mineraltype, container: containerId, notfall:false }))
        {
             if(_.filter(Game.creeps, (creep) => creep.memory.role == role && creep.memory.workroom == workroom).length == 0 && spawn.room.name == workroom)
             {
                 console.log('Notfallspawn '+role);
                 var min = Math.min(Math.max(parseInt(spawn.room.energyAvailable/ 100),1),16);  
                 profil = Array(min).fill(CARRY).concat(Array(min).fill(MOVE));
-                containerId = '';
                 mineraltype = RESOURCE_ENERGY;
-                return creepBase.spawn(spawn,profil, role + '_' + Game.time, { role: role, harvest: true, workroom: workroom, home: spawn.room.name, mineral: mineraltype, container: containerId })
+                return creepBase.spawn(spawn,profil, role + '_' + Game.time, { role: role, harvest: true, workroom: workroom, home: spawn.room.name, mineral: mineraltype, container: '', notfall:true })
             }
             return false;
        }
