@@ -26,7 +26,8 @@ module.exports =
         if(Memory.rooms[creep.memory.workroom].needDefence ||  Memory.rooms[creep.memory.workroom].invaderCore)
         {
             creep.say('☎');
-            return true;
+            
+            return creepBaseGoTo.goToMyHome(creep);;
         }
         return false;
     },
@@ -63,7 +64,7 @@ module.exports =
             var s = creep.pickup(drop)
            
             if (s  === ERR_NOT_IN_RANGE) {
-               creep.moveTo(drop);   
+               creep.moveTo(drop,{reusePath: 5});   
             }
             return true;
         }
@@ -198,12 +199,24 @@ module.exports =
         //prio3 selber abbauen
         if(this.canHarvestEnergy(creep))
         {
-            const source = creep.pos.findClosestByPath(FIND_SOURCES);
-            if (creep.harvest(source) === ERR_NOT_IN_RANGE) 
+            const sources = creep.room.find(FIND_SOURCES);
+
+            if(sources.length > 0)
             {
-                creep.moveTo(source, {reusePath: 5});
-            }
-            return true;
+                for(var source of sources)
+                {
+                    var state = creep.harvest(source);
+                    if (state === ERR_NOT_IN_RANGE) 
+                    {
+                        creep.moveTo(source, {reusePath: 5});
+                            return true;
+                    }
+                    else if(state === OK)
+                    {
+                        return true;
+                    }        
+                }
+            }  
         }
         return false;  
     },

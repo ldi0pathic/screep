@@ -35,6 +35,14 @@ module.exports = {
            {
                 msg += "PrioSpawn im Raum "+room+"\n";
            }
+           if(Memory.rooms[room].needDefence)
+           {
+                msg += "Angriff im Raum "+room+"\n";
+           }
+           if(Memory.rooms[room].invaderCore)
+           {
+                msg += "Core im Raum "+room+"\n";
+           }
         }
         if(msg != "")
             console.log(msg);

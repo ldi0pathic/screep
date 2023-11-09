@@ -152,7 +152,7 @@ module.exports = {
                     }
                 } 
             } 
-            else if(!creep.moveTo(new RoomPosition(finalLocation.x, finalLocation.y,finalLocation.roomName)) == OK)
+            else if(!creep.moveTo(new RoomPosition(finalLocation.x, finalLocation.y,finalLocation.roomName),{reusePath: 5}) == OK)
             {
                   const blockingCreep = creep.pos.findInRange(FIND_MY_CREEPS, 1, {
                     filter: (otherCreep) => otherCreep.memory.role !== 'miner'
@@ -270,7 +270,7 @@ module.exports = {
         if(!global.room[workroom].sendMiner)
             return false;
 
-        if(spawn.room.name != workroom && !Memory.rooms[workroom].claimed)
+        if(spawn.room.name != workroom && !Memory.rooms[workroom].claimed && !global.room[workroom].claim)
             return false;
         
         for(var id in global.room[workroom].energySources)
@@ -305,10 +305,18 @@ module.exports = {
      * @returns 
      */
     _spawn: function (spawn, workroom, source, mineEnergy) {
+       
+        var time = 100;
+        if(workroom == spawn.room.name)
+        {
+            time = 50;
+        }
         var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
                                                     creep.memory.workroom == workroom && 
                                                     creep.memory.home == spawn.room.name && 
-                                                    creep.memory.source == source).length;
+                                                    creep.memory.source == source && 
+                                                    (creep.ticksToLive > time || creep.spawning)
+                                                    ).length;
 
         if (1 <= count)
         {

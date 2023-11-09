@@ -6,12 +6,21 @@ module.exports = {
     sayJob: function() { this.creep.say('📌') },
     doJob: function (creep) {
         
-        if(creepBase.checkInvasion(creep)) return;
+       // if(creepBase.checkInvasion(creep)) return;
         if(creepBase.goToWorkroom(creep)) return;
         
         const controller = Game.rooms[creep.memory.workroom].controller;
+        var claim = global.room[creep.memory.workroom].claim;
 
         if (controller) {
+            if(claim)
+            {
+                var s = creep.claimController(controller);
+                if (s === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(controller, {reusePath: 5});
+                }
+                return;
+            }
             var state = creep.reserveController(controller);
             if (state === ERR_NOT_IN_RANGE) {
                 creep.moveTo(controller, {reusePath: 5});
@@ -43,7 +52,8 @@ module.exports = {
             return false;
            
         var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
-                                                    creep.memory.workroom == workroom).length;
+                                                    creep.memory.workroom == workroom && 
+                                                    (creep.ticksToLive > 100 || creep.spawning)).length;
                                   
         if ( 1 <= count)
             return false;

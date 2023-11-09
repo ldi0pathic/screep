@@ -33,9 +33,11 @@ module.exports = {
         }
         else
         {
+          
             Memory.rooms[creep.memory.workroom].needDefence = false;
             creep.say('💥 Bye!');
             creep.suicide();
+                
         }
         
         if (creep.getActiveBodyparts(ATTACK) + creep.getActiveBodyparts(RANGED_ATTACK) == 0) 
@@ -48,26 +50,26 @@ module.exports = {
     {
         const totalCost =  BODYPART_COST[TOUGH] + 2*BODYPART_COST[MOVE] + BODYPART_COST[ATTACK] + BODYPART_COST[RANGED_ATTACK];
        
-        var max = Math.min(5, parseInt(spawn.room.energyAvailable / 100));
+        var max = Math.min(5, parseInt(spawn.room.energyAvailable / totalCost));
      
         if(max == 0 || max == null)
         {
             return [MOVE,MOVE,ATTACK,RANGED_ATTACK];
         }
-        
+
         return Array((max)).fill(TOUGH).concat(Array((max*2)).fill(MOVE).concat(Array((max)).fill(ATTACK)).concat(Array((max)).fill(RANGED_ATTACK)));
     },
     spawn: function(spawn,workroom)
     {
-        if(!Memory.rooms[workroom].needDefence)
+        if((!Memory.rooms[workroom].needDefence && !Memory.rooms[workroom].invaderCore) || !global.room[workroom].sendDefender)
             return false;
-console.log('1');
+
         var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
                                                     creep.memory.workroom == workroom).length;
                                 
-        if (6 <= count)
+        if (2 <= count)
             return false;
-            console.log('2');
+        
         if( creepBase.spawn(spawn, this._getProfil(spawn), role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name}))
         {
             Memory.cOfDefender += 1;

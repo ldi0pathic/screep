@@ -126,10 +126,9 @@ module.exports = {
         if(!global.room[workroom].sendBuilder || maxbuilder < 1)
             return false;
 
-        if(spawn.room.name != workroom && !Memory.rooms[workroom].claimed)
+        if(spawn.room.name != workroom && !Memory.rooms[workroom].claimed && !global.room[workroom].claim)
             return false;
         
-          
         var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
                                                     creep.memory.workroom == workroom && 
                                                     creep.memory.home == spawn.room.name).length;

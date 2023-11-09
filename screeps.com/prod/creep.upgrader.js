@@ -69,7 +69,9 @@ module.exports = {
            
         var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
                                                     creep.memory.workroom == workroom && 
-                                                    creep.memory.home == spawn.room.name).length;
+                                                    creep.memory.home == spawn.room.name && 
+                                                    (creep.ticksToLive > 100 || creep.spawning)
+                                                    ).length;
                                            
         if ( uppis <= count)
             return false;

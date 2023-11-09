@@ -11,6 +11,11 @@ module.exports = {
                 Memory.rooms[name].invaderCore = false;
             }
             
+            if((Game.time + 10) > Memory.rooms[name].needDefenceEndTick )
+            {
+                Memory.rooms[name].needDefence = false;
+            }
+            
             var room = Game.rooms[global.room[name].room];
 
             if(!room)
@@ -20,6 +25,18 @@ module.exports = {
             var core = room.find(FIND_HOSTILE_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_INVADER_CORE});
 
             Memory.rooms[name].needDefence = hostiles.length > 0;
+            if(hostiles.length > 0)
+            {
+                let maxLifeTime = 0;
+
+                for (var creep of hostiles) {
+                    if (creep.ticksToLive !== undefined && creep.ticksToLive > maxLifeTime) {
+                        maxLifeTime = creep.ticksToLive;
+                    }
+                }
+                Memory.rooms[name].needDefenceEndTick = Game.time + maxLifeTime;
+            }
+            
             Memory.rooms[name].invaderCore = core.length > 0;
             if(core.length > 0)
             {

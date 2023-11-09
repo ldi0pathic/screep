@@ -7,8 +7,12 @@ module.exports = {
     doJob: function (creep) {
         creepBase.checkHarvest(creep,RESOURCE_ENERGY);
 
-        if (creep.memory.harvest) {
+        if (creep.memory.harvest) 
+        {
+        
             creep.memory.wall = null;
+
+            if(creepBase.harvestRoomContainer(creep, RESOURCE_ENERGY))return;
             if(creepBase.harvest(creep)) return;
             return;
         } 
@@ -44,7 +48,7 @@ module.exports = {
             const repairResult = creep.repair(targetWall );
 
             if (repairResult === ERR_NOT_IN_RANGE) {
-                creep.moveTo(targetWall, { visualizePathStyle: { stroke: '#ffffff' } });
+                creep.moveTo(targetWall, { visualizePathStyle: { stroke: '#ffffff' }, reusePath: 5});
                 return true;
             }
 
@@ -88,7 +92,7 @@ module.exports = {
         {
             //Wenn keine Energiereserven vorhanden, kein Wallbuilder spawnen! 
             var storage = Game.rooms[workroom].storage;
-            if(storage && storage.store[RESOURCE_ENERGY] < 10000)
+            if(storage && storage.store[RESOURCE_ENERGY] < 50000)
                 return false;           
         }
             

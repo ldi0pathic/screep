@@ -69,7 +69,7 @@ module.exports =
 
             if(creepBase.harvestRoomStorage(creep,creep.memory.mineral)) return;
 
-            if(creep.room.energyAvailable < 300)
+            if(creep.room.name == creep.memory.workroom && creep.room.energyAvailable < 300)
             {
                 if(creepBase.harvestRoomContainer(creep,creep.memory.mineral,0.01)) return;   
 
@@ -78,6 +78,9 @@ module.exports =
                     creep.memory.harvest = false;
                 }
             }
+
+            if(creepBase.goToRoomFlag(creep)) return;
+            
             return;
         }
 
@@ -238,8 +241,10 @@ module.exports =
             var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
                                                         creep.memory.workroom == workroom && 
                                                         creep.memory.home == spawn.room.name && 
-                                                        creep.memory.container == containerId&& 
-                                                        !creep.memory.notfall).length;
+                                                        creep.memory.container == containerId && 
+                                                        !creep.memory.notfall && 
+                                                        (creep.ticksToLive > 100 || creep.spawning)
+                                                        ).length;
                                            
             if(!Memory.rooms[workroom].needDebitors)
                 Memory.rooms[workroom].needDebitors = 1;
@@ -265,7 +270,9 @@ module.exports =
                                                         creep.memory.workroom == workroom && 
                                                         creep.memory.home == spawn.room.name && 
                                                         creep.memory.container == '' && 
-                                                        !creep.memory.notfall).length;
+                                                        !creep.memory.notfall &&
+                                                        (creep.ticksToLive > 100 || creep.spawning)
+                                                        ).length;
                                                         
             if (global.room[workroom].debitorAsFreelancer <= count)
                 return false;
