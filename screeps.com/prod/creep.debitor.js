@@ -111,6 +111,7 @@ module.exports =
         }
 
         if(creepBase.TransportToHomeContainer(creep, creep.memory.mineral))return;
+        if(creepBase.TransportToHomeLab(creep, creep.memory.mineral))return;
         
         return;        
     },

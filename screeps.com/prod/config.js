@@ -20,7 +20,7 @@ global.room =
       sendClaimer: true,
 
       //mining
-      debitorProSource: 2,  
+      debitorProSource: 1,  
       debitorAsFreelancer: 0,  
       energySources: [
        '5bbcb07b9099fc012e63c406',  
@@ -57,7 +57,7 @@ global.room =
       sendClaimer: true,
 
       //mining
-      debitorProSource: 2,  
+      debitorProSource: 1,  
       debitorAsFreelancer: 0,  
       energySources: [
        '5bbcb08d9099fc012e63c593',  
@@ -156,9 +156,9 @@ global.room =
       controllerLink: null, //'65380c0c74becf6de75f0370',
 
       //structures
-      repairer: 0,
+      repairer: 1,
       maxwallRepairer : 2,
-      maxbuilder: 3,
+      maxbuilder: 2,
       prioBuildings: [ ],
       walls: [
          '64f242f2a5a4d3e4fe5f51e3',
@@ -257,7 +257,7 @@ global.room =
       walls: [],
  
       //controller  
-      upgrader: 3,
+      upgrader: 2,
    },
    E59N7:
    {
@@ -362,9 +362,9 @@ global.room =
       controllerLink: '65354f9aade2340fef294995',
 
       //structures
-      repairer: 0,
+      repairer: 1,
       maxwallRepairer : 2,
-      maxbuilder: 3,
+      maxbuilder: 2,
       prioBuildings: [ ],
       walls: [
         '60eb6ba599c60b135f2bcfac',

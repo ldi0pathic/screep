@@ -44,6 +44,28 @@ module.exports =
         }
         return false;
     },
+    TransportToHomeLab: function(creep, type)
+    {
+        if(creep.memory.home != creep.room.name)
+            return false;
+
+        var target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES,
+            {
+                filter: (structure) => {
+                    return (
+                        structure.structureType === STRUCTURE_LAB 
+                    ) && structure.store.getFreeCapacity([type]) > 0;
+                }
+            });
+
+        if (target) {
+            if (creep.transfer(target, type) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(target, {reusePath: 5});
+            }
+            return true;
+        }
+        return false;
+    },
     TransportEnergyToHomeSpawn: function(creep)
     {
         if(creep.memory.home != creep.room.name)
