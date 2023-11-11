@@ -23,6 +23,7 @@ module.exports = {
 
             var hostiles = room.find(FIND_HOSTILE_CREEPS);
             var core = room.find(FIND_HOSTILE_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_INVADER_CORE});
+            var nukes = room.find(FIND_NUKES);
 
             Memory.rooms[name].needDefence = hostiles.length > 0;
             if(hostiles.length > 0)
@@ -54,6 +55,28 @@ module.exports = {
                 }
                 Memory.rooms[name].invaderCoreEndTick = Game.time + timeRemaining;
             }    
+
+            if(nukes.length > 0 )
+            {
+                var msg = "";
+                Memory.rooms[name].nukepos = [];
+                for(var nuke of nukes)
+                {
+                    msg += "Raum "+nuke.room+ " wird in "+nuke.timeToLand+" ticks von Raum "+nuke.launchRoomName+" aus genuked!\r\n";
+                   
+                    if(!Memory.rooms[name].nukepos.includes(nuke.pos))
+                        Memory.rooms[name].nukepos.push(nuke.pos);
+                }
+
+                if(msg.length > 0 && !Memory.rooms[name].nuke)
+                    Game.notify(msg);   
+            }
+            else
+            {  if (Memory.rooms[name].nukepos) 
+                    Memory.rooms[name].nukepos = [];
+            }
+           
+            Memory.rooms[name].nuke = nukes.length > 0;
         }
     },
 };

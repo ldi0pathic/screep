@@ -140,7 +140,7 @@ global.room =
 
       //mining
       debitorProSource: 1,  
-      debitorAsFreelancer: 1,  
+      debitorAsFreelancer: 2,  
       energySources: [
        '5bbcb08d9099fc012e63c58c',
        '5bbcb08d9099fc012e63c58a',
@@ -149,16 +149,16 @@ global.room =
 
       useLinks: true,
       targetLinks:[
-         '6536132f35ce1252bbb1e817',
+         '654fca89b0ffd4cdcdd4053d',
          '65380c0c74becf6de75f0370'       
       ],
-      spawnLink:'6536132f35ce1252bbb1e817',
-      controllerLink: '65380c0c74becf6de75f0370',
+      spawnLink:'654fca89b0ffd4cdcdd4053d',
+      controllerLink: null, //'65380c0c74becf6de75f0370',
 
       //structures
       repairer: 0,
-      maxwallRepairer : 1,
-      maxbuilder: 1,
+      maxwallRepairer : 2,
+      maxbuilder: 3,
       prioBuildings: [ ],
       walls: [
          '64f242f2a5a4d3e4fe5f51e3',
@@ -180,7 +180,7 @@ global.room =
       ],
  
       //controller  
-      upgrader: 1,
+      upgrader: 2,
    },
    E58N8:
    {
@@ -249,7 +249,7 @@ global.room =
       controllerLink: null,
 
       //structures
-      repairer: 0,
+      repairer: 1,
       maxwallRepairer : 1,
       maxbuilder: 2,
       prioBuildings: [      
@@ -257,7 +257,7 @@ global.room =
       walls: [],
  
       //controller  
-      upgrader: 1,
+      upgrader: 3,
    },
    E59N7:
    {
@@ -346,7 +346,7 @@ global.room =
 
       //mining
       debitorProSource: 0,  
-      debitorAsFreelancer: 2,  
+      debitorAsFreelancer: 4,  
       energySources: [
        '5bbcb09e9099fc012e63c70a',
        '5bbcb09e9099fc012e63c70b',
@@ -355,25 +355,47 @@ global.room =
 
       useLinks: true,
       targetLinks:[
-         '653098a7cb8a243ec9ae4d6d',
+         '654fbf37859c2561f5cb03e9',
          '65354f9aade2340fef294995'
       ],
-      spawnLink:'653098a7cb8a243ec9ae4d6d',
+      spawnLink:'654fbf37859c2561f5cb03e9',
       controllerLink: '65354f9aade2340fef294995',
 
       //structures
       repairer: 0,
-      maxwallRepairer : 1,
-      maxbuilder: 1,
+      maxwallRepairer : 2,
+      maxbuilder: 3,
       prioBuildings: [ ],
       walls: [
-         '65038dbf1634b02930a313c3',
-         '65357291aae590039f06b0b3',
-         '6509e5e006be381cbbac9b98',
-         '653c0b56d51f35114c9ec7b4',
-         '653c0b44e834a818088b4aaf',
-         '653c0b382e4fb965bc109fae',
-         '653c0b2fd0c65f86b50919f3',
+        '60eb6ba599c60b135f2bcfac',
+        '60eb6b9e3b91946a172ee2b9',
+        '60eb6879d43fd4da1d3e3664',
+        '60eb687c31bbfea312572a58',
+        '60f39055388f0a773bd72bf2',
+        '65357291aae590039f06b0b3',
+        '60eb688a74d40a11647be884',
+        '60eb6886634e0205bc92e495',
+        '60eb688d0bbea186e61237b1',
+        '60eb68944c1e9d83fb0ded90',
+        '60eb689cf7fc3921116862f9',
+        '60ed49b6d576800edbfc3be8',
+        '60eb68a974d40a2b547be88f',
+        '60eb68b089c4d778d1800f37',
+        '60eb68b66ad572711b534ae0',
+        '60fbe9b77b67fc69f386e0ce',
+        '60eb68c4aeb9e8466ae2fa99',
+        '60eccdc090c593d3a3eef1ff',
+        '60eb68d175cf7b624edda8a4',
+        '60eb68d73492ae339191ce8f',
+        '60eb68def37d597012924e12',
+        '63a7748cb6b6799379b59286',
+        '6509e5e006be381cbbac9b98',
+        '60eb6b0d6ca812116de68375',
+        '60eb6b11c2c5a9cab081e9d3',
+        '60eb6b1599c60bfebe2bcf83',
+        '60ec412a4e2b8523a0b1794e',
+        '60ec412775cf7bfbd6ddefc3'
+
       ],
  
       //controller  
@@ -385,13 +407,13 @@ global.prio =
    build: {
       [STRUCTURE_RAMPART]: 1,
       [STRUCTURE_WALL]: 1,
-      [STRUCTURE_EXTENSION]: 2,
+      [STRUCTURE_EXTENSION]: 3,
       [STRUCTURE_SPAWN]: 2,
       [STRUCTURE_TOWER]: 2,
       [STRUCTURE_CONTAINER]: 3,
-      [STRUCTURE_LINK]:3,
+      [STRUCTURE_LINK]:1,
       [STRUCTURE_STORAGE]: 1,
-      [STRUCTURE_ROAD]:2   
+      [STRUCTURE_ROAD]:4   
    },
    repair: {
       [STRUCTURE_RAMPART]: 7,

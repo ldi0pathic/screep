@@ -51,16 +51,20 @@ module.exports =
           
             if(creepBase.checkInvasion(creep)) return;
             if(creepBase.goToWorkroom(creep)) return;
+
+            if(creepBase.harvestRoomDrops(creep,creep.memory.mineral)) return;
+            if(creepBase.harvestRoomTombstones(creep,creep.memory.mineral)) return;
+            if(creepBase.harvestRoomRuins(creep,creep.memory.mineral)) return;
             
             if(creepBase.harvestSpawnLink(creep,creep.memory.mineral))return;
             if(creepBase.harvestMyContainer(creep, creep.memory.mineral)) return;   
+           
             if(creep.memory.container == '' && creep.room.name == creep.memory.workroom && creep.room.energyAvailable < (creep.room.energyCapacityAvailable * 0.75))
             {
                 if(creepBase.harvestRoomStorage(creep,creep.memory.mineral)) return;
             }  
-            if(creepBase.harvestRoomDrops(creep,creep.memory.mineral)) return;
-            if(creepBase.harvestRoomTombstones(creep,creep.memory.mineral)) return;
-            if(creepBase.harvestRoomRuins(creep,creep.memory.mineral)) return;    
+           
+              
            
             if(creep.store.getUsedCapacity() > creep.store.getFreeCapacity())
             {
@@ -93,13 +97,14 @@ module.exports =
             return;     
         }   
         else if(creep.memory.home == creep.memory.workroom)
-        {
+        { 
             if(creepBase.TransportEnergyToHomeSpawn(creep))return;
             if(creepBase.TransportEnergyToHomeTower(creep))return;
             if(creepBase.TransportToHomeStorage(creep, creep.memory.mineral))return;
         }
         else
         {
+            if(creepBase.TransportEnergyToHomeTower(creep))return;
             if(creepBase.TransportToHomeStorage(creep, creep.memory.mineral))return;
             if(creepBase.TransportEnergyToHomeTower(creep))return;
             if(creepBase.TransportEnergyToHomeSpawn(creep))return;

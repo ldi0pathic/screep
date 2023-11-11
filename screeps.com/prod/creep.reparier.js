@@ -145,7 +145,7 @@ module.exports = {
         if ( minRepairer <= count)
             return false;
 
-            let structuresToRepair = creep.room.find(FIND_STRUCTURES, {
+            let structuresToRepair = Game.rooms[workroom].find(FIND_STRUCTURES, {
                 filter: (structure) => {
                     return (structure.hits < this._getMinHitRange(structure.structureType) * structure.hitsMax)
             }});

@@ -7,8 +7,11 @@ module.exports = {
     /** @param {Creep} creep **/
     doJob: function(creep) 
     {     
-        if(creepBase.checkInvasion(creep)) return;
-        
+        if(creepBase.checkInvasion(creep)) {
+            creep.memory.onPosition = false;
+            return;
+        };
+       
         if(!creep.memory.onPosition)
         {
             if(creep.memory.workroom != creep.room.name)

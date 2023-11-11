@@ -14,7 +14,7 @@ module.exports = {
     },
     _defend: function(creep)
     {
-        const enemies = creep.room.find(FIND_HOSTILE_CREEPS);
+        var enemies = creep.room.find(FIND_HOSTILE_CREEPS);
 
         if (enemies.length > 0) {
             
@@ -30,12 +30,34 @@ module.exports = {
                 creep.say('✊')
                 creep.moveTo(target, {reusePath: 5});
             }
+            return true;
         }
         else
         {
-            Memory.rooms[creep.memory.workroom].needDefence = false;
-            creep.say('💥 Bye!');
-            creep.suicide();
+            Memory.rooms[creep.memory.workroom].needDefence = false;     
+        }
+      
+        var core = room.find(FIND_HOSTILE_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_INVADER_CORE});
+
+        if(core.length > 0)
+        {
+            const target = creep.pos.findClosestByRange(core);
+            const result = creep.attack(core);
+            creep.rangedAttack(core);
+
+            if (result === OK) {
+                console.log(`${creep.name} greift ${core.name} an.`);
+            }
+            else
+            {
+                creep.say('✊')
+                creep.moveTo(core, {reusePath: 5});
+            }
+            return true;
+        }
+        else
+        {
+            Memory.rooms[creep.memory.workroom].invaderCore = false;
         }
         
         if (creep.getActiveBodyparts(ATTACK) + creep.getActiveBodyparts(RANGED_ATTACK) == 0) 
@@ -43,6 +65,7 @@ module.exports = {
             creep.say('💥 Bye!');
             creep.suicide();
         }
+        
     },
     _getProfil: function(spawn)
     {

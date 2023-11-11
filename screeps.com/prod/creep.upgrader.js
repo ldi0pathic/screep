@@ -39,7 +39,7 @@ module.exports = {
         {
             const totalCost = 3 * BODYPART_COST[WORK] + BODYPART_COST[CARRY] + 2 * BODYPART_COST[MOVE];
             var maxEnergy = spawn.room.energyCapacityAvailable;
-            numberOfSets = Math.min(3,Math.floor(maxEnergy / totalCost));
+            numberOfSets = Math.min(4,Math.floor(maxEnergy / totalCost));
             if(numberOfSets == 0)
             {
                 return [WORK,CARRY,MOVE,MOVE];

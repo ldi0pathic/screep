@@ -23,7 +23,10 @@ module.exports =
     },
     checkInvasion: function(creep)
     {
-        if(Memory.rooms[creep.memory.workroom].needDefence ||  Memory.rooms[creep.memory.workroom].invaderCore)
+        if(Memory.rooms[creep.memory.workroom].needDefence || ( Memory.rooms[creep.memory.workroom].invaderCore
+             && Game.rooms[creep.memory.workroom] 
+             && Game.rooms[creep.memory.workroom].controller.reservation.username 
+             != creep.owner.username))
         {
             creep.say('☎');
             
@@ -58,7 +61,7 @@ module.exports =
     },
     harvestRoomDrops: function(creep,type)
     {
-        const drop = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {filter: (d) => d.resourceType === type && d.amount >= (creep.store.getFreeCapacity() * 0.5)});
+        const drop = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {filter: (d) => d.resourceType === type && d.amount > 100});
 
         if (drop) {
             var s = creep.pickup(drop)
@@ -72,7 +75,7 @@ module.exports =
     },
     harvestRoomTombstones: function(creep,type)
     {
-        const tombstone = creep.pos.findClosestByPath(FIND_TOMBSTONES, {filter: (d) =>  d.store.getUsedCapacity(type) > (creep.store.getFreeCapacity() * 0.5)});
+        const tombstone = creep.pos.findClosestByPath(FIND_TOMBSTONES, {filter: (d) =>  d.store.getUsedCapacity(type) > 100});
        
         if (tombstone) {
             if (creep.withdraw(tombstone, type) === ERR_NOT_IN_RANGE) {
@@ -84,7 +87,7 @@ module.exports =
     },
     harvestRoomRuins: function(creep,type)
     {
-        const ruin = creep.pos.findClosestByPath(FIND_RUINS, {filter: (d) =>  d.store.getUsedCapacity(type) > (creep.store.getFreeCapacity() * 0.5)});
+        const ruin = creep.pos.findClosestByPath(FIND_RUINS, {filter: (d) =>  d.store.getUsedCapacity(type) > 100});
         
         if (ruin) {
             if (creep.withdraw(ruin, type) === ERR_NOT_IN_RANGE) {
