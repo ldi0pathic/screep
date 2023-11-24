@@ -124,14 +124,16 @@ module.exports =
                 filter: (structure) => {
                     return (
                         structure.structureType === STRUCTURE_STORAGE    
-                    ) && structure.store.getFreeCapacity([type]) > 0;
+                    ) && structure.store.getFreeCapacity() > 0;
                 }
             });
 
         if (target) {
-            if (creep.transfer(target, type) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(target, {reusePath: 5});
-            }
+            for (var resourceType in creep.store) {
+                if (creep.transfer(target, resourceType) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(target, {reusePath: 5});
+                }
+            } 
             return true;
         }
         return false;

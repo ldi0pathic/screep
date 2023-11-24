@@ -54,7 +54,7 @@ module.exports =
             if(creepBase.goToWorkroom(creep)) return;
 
             if(creepBase.harvestRoomDrops(creep,creep.memory.mineral)) return;
-            if(creepBase.harvestRoomTombstones(creep,creep.memory.mineral)) return;
+            if(creepBase.harvestCompleteRoomTombstones(creep)) return;
             if(creepBase.harvestRoomRuins(creep,creep.memory.mineral)) return;
             
             if(creepBase.harvestSpawnLink(creep,creep.memory.mineral))return;
@@ -98,10 +98,9 @@ module.exports =
         }   
         else if(creep.memory.home == creep.memory.workroom)
         { 
-         
             if(creepBase.TransportEnergyToHomeSpawn(creep))return;
-            if(creepBase.TransportToHomeStorage(creep, creep.memory.mineral))return;
             if(creepBase.TransportEnergyToHomeTower(creep))return;  
+            if(creepBase.TransportToHomeStorage(creep, creep.memory.mineral))return;
             if(creepBase.TransportToHomeLab(creep, creep.memory.mineral))return;
             if(creepBase.TransportToHomeTerminal(creep,creep.memory.mineral))return;        
         }

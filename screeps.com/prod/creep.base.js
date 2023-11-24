@@ -79,11 +79,25 @@ module.exports =
         return false;
     },
     harvestRoomTombstones: function (creep, type) {
-        const tombstone = creep.pos.findClosestByPath(FIND_TOMBSTONES, { filter: (d) => d.store.getUsedCapacity(type) > 100 });
+        const tombstone = creep.pos.findClosestByPath(FIND_TOMBSTONES, { filter: (d) => d.store.getUsedCapacity(type) > 100 && d.amount > 100 });
 
         if (tombstone) {
             if (creep.withdraw(tombstone, type) === ERR_NOT_IN_RANGE) {
                 creep.moveTo(tombstone, { reusePath: 5 });
+            }
+            return true;
+        }
+        return false;
+    },
+    harvestCompleteRoomTombstones: function (creep, type) {
+        const tombstone = creep.pos.findClosestByPath(FIND_TOMBSTONES, { filter: (d) => d.store.getUsedCapacity(type) > 100  && d.amount > 100});
+
+        if (tombstone) {
+            for (var resourceType in tombstone.store) {
+                if (creep.withdraw(tombstone, resourceType) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(tombstone,{reusePath: 5});
+                    break;
+                }
             }
             return true;
         }

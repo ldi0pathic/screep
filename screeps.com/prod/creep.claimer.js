@@ -38,7 +38,7 @@ module.exports = {
 
             if(controller.sign.username != creep.owner.username)
             {
-                creep.signController(controller,'⚔')
+               creep.signController(controller,'⚔');
             }
         }
     },
@@ -56,7 +56,7 @@ module.exports = {
                                                     (creep.ticksToLive > 100 || creep.spawning)).length;
         var room = Game.rooms[workroom];
         
-        if(room && room.controller && room.controller.sign.username == spawn.owner.username && room.controller.reservation.ticksToEnd > 3000)
+        if(room && room.controller && (room.controller.sign.username == spawn.owner.username || room.controller.sign.username == 'Screeps' ) && room.controller.reservation.ticksToEnd > 3000)
             return false;
         
         if ( 1 <= count)
