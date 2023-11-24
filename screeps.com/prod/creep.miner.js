@@ -95,7 +95,7 @@ module.exports = {
                 else
                 {
                     creep.memory.source = source.id;        
-                    if((creep.room.controller.my && creep.room.controller.level < 6) || !creep.room.controller.my)
+                    if((creep.room.controller.my && creep.room.controller.level < 4) || !creep.room.controller.my)
                     {
                         creep.memory.onPosition = true;
                         delete creep.memory.pos;
@@ -128,7 +128,7 @@ module.exports = {
                             delete creep.memory._move;
               
                         }
-                        else
+                        else if(creep.room.controller.level >= 6)
                         {
                             var creepPos = creep.pos;
                             var adjacentSpots = [];
@@ -182,6 +182,11 @@ module.exports = {
                     creep.say('🛠');
                     creep.build(container); 
                 }
+                else if(container && container.store.getFreeCapacity() == 0 && !creep.memory.link)
+                {
+                    creep.say('🚯');
+                    return;
+                }
 
                 //link bauen
                 if(creep.memory.build)
@@ -208,6 +213,18 @@ module.exports = {
                     }
                 }
 
+                if(!creep.memory.link)
+                {
+                    const link = creep.pos.findInRange(FIND_STRUCTURES,1, {
+                        filter: (s) => s.structureType === STRUCTURE_LINK
+                    })[0];
+
+                    if(link)
+                    {
+                        creep.memory.link = link.id;
+                    }
+                }
+
                 if( creep.memory.link && creep.store.getFreeCapacity() == 0)
                 {
                     var link = Game.getObjectById( creep.memory.link);
@@ -220,7 +237,7 @@ module.exports = {
                             link.transferEnergy(target);
                         }    
                    }
-                }
+                }     
             }
             
             let source = Game.getObjectById(creep.memory.source);
@@ -246,12 +263,13 @@ module.exports = {
      */
     _getProfil: function(spawn) {
         var maxEnergy = spawn.room.energyCapacityAvailable;
-        const maxWorkParts = Math.floor((maxEnergy-100) / BODYPART_COST[WORK]);
+        const maxWorkParts = Math.floor((maxEnergy-150) / BODYPART_COST[WORK]);
       
         const numberOfWorkParts = Math.min(maxWorkParts, 5);
         
         let profil = Array(numberOfWorkParts).fill(WORK);
         
+        profil.push(CARRY);
         profil.push(CARRY);
         profil.push(MOVE);
         
@@ -270,6 +288,7 @@ module.exports = {
     */
     spawn: function(spawn,workroom)
     {
+        global.logWorkroom(workroom,'Miner Spawn start');
         if(!global.room[workroom].sendMiner)
             return false;
 

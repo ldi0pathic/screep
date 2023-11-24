@@ -36,7 +36,7 @@ module.exports = {
                 Memory.rooms[creep.memory.workroom].claimed = true;
             }
 
-            if(controller.sign.username != creep.owner)
+            if(controller.sign.username != creep.owner.username)
             {
                 creep.signController(controller,'⚔')
             }
@@ -54,7 +54,11 @@ module.exports = {
         var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
                                                     creep.memory.workroom == workroom && 
                                                     (creep.ticksToLive > 100 || creep.spawning)).length;
-                                  
+        var room = Game.rooms[workroom];
+        
+        if(room && room.controller && room.controller.sign.username == spawn.owner.username && room.controller.reservation.ticksToEnd > 3000)
+            return false;
+        
         if ( 1 <= count)
             return false;
           

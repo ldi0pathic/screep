@@ -13,11 +13,14 @@ module.exports =
     },
     goToRoomFlag:function(creep)
     {
-        const flags = creep.room.find(FIND_FLAGS);
-        if (flags.length > 0)
+        if(creep.memory.workroom != creep.memory.home)
         {
-            creep.moveTo(flags[0], {reusePath: 5});
-            return true;
+            const flags = creep.room.find(FIND_FLAGS);
+            if (flags.length > 0)
+            {
+                creep.moveTo(flags[0], {reusePath: 5});
+                return true;
+            }
         }
         return false;
     },

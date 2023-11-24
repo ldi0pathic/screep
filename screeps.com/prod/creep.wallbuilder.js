@@ -57,9 +57,9 @@ module.exports = {
     },
     _getProfil: function(spawn)
     {
-        const totalCost =  BODYPART_COST[WORK] + BODYPART_COST[CARRY] + BODYPART_COST[MOVE];
+        const totalCost =  BODYPART_COST[WORK] + 2*BODYPART_COST[CARRY] + BODYPART_COST[MOVE];
         var maxEnergy = spawn.room.energyCapacityAvailable;
-        const numberOfSets = Math.min(6,Math.floor(maxEnergy / totalCost));
+        const numberOfSets = Math.min(5,Math.floor(maxEnergy / totalCost));
         if(numberOfSets == 0)
         {
             return [WORK,CARRY,CARRY,MOVE,MOVE];
@@ -92,7 +92,7 @@ module.exports = {
         {
             //Wenn keine Energiereserven vorhanden, kein Wallbuilder spawnen! 
             var storage = Game.rooms[workroom].storage;
-            if(storage && storage.store[RESOURCE_ENERGY] < 50000)
+            if(storage && storage.store[RESOURCE_ENERGY] < 50000 || !storage)
                 return false;           
         }
             

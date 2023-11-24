@@ -49,6 +49,7 @@ module.exports =
 
         if (creep.memory.harvest) {
           
+           
             if(creepBase.checkInvasion(creep)) return;
             if(creepBase.goToWorkroom(creep)) return;
 
@@ -73,7 +74,7 @@ module.exports =
 
             if(creepBase.harvestRoomStorage(creep,creep.memory.mineral)) return;
 
-            if(creep.room.name == creep.memory.workroom && creep.room.energyAvailable < 300)
+            if(creep.memory.container == '' || creep.room.name == creep.memory.workroom && creep.room.energyAvailable < 300)
             {
                 if(creepBase.harvestRoomContainer(creep,creep.memory.mineral,0.01)) return;   
 
@@ -84,7 +85,6 @@ module.exports =
             }
 
             if(creepBase.goToRoomFlag(creep)) return;
-            
             return;
         }
 
@@ -98,21 +98,24 @@ module.exports =
         }   
         else if(creep.memory.home == creep.memory.workroom)
         { 
+         
             if(creepBase.TransportEnergyToHomeSpawn(creep))return;
-            if(creepBase.TransportEnergyToHomeTower(creep))return;
             if(creepBase.TransportToHomeStorage(creep, creep.memory.mineral))return;
+            if(creepBase.TransportEnergyToHomeTower(creep))return;  
+            if(creepBase.TransportToHomeLab(creep, creep.memory.mineral))return;
+            if(creepBase.TransportToHomeTerminal(creep,creep.memory.mineral))return;        
         }
         else
-        {
-            if(creepBase.TransportEnergyToHomeTower(creep))return;
+        {  
             if(creepBase.TransportToHomeStorage(creep, creep.memory.mineral))return;
-            if(creepBase.TransportEnergyToHomeTower(creep))return;
             if(creepBase.TransportEnergyToHomeSpawn(creep))return;
+            if(creepBase.TransportEnergyToHomeTower(creep))return;
+            if(creepBase.TransportToHomeLab(creep, creep.memory.mineral))return;
+            if(creepBase.TransportToHomeTerminal(creep,creep.memory.mineral))return;   
         }
 
         if(creepBase.TransportToHomeContainer(creep, creep.memory.mineral))return;
-        if(creepBase.TransportToHomeLab(creep, creep.memory.mineral))return;
-        
+
         return;        
     },
     /**
@@ -299,8 +302,8 @@ module.exports =
                 profil = Array(min).fill(CARRY).concat(Array(min).fill(MOVE));
                 mineraltype = RESOURCE_ENERGY;
                 return creepBase.spawn(spawn,profil, role + '_' + Game.time, { role: role, harvest: true, workroom: workroom, home: spawn.room.name, mineral: mineraltype, container: '', notfall:true })
-            }
-            return false;
+            }    
+            return false;  
        }
        return true;
     },

@@ -138,16 +138,15 @@ module.exports = {
         if ( maxbuilder <= count)
             return false;
 
-        if(workroom != 'E59N9' && workroom != 'E58N7')
-        {
-            var room = Game.rooms[workroom];
-            var sites = 0;
-            if(room)
-                sites = room.find(FIND_CONSTRUCTION_SITES).length;
+        
+        var room = Game.rooms[workroom];
+        var sites = 0;
+        if(room)
+            sites = room.find(FIND_CONSTRUCTION_SITES).length;
 
-            if(sites == 0 || Math.max(sites / 5, 1) <= count)
-                return false;
-        }
+        if(sites == 0 || Math.max(sites / 5, 1) <= count)
+            return false;
+        
     
         return creepBase.spawn(spawn, this._getProfil(spawn), role + '_' + Game.time, { role: role, workroom: workroom, home: spawn.room.name});      
     },

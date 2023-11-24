@@ -11,14 +11,13 @@ module.exports.loop = function () {
         {
             for(var nuke of Memory.rooms[name].nukepos)
             {
-                new RoomVisual(name).circle(nuke.x, nuke.y,{fill: 'transparent', radius: 5, stroke: '#ff0000'});
+                new RoomVisual(name).circle(nuke.x, nuke.y,{fill: 'transparent', radius: 5, stroke: '#ff0000'});         
             }     
         }
 
         if (room && room.controller && room.controller.my) 
         {
             new RoomVisual(name).text(room.energyAvailable+'/'+room.energyCapacityAvailable, 2, 1, {color: 'white', font: 0.8})
-
 
             const towers = room.find(FIND_MY_STRUCTURES, {
                 filter: { structureType: STRUCTURE_TOWER }
@@ -53,17 +52,28 @@ module.exports.loop = function () {
                     }
                     else if(tower.store.getUsedCapacity([RESOURCE_ENERGY]) * 0.5 > tower.store.getFreeCapacity([RESOURCE_ENERGY]))
                     {
-                        var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES,
+                        var damagedStructures = tower.room.find(FIND_STRUCTURES,
                         {
                             filter: (structure) => 
                             {
-                                const priority = global.prio.hits[structure.structureType] || 0.5;
-                                return priority && structure.hits < structure.hitsMax * priority;
+                                return  structure.hits < structure.hitsMax ;
                             }
                         });
-                        if(closestDamagedStructure) 
+                        if(damagedStructures.length > 0) 
                         {
-                            tower.repair(closestDamagedStructure);
+                            damagedStructures.sort((a, b) => {
+                                const priorityA = global.prio.hits[a.structureType] || 0.5;
+                                const priorityB = global.prio.hits[b.structureType] || 0.5;
+                            
+                                const damageA = a.hitsMax - a.hits;
+                                const damageB = b.hitsMax - b.hits;
+                            
+                                const scoreA = priorityA * damageA;
+                                const scoreB = priorityB * damageB;
+                            
+                                return scoreB - scoreA;
+                            });
+                            tower.repair(damagedStructures[0]);
                         }
                     }
                 }

@@ -23,10 +23,11 @@ module.exports = {
              for(var room in global.room)
              {   
                 var workroom = global.room[room].room;
-             
+                
                 if(global.room[workroom].sendDefender && (Memory.rooms[workroom].needDefence || Memory.rooms[workroom].invaderCore))
                 {
-                    jobs.defender.spawn(spawn,workroom);       
+                    jobs.defender.spawn(spawn,workroom);      
+                    global.logWorkroom(workroom,'Spawn Defender'); 
                     continue;   
                 }
              
@@ -36,8 +37,10 @@ module.exports = {
                 if(Memory.rooms[workroom].invaderCore)
                     continue;
 
+                global.logWorkroom(workroom,'Spawn JobLoop'); 
                 for(var job in jobs)
                 {     
+                    global.logWorkroom(workroom,'Spawn Job: '+job); 
                     if(jobs[job].spawn(spawn,workroom))
                         break;
                 }

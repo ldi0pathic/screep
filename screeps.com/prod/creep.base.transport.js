@@ -5,7 +5,7 @@ module.exports =
         if(creep.memory.home != creep.room.name)
             return false;
 
-        var target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES,
+        var target = creep.pos.findClosestByPath(FIND_STRUCTURES,
             {
                 filter: (structure) => {
                     return (
@@ -32,7 +32,7 @@ module.exports =
                 filter: (structure) => {
                     return (
                         structure.structureType === STRUCTURE_TERMINAL 
-                    ) && structure.store.getFreeCapacity([type]) > 0;
+                    ) && structure.store[type] < 150000 ;
                 }
             });
 

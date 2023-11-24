@@ -9,7 +9,7 @@ module.exports = {
 
         if (creep.memory.harvest) 
         {
-            if(global.room[creep.memory.workroom].controllerLink)
+            if(global.room[creep.memory.workroom].controllerLink && (creep.room.controller.my && creep.room.controller.level >= 5) )
             {
                 if(creepBase.harvestControllerLink(creep,RESOURCE_ENERGY)) return;
             }
