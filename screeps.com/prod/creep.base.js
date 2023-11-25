@@ -5,7 +5,7 @@ const creepBaseGoTo = require('./creep.base.goto');
 module.exports =
 {
     checkHarvest: function (creep, type, action, action2) {
-        if (!creep.memory.harvest && creep.store[type] === 0) {
+        if (!creep.memory.harvest && creep.store.getUsedCapacity() === 0) {
             if (typeof (action) == "function")
                 action();
 

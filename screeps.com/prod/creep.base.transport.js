@@ -68,7 +68,7 @@ module.exports =
     },
     TransportEnergyToHomeSpawn: function(creep)
     {
-        if(creep.memory.home != creep.room.name)
+        if(creep.memory.home != creep.room.name|| creep.store[RESOURCE_ENERGY] == 0)
             return false;
 
         var target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES,
@@ -80,18 +80,20 @@ module.exports =
                     ) && structure.store.getFreeCapacity([RESOURCE_ENERGY]) > 0;
                 }
             });
-
         if (target) {
-            if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            var state = creep.transfer(target, RESOURCE_ENERGY);
+            if (state == ERR_NOT_IN_RANGE) {
                 creep.moveTo(target, {reusePath: 5});
             }
+            else return false;
+           
             return true;
         }
         return false;
     },
     TransportEnergyToHomeTower: function(creep)
     {
-        if(creep.memory.home != creep.room.name)
+        if(creep.memory.home != creep.room.name || creep.store[RESOURCE_ENERGY] == 0)
             return false;
         
         var towers = creep.room.find(FIND_MY_STRUCTURES,
@@ -107,15 +109,18 @@ module.exports =
         {
             towers.sort((a, b) => b.store.getFreeCapacity(RESOURCE_ENERGY) - a.store.getFreeCapacity(RESOURCE_ENERGY));
 
-            if (creep.transfer(towers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            var state = creep.transfer(towers[0], RESOURCE_ENERGY);
+            if (state == ERR_NOT_IN_RANGE) {
                 creep.moveTo(towers[0], {reusePath: 5});
             }
+            else return false;
+            
             return true;
         }
         return false;
     },
     TransportToHomeStorage: function(creep, type)
-    {
+    { 
         if(creep.memory.home != creep.room.name)
             return false;
         
