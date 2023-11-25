@@ -76,10 +76,11 @@ module.exports =
             creep.memory.useRoomDrop = drop.id;
             return true;
         }
+        delete creep.memory.useRoomDrop;
         return false;
     },
     harvestRoomTombstones: function (creep, type) {
-        const tombstone = creep.pos.findClosestByPath(FIND_TOMBSTONES, { filter: (d) => d.store.getUsedCapacity(type) > 100 && d.amount > 100 });
+        const tombstone = creep.pos.findClosestByPath(FIND_TOMBSTONES, { filter: (d) => d.store.getUsedCapacity(type) > 100 });
 
         if (tombstone) {
             if (creep.withdraw(tombstone, type) === ERR_NOT_IN_RANGE) {
@@ -90,21 +91,22 @@ module.exports =
         return false;
     },
     harvestCompleteRoomTombstones: function (creep, type) {
-        const tombstone = creep.pos.findClosestByPath(FIND_TOMBSTONES, { filter: (d) => d.store.getUsedCapacity(type) > 100  && d.amount > 100});
+        var tombstones = creep.room.find(FIND_TOMBSTONES,{ filter: (d) => d.store.getUsedCapacity() > 100  });
 
-        if (tombstone) {
-            for (var resourceType in tombstone.store) {
-                if (creep.withdraw(tombstone, resourceType) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(tombstone,{reusePath: 5});
-                    break;
+        if (tombstones.length > 0) {
+            for(var tombstone of tombstones)
+                for (var resourceType in tombstone.store) {
+                    if (creep.withdraw(tombstone, resourceType) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(tombstone,{reusePath: 5});
+                        break;
+                    }
                 }
-            }
             return true;
         }
         return false;
     },
     harvestRoomRuins: function (creep, type) {
-        const ruin = creep.pos.findClosestByPath(FIND_RUINS, { filter: (d) => d.store.getUsedCapacity(type) > 100 });
+        const ruin = creep.pos.findClosestByPath(FIND_RUINS, { filter: (d) => d.store.getUsedCapacity(type) > 50 });
 
         if (ruin) {
             if (creep.withdraw(ruin, type) === ERR_NOT_IN_RANGE) {

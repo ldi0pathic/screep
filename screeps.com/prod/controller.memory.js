@@ -22,6 +22,7 @@ module.exports = {
             Memory.rooms[name].hasLinks = Memory.rooms[name].hasLinks? true : false;
             Memory.rooms[name].needDefence = Memory.rooms[name].needDefence ? true: false;
             Memory.rooms[name].invaderCore =  Memory.rooms[name].invaderCore ? true : false;
+            Memory.rooms[name].nuke =  Memory.rooms[name].nuke ? true : false;
         
             Memory.init = true;
         }

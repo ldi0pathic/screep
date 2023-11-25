@@ -52,9 +52,10 @@ module.exports =
            
             if(creepBase.checkInvasion(creep)) return;
             if(creepBase.goToWorkroom(creep)) return;
-
-            if(creepBase.harvestRoomDrops(creep,creep.memory.mineral)) return;
+            
             if(creepBase.harvestCompleteRoomTombstones(creep)) return;
+            if(creepBase.harvestRoomDrops(creep,creep.memory.mineral)) return;
+           
             if(creepBase.harvestRoomRuins(creep,creep.memory.mineral)) return;
             
             if(creepBase.harvestSpawnLink(creep,creep.memory.mineral))return;
@@ -63,25 +64,25 @@ module.exports =
             if(creep.memory.container == '' && creep.room.name == creep.memory.workroom && creep.room.energyAvailable < (creep.room.energyCapacityAvailable * 0.75))
             {
                 if(creepBase.harvestRoomStorage(creep,creep.memory.mineral)) return;
+
+                if(creep.room.energyAvailable < 300)
+                {
+                    if(creepBase.harvestRoomContainer(creep,creep.memory.mineral,0.01)) return;   
+    
+                    if(creep.store.getUsedCapacity() > 0)
+                    {
+                        creep.memory.harvest = false;
+                    }
+                }
             }  
-           
-              
-           
-            if(creep.store.getUsedCapacity() > creep.store.getFreeCapacity())
+            else
             {
-                creep.memory.harvest = false;
-            }
-
-            if(creepBase.harvestRoomStorage(creep,creep.memory.mineral)) return;
-
-            if(creep.memory.container == '' || creep.room.name == creep.memory.workroom && creep.room.energyAvailable < 300)
-            {
-                if(creepBase.harvestRoomContainer(creep,creep.memory.mineral,0.01)) return;   
-
-                if(creep.store.getUsedCapacity() > 0)
+                if(creep.store.getUsedCapacity() > creep.store.getFreeCapacity())
                 {
                     creep.memory.harvest = false;
                 }
+    
+                if(creepBase.harvestRoomStorage(creep,creep.memory.mineral)) return;
             }
 
             if(creepBase.goToRoomFlag(creep)) return;

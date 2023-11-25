@@ -14,6 +14,7 @@ module.exports = {
        
         if(!creep.memory.onPosition)
         {
+           
             if(creep.memory.workroom != creep.room.name)
             {
                 var room = new RoomPosition(25, 25, creep.memory.workroom); 
@@ -84,8 +85,7 @@ module.exports = {
             }
             
             if (creep.pos.x == creep.memory.pos.x && creep.pos.y == creep.memory.pos.y) 
-            {
-               
+            {   
                 var source = creep.pos.findClosestByPath(creep.memory.mineEnergy ? FIND_SOURCES : FIND_MINERALS); 
                 var state = creep.harvest(source);
                 if (state === ERR_NOT_IN_RANGE) 
@@ -152,6 +152,13 @@ module.exports = {
                                 }
                             }
                         }
+                        else
+                        {
+                            creep.memory.onPosition = true;
+                            delete creep.memory.pos;
+                            delete creep.memory._move;
+                            return; 
+                        }
                     }
                 } 
             } 
@@ -187,6 +194,10 @@ module.exports = {
                     creep.say('🚯');
                     return;
                 }
+                else if(container && container.store.getUsedCapacity() > 0 && creep.memory.link)
+                {
+                    creep.withdraw(container, RESOURCE_ENERGY)
+                }
 
                 //link bauen
                 if(creep.memory.build)
@@ -212,7 +223,7 @@ module.exports = {
                         }
                     }
                 }
-
+/*
                 if(!creep.memory.link)
                 {
                     const link = creep.pos.findInRange(FIND_STRUCTURES,1, {
@@ -224,6 +235,7 @@ module.exports = {
                         creep.memory.link = link.id;
                     }
                 }
+*/
 
                 if( creep.memory.link && creep.store.getFreeCapacity() == 0)
                 {
@@ -248,6 +260,10 @@ module.exports = {
                 if(state == ERR_TIRED || state == ERR_NOT_ENOUGH_ENERGY)
                 {
                     creep.say('😴')
+                }
+                else if(state == ERR_NO_BODYPART)
+                {
+                    creep.suicide();
                 }
                 else
                 {

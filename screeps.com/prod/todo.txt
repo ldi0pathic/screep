@@ -1,0 +1,10 @@
+recycle Job >> creep geht zum nächsten Spawn und lässt sich recyclen 
+    - miner ohne work bodypart
+    - builder ohne work bodypart
+    - recyler ohne work body part
+    - creeps ohne job
+    - ungenutzte Defender
+
+TowerController
+
+optimierungen durch sichern der ObjId

@@ -3,7 +3,8 @@ const jobs = require('./creep.jobs');
 
 module.exports.loop = function () {
     
-    for(var name in global.room)
+    try {
+        for(var name in global.room)
     {  
         var room = Game.rooms[name];
 
@@ -56,23 +57,23 @@ module.exports.loop = function () {
                         {
                             filter: (structure) => 
                             {
-                                return  structure.hits < structure.hitsMax ;
+                                return (structure.hits < (global.prio.hits[structure.structureType] || 0.5) * structure.hitsMax)
                             }
                         });
                         if(damagedStructures.length > 0) 
                         {
                             damagedStructures.sort((a, b) => {
-                                const priorityA = global.prio.hits[a.structureType] || 0.5;
-                                const priorityB = global.prio.hits[b.structureType] || 0.5;
-                            
+                                const priorityA = global.prio.repair[a.structureType] || 10;
+                                const priorityB = global.prio.repair[b.structureType] || 10;
+
                                 const damageA = a.hitsMax - a.hits;
                                 const damageB = b.hitsMax - b.hits;
                             
                                 const scoreA = priorityA * damageA;
                                 const scoreB = priorityB * damageB;
-                            
-                                return scoreB - scoreA;
+                                return scoreA - scoreB;
                             });
+                           
                             tower.repair(damagedStructures[0]);
                         }
                     }
@@ -103,6 +104,10 @@ module.exports.loop = function () {
         }
     }
 
+    } catch (error) {
+       throw error;
+    }
     timer.controll();
+    
 
 }
