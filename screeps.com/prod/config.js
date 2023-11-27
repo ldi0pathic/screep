@@ -56,7 +56,7 @@ global.room =
       sendMiner: true,
       sendDebitor: true,
       sendFreeDebitor: false,
-      sendBuilder: true,
+      sendBuilder: false,
       sendDefender: true,
       sendClaimer: true,
 
@@ -127,6 +127,7 @@ global.room =
       spawnRoom: 'E58N6',
       sendMiner: true,
       sendDebitor: true,
+      minHostile : 2,
       sendFreeDebitor: true,
       sendBuilder: true,
       sendDefender: true,
@@ -174,6 +175,7 @@ global.room =
       spawnRoom: 'E58N7',
       sendMiner: true,
       sendDebitor: true,
+      minHostile : 2,
       sendFreeDebitor: true,
       sendBuilder: true,
       sendDefender: true,
@@ -268,6 +270,7 @@ global.room =
       spawnRoom: 'E59N4',
       sendMiner: true,
       sendDebitor: true,
+      minHostile : 2,
       sendFreeDebitor: true,
       sendBuilder: true,
       sendDefender: true,
@@ -299,6 +302,42 @@ global.room =
 
       //controller  
       upgrader: 1,
+   },
+   E59N5:
+   {
+      room: 'E59N5',
+      spawnRoom: 'E59N4',
+      sendMiner: true,
+      sendDebitor: true,
+      sendFreeDebitor: false,
+      sendBuilder: false,
+      sendDefender: true,
+      sendClaimer: true,
+
+      //mining
+      debitorProSource: 1,
+      debitorAsFreelancer: 0,
+      energySources: [
+         '5bbcb09f9099fc012e63c717',
+      ],
+      mineralSources: [],
+      useLinks: false,
+      targetLinks: [
+
+      ],
+      spawnLink: null,
+      controllerLink: null,
+
+      //structures
+      repairer: 0,
+      maxwallRepairer: 0,
+      maxbuilder: 1,
+      prioBuildings: [
+      ],
+      walls: [],
+
+      //controller  
+      upgrader: 0,
    },
    E59N7:
    {
@@ -380,6 +419,7 @@ global.room =
       spawnRoom: 'E59N9',
       sendMiner: true,
       sendDebitor: true,
+      minHostile : 2,
       sendFreeDebitor: true,
       sendBuilder: true,
       sendDefender: true,

@@ -1,5 +1,27 @@
 module.exports = 
 {
+    _Transfer: function(creep, target, type)
+    {
+        if (target) {
+            switch (creep.transfer(target, type))
+            {
+                case ERR_NOT_IN_RANGE:
+                    creep.moveTo(target, {reusePath: 5});
+                    return true;
+
+                case OK:
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+        return false;
+    },
+    CheckIsFreelancer: function(creep)
+    {
+        return creep.memory.container == '';
+    },
     TransportToHomeContainer: function(creep, type)
     {
         if(creep.memory.home != creep.room.name)
@@ -14,13 +36,7 @@ module.exports =
                 }
             });
 
-        if (target) {
-            if (creep.transfer(target, type) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(target, {reusePath: 5});
-            }
-            return true;
-        }
-        return false;
+        return this._Transfer(creep, target, type);    
     },
     TransportToHomeTerminal: function(creep, type)
     {
@@ -36,13 +52,7 @@ module.exports =
                 }
             });
 
-        if (target) {
-            if (creep.transfer(target, type) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(target, {reusePath: 5});
-            }
-            return true;
-        }
-        return false;
+        return this._Transfer(creep, target, type);    
     },
     TransportToHomeLab: function(creep, type)
     {
@@ -58,19 +68,13 @@ module.exports =
                 }
             });
 
-        if (target) {
-            if (creep.transfer(target, type) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(target, {reusePath: 5});
-            }
-            return true;
-        }
-        return false;
+        return this._Transfer(creep, target, type);    
     },
     TransportEnergyToHomeSpawn: function(creep)
-    {
+    {    
         if(creep.memory.home != creep.room.name|| creep.store[RESOURCE_ENERGY] == 0)
             return false;
-
+         
         var target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES,
             {
                 filter: (structure) => {
@@ -80,16 +84,8 @@ module.exports =
                     ) && structure.store.getFreeCapacity([RESOURCE_ENERGY]) > 0;
                 }
             });
-        if (target) {
-            var state = creep.transfer(target, RESOURCE_ENERGY);
-            if (state == ERR_NOT_IN_RANGE) {
-                creep.moveTo(target, {reusePath: 5});
-            }
-            else return false;
-           
-            return true;
-        }
-        return false;
+         
+        return this._Transfer(creep, target, RESOURCE_ENERGY);    
     },
     TransportEnergyToHomeTower: function(creep)
     {
@@ -108,18 +104,11 @@ module.exports =
         if (towers.length > 0) 
         {
             towers.sort((a, b) => b.store.getFreeCapacity(RESOURCE_ENERGY) - a.store.getFreeCapacity(RESOURCE_ENERGY));
-
-            var state = creep.transfer(towers[0], RESOURCE_ENERGY);
-            if (state == ERR_NOT_IN_RANGE) {
-                creep.moveTo(towers[0], {reusePath: 5});
-            }
-            else return false;
-            
-            return true;
+            return this._Transfer(creep, towers[0], RESOURCE_ENERGY);    
         }
         return false;
     },
-    TransportToHomeStorage: function(creep, type)
+    TransportToHomeStorage: function(creep)
     { 
         if(creep.memory.home != creep.room.name)
             return false;
@@ -135,9 +124,7 @@ module.exports =
 
         if (target) {
             for (var resourceType in creep.store) {
-                if (creep.transfer(target, resourceType) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(target, {reusePath: 5});
-                }
+                this._Transfer(creep, target, resourceType);    
             } 
             return true;
         }

@@ -1,3 +1,4 @@
+const controllerMemory = require('./controller.memory');
 const  timer = require('./controller.timing');
 const jobs = require('./creep.jobs');
 
@@ -8,13 +9,22 @@ module.exports.loop = function () {
     {  
         var room = Game.rooms[name];
 
-        if(Memory.rooms[name].nuke && Memory.rooms[name].nukepos.length > 0)
+        try
         {
-            for(var nuke of Memory.rooms[name].nukepos)
+            if(Memory.rooms[name].nuke && Memory.rooms[name].nukepos.length > 0)
             {
-                new RoomVisual(name).circle(nuke.x, nuke.y,{fill: 'transparent', radius: 5, stroke: '#ff0000'});         
-            }     
+                for(var nuke of Memory.rooms[name].nukepos)
+                {
+                    new RoomVisual(name).circle(nuke.x, nuke.y,{fill: 'transparent', radius: 5, stroke: '#ff0000'});         
+                }     
+            }
         }
+        catch
+        {
+            Memory.init = false;
+            controllerMemory.init();
+        }
+       
 
         if (room && room.controller && room.controller.my) 
         {

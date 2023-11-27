@@ -182,7 +182,13 @@ module.exports = {
                 if(container && container.progressTotal == undefined && container.hits < container.hitsMax)
                 {   
                     creep.say('🔧');   
-                    creep.repair(container);     
+                    creep.repair(container);  
+                    
+                    if(container.store.getUsedCapacity() > 0)   
+                    {
+                        if(creep.withdraw(container, RESOURCE_ENERGY) == OK)
+                            return;
+                    }
                 }
                 else if(container && container.progressTotal != undefined && container.progressTotal > container.progress)
                 {
@@ -277,11 +283,11 @@ module.exports = {
      * 
      * @param {StructureSpawn} spawn 
      */
-    _getProfil: function(spawn) {
+    _getProfil: function(spawn, workroom) {
         var maxEnergy = spawn.room.energyCapacityAvailable;
         const maxWorkParts = Math.floor((maxEnergy-150) / BODYPART_COST[WORK]);
       
-        const numberOfWorkParts = Math.min(maxWorkParts, 5);
+        const numberOfWorkParts = Math.min(maxWorkParts, spawn.room.name == workroom ? 5 : 7);
         
         let profil = Array(numberOfWorkParts).fill(WORK);
         
@@ -362,7 +368,7 @@ module.exports = {
             return false;
         }
            
-        if(!creepBase.spawn(spawn, this._getProfil(spawn), role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name, source: source, mineEnergy:mineEnergy }))
+        if(!creepBase.spawn(spawn, this._getProfil(spawn, workroom), role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name, source: source, mineEnergy:mineEnergy }))
         {
             Memory.rooms[spawn.room.name].aktivPrioSpawn = true;
             Memory.rooms[spawn.room.name].aktivPrioSpawnCount = Memory.rooms[spawn.room.name].aktivPrioSpawnCount +1;

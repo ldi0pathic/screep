@@ -26,7 +26,7 @@ module.exports = {
             var nukes = room.find(FIND_NUKES);
 
             Memory.rooms[name].needDefence = hostiles.length > 0;
-            if(hostiles.length > 0)
+            if(hostiles.length > (global.room[name].minHostile || 1))
             {
                 let maxLifeTime = 0;
 
