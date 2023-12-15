@@ -18,17 +18,33 @@ module.exports = {
 
         if (enemies.length > 0) {
             
-            const target = creep.pos.findClosestByRange(enemies);
-            const result = creep.attack(target);
-            creep.rangedAttack(target);
+            enemies.sort(function (a, b) 
+            {
+                var costA = a.body.reduce(function (total, part) 
+                {
+                    return total + BODYPART_COST[part.type];
+                }, 0);
+
+                var costB = b.body.reduce(function (total, part) 
+                {
+                    return total + BODYPART_COST[part.type];
+                }, 0);
+
+                return costB - costA;
+            });
+
+            // Greife den teuersten feindlichen Creep an
+
+            const result = creep.attack(enemies[0]);
+            creep.rangedAttack(enemies[0]);
 
             if (result === OK) {
-                console.log(`${creep.name} greift ${target.name} an.`);
+                console.log(`${creep.name} greift ${enemies[0].name} an.`);
             }
             else
             {
                 creep.say('✊')
-                creep.moveTo(target, {reusePath: 5});
+                creep.moveTo(enemies[0], {reusePath: 5});
             }
             return true;
         }

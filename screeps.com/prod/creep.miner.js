@@ -1,3 +1,4 @@
+const { isFunction } = require('lodash');
 const creepBase = require('./creep.base');
 require('./config');
 const role = "miner";
@@ -176,33 +177,39 @@ module.exports = {
         }
         else
         { 
+            let source = Game.getObjectById(creep.memory.source);
+            
             if(creep.memory.mineEnergy)
             { 
                 var container = Game.getObjectById(creep.memory.container);
-                if(container && container.progressTotal == undefined && container.hits < container.hitsMax)
-                {   
-                    creep.say('🔧');   
-                    creep.repair(container);  
-                    
-                    if(container.store.getUsedCapacity() > 0)   
+                if(container)
+                {
+                    if(container.store.getUsedCapacity() == 0 && source.energy <= 1)
                     {
-                        if(creep.withdraw(container, RESOURCE_ENERGY) == OK)
-                            return;
+                        creep.say('😴')
+                        return;
                     }
-                }
-                else if(container && container.progressTotal != undefined && container.progressTotal > container.progress)
-                {
-                    creep.say('🛠');
-                    creep.build(container); 
-                }
-                else if(container && container.store.getFreeCapacity() == 0 && !creep.memory.link)
-                {
-                    creep.say('🚯');
-                    return;
-                }
-                else if(container && container.store.getUsedCapacity() > 0 && creep.memory.link)
-                {
-                    creep.withdraw(container, RESOURCE_ENERGY)
+
+                    if(creep.store.getFreeCapacity() > 0 && container.progressTotal == undefined && container.store.getUsedCapacity() > 0)
+                    {   
+                        creep.withdraw(container, RESOURCE_ENERGY);                     
+                    }
+    
+                    if(container.progressTotal != undefined && container.progressTotal > container.progress)
+                    {
+                        creep.say('🛠');
+                        creep.build(container); 
+                    }
+                    else if(container.progressTotal == undefined && container.hits < container.hitsMax)
+                    {   
+                        creep.say('🔧');   
+                        creep.repair(container);     
+                    }
+                    else if(container.store.getFreeCapacity() == 0 && !creep.memory.link)
+                    {
+                        creep.say('🚯');
+                        return;
+                    }
                 }
 
                 //link bauen
@@ -213,7 +220,7 @@ module.exports = {
                     if(build && build.progressTotal != undefined && build.progressTotal > build.progress)
                     {
                         creep.say('🛠');
-                        creep.build(build); 
+                        creep.build(build);
                     }
                     else if(!build)
                     {
@@ -249,7 +256,16 @@ module.exports = {
 
                    if(creep.transfer(link,RESOURCE_ENERGY) == ERR_FULL)
                    {     
-                        var target = Game.getObjectById(global.room[creep.room.name].targetLinks[[Math.floor((Math.random()*global.room[creep.room.name].targetLinks.length))]]);   
+                        var target;
+                        if( creep.room.storage.store.getUsedCapacity() > creep.room.storage.store.getFreeCapacity())
+                        {
+                            target = Game.getObjectById(global.room[creep.room.name].controllerLink);   
+                        }
+                        else
+                        {
+                            target = Game.getObjectById(global.room[creep.room.name].targetLinks[[Math.floor((Math.random()*global.room[creep.room.name].targetLinks.length))]]);   
+                        }
+          
                         if(target && target.store.getFreeCapacity(RESOURCE_ENERGY) > 50)
                         {
                             link.transferEnergy(target);
@@ -258,8 +274,13 @@ module.exports = {
                 }     
             }
             
-            let source = Game.getObjectById(creep.memory.source);
-            let state = creep.harvest(source);
+            if( source.energy <= 1 )
+            { 
+                creep.say('😴')
+                return;
+            }
+                
+            var state = creep.harvest(source);
         
             if( state != OK)
             {
@@ -287,7 +308,7 @@ module.exports = {
         var maxEnergy = spawn.room.energyCapacityAvailable;
         const maxWorkParts = Math.floor((maxEnergy-150) / BODYPART_COST[WORK]);
       
-        const numberOfWorkParts = Math.min(maxWorkParts, spawn.room.name == workroom ? 5 : 7);
+        const numberOfWorkParts = Math.min(maxWorkParts, 9);
         
         let profil = Array(numberOfWorkParts).fill(WORK);
         
@@ -295,7 +316,7 @@ module.exports = {
         profil.push(CARRY);
         profil.push(MOVE);
         
-        var rest = Math.floor((maxEnergy-800) / 50);
+        var rest = Math.floor((maxEnergy-1000) / 50);
         rest = Math.min(rest, 3);
 
         if(rest < 1) rest = 0;

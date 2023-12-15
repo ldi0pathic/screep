@@ -45,20 +45,48 @@ module.exports =
             } 
         });
 
-        creep.memory.distance = creep.memory.distance + 1;
+        if(creep.memory.home != creep.memory.workroom)
+            creep.memory.distance = creep.memory.distance + 1;
 
-        if (creep.memory.harvest) {
-          
-           
-            if(creepBase.checkInvasion(creep)) 
+        if(creepBase.checkInvasion(creep)) 
+        {
+            if(creep.room.name == creep.memory.workroom )
             {
-                if(creep.room.name == creep.memory.workroom )
+                if(creep.memory.harvest)
                 {
                     if(creepBase.harvestRoomStorage(creep,creep.memory.mineral)) return;
                     if(creepBase.harvestRoomContainer(creep,creep.memory.mineral,0.25)) return;   
                     return;
                 }
-            };
+                else
+                {
+                    if(creepBase.TransportEnergyToHomeTower(creep))return;  
+                }  
+                return;    
+            }
+
+            return;
+        };
+
+        if(creep.memory.notfall)
+        {
+            if(creep.memory.harvest)
+            {
+                if(creepBase.harvestSpawnLink(creep,creep.memory.mineral))return;
+                if(creepBase.harvestRoomStorage(creep,creep.memory.mineral)) return;
+                if(creepBase.harvestRoomContainer(creep,creep.memory.mineral,0.25)) return;   
+                return;
+            }
+            else
+            {
+                if(creepBase.TransportEnergyToHomeSpawn(creep))return;
+                if(creepBase.TransportEnergyToHomeTower(creep))return;  
+            }  
+            return;   
+        }
+
+        if (creep.memory.harvest) {
+          
             if(creepBase.goToWorkroom(creep)) return;
             
             if(creepBase.harvestCompleteRoomTombstones(creep)) return;
@@ -127,7 +155,7 @@ module.exports =
             if(creepBase.TransportToHomeTerminal(creep,creep.memory.mineral))return;   
         }
 
-        if(creepBase.TransportToHomeContainer(creep, creep.memory.mineral))return;
+        //if(creepBase.TransportToHomeContainer(creep, creep.memory.mineral))return;
 
         return;        
     },

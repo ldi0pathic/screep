@@ -72,7 +72,8 @@ module.exports =
     },
     TransportEnergyToHomeSpawn: function(creep)
     {    
-        if(creep.memory.home != creep.room.name|| creep.store[RESOURCE_ENERGY] == 0)
+        if(creep.memory.home != creep.room.name || 
+           creep.store[RESOURCE_ENERGY] == 0)
             return false;
          
         var target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES,
@@ -89,7 +90,8 @@ module.exports =
     },
     TransportEnergyToHomeTower: function(creep)
     {
-        if(creep.memory.home != creep.room.name || creep.store[RESOURCE_ENERGY] == 0)
+        if(creep.memory.home != creep.room.name || 
+           creep.store[RESOURCE_ENERGY] == 0)
             return false;
         
         var towers = creep.room.find(FIND_MY_STRUCTURES,
@@ -110,7 +112,7 @@ module.exports =
     },
     TransportToHomeStorage: function(creep)
     { 
-        if(creep.memory.home != creep.room.name)
+        if(creep.memory.home != creep.room.name || creep.memory.fromStorage)
             return false;
         
         var target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES,

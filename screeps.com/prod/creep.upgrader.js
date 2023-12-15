@@ -35,28 +35,17 @@ module.exports = {
     _getProfil: function(spawn, link)
     {   var numberOfSets = 0;
         
-        if(link)
+        const totalCost = 2 * BODYPART_COST[WORK] + 2 * BODYPART_COST[CARRY] +BODYPART_COST[MOVE];
+        var maxEnergy = spawn.room.energyCapacityAvailable;
+        numberOfSets = Math.min(9,Math.floor(maxEnergy / totalCost));
+        if(numberOfSets == 0)
         {
-            const totalCost = 3 * BODYPART_COST[WORK] + BODYPART_COST[CARRY] + 2 * BODYPART_COST[MOVE];
-            var maxEnergy = spawn.room.energyCapacityAvailable;
-            numberOfSets = Math.min(4,Math.floor(maxEnergy / totalCost));
-            if(numberOfSets == 0)
-            {
-                return [WORK,CARRY,MOVE,MOVE];
-            }
-            return Array((numberOfSets*3)).fill(WORK).concat(Array((numberOfSets)).fill(CARRY).concat(Array((numberOfSets*2)).fill(MOVE)));
+            return [WORK,CARRY,MOVE,MOVE];
         }
-        else
-        {
-            const totalCost = 3 * BODYPART_COST[WORK] + 2 * BODYPART_COST[CARRY] + 2 * BODYPART_COST[MOVE];
-            var maxEnergy = spawn.room.energyCapacityAvailable;
-            numberOfSets = Math.min(5,Math.floor(maxEnergy / totalCost));
-            if(numberOfSets == 0)
-            {
-                return [WORK,CARRY,CARRY,MOVE,MOVE];
-            }
-            return Array((numberOfSets*3)).fill(WORK).concat(Array((numberOfSets*2)).fill(CARRY).concat(Array((numberOfSets*2)).fill(MOVE)));
-        }   
+        var carry = Math.min(numberOfSets*2,16);
+        
+        return Array((numberOfSets*2)).fill(WORK).concat(Array(carry).fill(CARRY).concat(Array((numberOfSets)).fill(MOVE)));
+      
     },
     spawn: function(spawn,workroom)
     {
