@@ -43,20 +43,22 @@ module.exports = {
         var targetWall;
         if(!creep.memory.wall)
         {
-            var walls = creep.room.find(FIND_STRUCTURES,  {filter: (structure) => {
-                return  (structure.structureType === STRUCTURE_WALL || 
-                structure.structureType === STRUCTURE_RAMPART) &&
-                structure.hits < structure.hitsMax;
-            }})
+            var wall;
+            for(var wallId in Memory.rooms[creep.memory.workroom].wally)
+            {
+                var w = Game.getObjectById(wallId);
 
-            const sortedWalls = walls
-                .filter(wall => wall && wall.hits < wall.hitsMax)
-                .sort((a, b) => a.hits - b.hits);
-
-            if (sortedWalls.length > 0) {
-                creep.memory.wall = sortedWalls[0].id;
-                targetWall = sortedWalls[0];
+                if(!wall || wall.hits > w.hits)
+                {
+                    wall = w;
+                } 
             }
+
+            if(wall)
+            {
+                creep.memory.wall = wall.id;
+                targetWall = wall;
+            } 
         }
         else
         {

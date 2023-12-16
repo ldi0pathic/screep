@@ -11,8 +11,6 @@ module.exports = {
 
         for(var name in global.room)
         {
-            console.log(name);
-                      
             if (!Memory.rooms[name]) 
             {
                 Memory.rooms[name] = {};
@@ -47,5 +45,38 @@ module.exports = {
         }
         if(msg != "")
             console.log(msg);
+    },
+    FindAndSaveRoomWalls: function()
+    {
+        if(!Memory.rooms)
+        {
+            Memory.rooms = {};
+        }
+
+        for(var name in global.room)
+        {
+            if(global.room[name].maxwallRepairer < 1)
+                continue;
+
+            if (!Memory.rooms[name]) 
+            {
+                Memory.rooms[name] = {};
+            }
+
+
+            var room = Game.rooms[global.room[name].room];
+
+            var walls = room.find(FIND_STRUCTURES,  {filter: (structure) => 
+                {
+                    return  (structure.structureType === STRUCTURE_WALL || 
+                    structure.structureType === STRUCTURE_RAMPART) 
+                }});
+           
+            Memory.rooms[name].wally = walls.map( w => {
+                return w.id
+            });
+            console.log("done :)")
+            
+        }
     }
 };

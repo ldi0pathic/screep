@@ -39,5 +39,18 @@ module.exports = {
         }
 
         //11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97
+    },
+    daylie: function()
+    {
+        let lastProcessedDay = Memory.lastProcessedDay || 0;
+        var tick = Game.time;
+
+        if (tick % 1500 === 0 && tick / 1500 > lastProcessedDay) 
+        {
+            memoryControll.FindAndSaveRoomWalls();
+
+            Memory.lastProcessedDay = tick / 1500;
+        }
     }
+    
 }
