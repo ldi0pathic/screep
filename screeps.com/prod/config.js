@@ -141,12 +141,12 @@ global.room =
       ],
       mineralSources: [],
 
-      useLinks: true,
+      useLinks: false,
       targetLinks: [
          '653aed0d2fa32d1c887ab4e7',
          '655777371fa07d2b6e1faa8d'
       ],
-      spawnLink: '655777371fa07d2b6e1faa8d',
+      spawnLink:null,// '655777371fa07d2b6e1faa8d',
       controllerLink: '653aed0d2fa32d1c887ab4e7',
 
       //structures
@@ -171,8 +171,8 @@ global.room =
       sendClaimer: false,
 
       //mining
-      debitorProSource: 1,
-      debitorAsFreelancer: 2,
+      debitorProSource: 0,
+      debitorAsFreelancer: 1,
       energySources: [
          '5bbcb08d9099fc012e63c58c',
          '5bbcb08d9099fc012e63c58a',

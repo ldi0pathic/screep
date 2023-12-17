@@ -15,18 +15,11 @@ module.exports = {
        
         if(!creep.memory.onPosition)
         {
+            if(creepBase.goToWorkroom(creep)) return;
            
-            if(creep.memory.workroom != creep.room.name)
-            {
-                var room = new RoomPosition(25, 25, creep.memory.workroom); 
-                creep.moveTo(room, {reusePath: 5});
-                return;
-            }
-            
             let finalLocation;
             if(!creep.memory.pos)
-            {
-                
+            {      
                var source = Game.getObjectById(creep.memory.source);
 
                 let container = source.pos.findInRange(FIND_STRUCTURES, 1, {
@@ -163,7 +156,7 @@ module.exports = {
                     }
                 } 
             } 
-            else if(!creep.moveTo(new RoomPosition(finalLocation.x, finalLocation.y,finalLocation.roomName),{reusePath: 5}) == OK)
+            else if(!creepBase.moveByMemory(creep, new RoomPosition(finalLocation.x, finalLocation.y,finalLocation.roomName)))
             {
                   const blockingCreep = creep.pos.findInRange(FIND_MY_CREEPS, 1, {
                     filter: (otherCreep) => otherCreep.memory.role !== 'miner'
@@ -257,7 +250,7 @@ module.exports = {
                    if(creep.transfer(link,RESOURCE_ENERGY) == ERR_FULL)
                    {     
                         var target;
-                        if( creep.room.storage.store.getUsedCapacity() > creep.room.storage.store.getFreeCapacity())
+                        if(creep.room.storage && creep.room.storage.store.getUsedCapacity() > creep.room.storage.store.getFreeCapacity())
                         {
                             target = Game.getObjectById(global.room[creep.room.name].controllerLink);   
                         }

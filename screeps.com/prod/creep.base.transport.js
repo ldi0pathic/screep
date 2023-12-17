@@ -111,18 +111,20 @@ module.exports =
         return false;
     },
     TransportToHomeStorage: function(creep)
-    { 
-        if(creep.memory.home != creep.room.name || creep.memory.fromStorage)
+    {  
+        if(creep.memory.home != creep.room.name)
             return false;
-        
-        var target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES,
-            {
-                filter: (structure) => {
-                    return (
-                        structure.structureType === STRUCTURE_STORAGE    
-                    ) && structure.store.getFreeCapacity() > 0;
-                }
-            });
+
+        if(Memory.rooms[creep.memory.workroom].hasLinks && global.room[creep.memory.workroom].spawnLink)
+        {
+            var link = Game.getObjectById(global.room[creep.memory.home].spawnLink);
+
+            if(link.store[RESOURCE_ENERGY] < 100 && creep.memory.fromStorage)
+                return false;
+        }
+        else if(creep.memory.fromStorage) return false;
+            
+        var target = creep.room.storage;
 
         if (target) {
             for (var resourceType in creep.store) {

@@ -74,9 +74,7 @@ module.exports = {
            
             Memory.rooms[name].wally = walls.map( w => {
                 return w.id
-            });
-            console.log("done :)")
-            
+            });           
         }
     }
 };

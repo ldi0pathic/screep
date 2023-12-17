@@ -9,7 +9,10 @@ module.exports = {
        // if(creepBase.checkInvasion(creep)) return;
         if(creepBase.goToWorkroom(creep)) return;
         
-        const controller = Game.rooms[creep.memory.workroom].controller;
+        var room = Game.rooms[creep.memory.workroom];
+        if(!room)
+            return;
+        var controller = room.controller;
         var claim = global.room[creep.memory.workroom].claim;
 
         if (controller) {

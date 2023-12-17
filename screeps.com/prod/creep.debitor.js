@@ -140,6 +140,7 @@ module.exports =
         }   
         else if(creep.memory.home == creep.memory.workroom)
         {    
+           
             if(creepBase.TransportEnergyToHomeSpawn(creep))return;
             if(creepBase.TransportEnergyToHomeTower(creep))return;  
             if(creepBase.TransportToHomeStorage(creep))return;

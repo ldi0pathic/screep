@@ -339,6 +339,7 @@ module.exports =
     goToMyHome: function (creep) { return creepBaseGoTo.goToMyHome(creep) },
     goToRoomFlag: function (creep) { return creepBaseGoTo.goToRoomFlag(creep) },
     goToWorkroom: function (creep) { return creepBaseGoTo.goToWorkroom(creep) },
+    moveByMemory: function (creep, target) { return creepBaseGoTo.moveByMemory(creep, target) },
 
     TransportEnergyToHomeSpawn: function (creep) { return creepBaseTransport.TransportEnergyToHomeSpawn(creep); },
     TransportEnergyToHomeTower: function (creep) { return creepBaseTransport.TransportEnergyToHomeTower(creep); },
