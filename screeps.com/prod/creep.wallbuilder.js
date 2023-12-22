@@ -43,11 +43,11 @@ module.exports = {
         var targetWall;
         if(!creep.memory.wall)
         {
+            
             var wall;
             for(var wallId in Memory.rooms[creep.memory.workroom].wally)
             {
-                var w = Game.getObjectById(wallId);
-
+                var w = Game.getObjectById(Memory.rooms[creep.memory.workroom].wally[wallId]);
                 if(!wall || wall.hits > w.hits)
                 {
                     wall = w;
@@ -58,7 +58,7 @@ module.exports = {
             {
                 creep.memory.wall = wall.id;
                 targetWall = wall;
-            } 
+            }      
         }
         else
         {

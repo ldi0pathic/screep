@@ -12,6 +12,8 @@ module.exports =
             creep.memory.harvest = true;
             creep.memory.fromStorage = false;
             creep.say('🛒');
+            delete creep.memory.path;
+            delete creep.memory.pathTarget;
         }
         if (creep.memory.harvest && creep.store.getFreeCapacity() === 0) {
             if (typeof (action2) == "function")
@@ -19,6 +21,8 @@ module.exports =
 
             creep.memory.harvest = false;
             delete creep.memory.useRoomSource;
+            delete creep.memory.path;
+            delete creep.memory.pathTarget;
         }
     },
     checkInvasion: function (creep) {
