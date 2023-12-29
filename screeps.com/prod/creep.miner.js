@@ -5,6 +5,15 @@ const role = "miner";
 
 module.exports = {
 
+    _clearMemory : function(creep)
+    {
+        delete creep.memory.pos;
+        delete creep.memory._move;
+        delete creep.memory.path;
+        delete creep.memory.pathTarget;
+        delete creep.memory.lastPos;
+        delete creep.memory.dontMove;
+    },
     /** @param {Creep} creep **/
     doJob: function(creep) 
     {     
@@ -89,11 +98,22 @@ module.exports = {
                 else
                 {
                     creep.memory.source = source.id;        
-                    if((creep.room.controller.my && creep.room.controller.level < 4) || !creep.room.controller.my)
+                    if((creep.room.controller.my && creep.room.controller.level < 4) || !creep.room.controller.my || !creep.memory.mineEnergy)
                     {
                         creep.memory.onPosition = true;
-                        delete creep.memory.pos;
-                        delete creep.memory._move;
+                        this._clearMemory(creep);
+
+                        if(!creep.memory.mineEnergy)
+                        {
+                            var terminal = creep.pos.findInRange(FIND_STRUCTURES,1, {
+                                filter: (s) => s.structureType === STRUCTURE_TERMINAL
+                            })[0];
+
+                            if(terminal)
+                            {
+                                creep.memory.terminal = terminal.id;
+                            }
+                        }
                         return;
                     }
 
@@ -105,8 +125,7 @@ module.exports = {
                     {
                         creep.memory.link = link.id;
                         creep.memory.onPosition = true;
-                        delete creep.memory.pos;
-                        delete creep.memory._move;
+                        this._clearMemory(creep);
                     }
                     else
                     {
@@ -118,11 +137,10 @@ module.exports = {
                         {
                             creep.memory.build = build.id;
                             creep.memory.onPosition = true;
-                            delete creep.memory.pos;
-                            delete creep.memory._move;
+                            this._clearMemory(creep);
               
                         }
-                        else if(creep.room.controller.level >= 6)
+                        else if(creep.room.controller.level >= 6 && creep.memory.mineEnergy)
                         {
                             var creepPos = creep.pos;
                             var adjacentSpots = [];
@@ -149,24 +167,14 @@ module.exports = {
                         else
                         {
                             creep.memory.onPosition = true;
-                            delete creep.memory.pos;
-                            delete creep.memory._move;
+                            this._clearMemory(creep);
                             return; 
                         }
                     }
                 } 
             } 
-            else if(!creepBase.moveByMemory(creep, new RoomPosition(finalLocation.x, finalLocation.y,finalLocation.roomName)))
-            {
-                  const blockingCreep = creep.pos.findInRange(FIND_MY_CREEPS, 1, {
-                    filter: (otherCreep) => otherCreep.memory.role !== 'miner'
-                })[0];
-    
-                if (blockingCreep) 
-                { 
-                    blockingCreep.move(Math.round(Math.random()*7)+1);
-                }
-            } 
+            else 
+                creepBase.moveByMemory(creep, new RoomPosition(finalLocation.x, finalLocation.y,finalLocation.roomName))
         }
         else
         { 
@@ -266,8 +274,37 @@ module.exports = {
                    }
                 }     
             }
+            else
+            {
+                if( creep.memory.terminal && creep.store.getFreeCapacity() == 0)
+                {
+                    var terminal = Game.getObjectById(creep.memory.terminal);
+                    if(terminal && creep.transfer( terminal,RESOURCE_ENERGY) == ERR_FULL)
+                    {
+                        //todo markausführung
+                    }
+                }
+
+                if(creep.memory.extactor)
+                {
+                    var extactor = Game.getObjectById(creep.memory.extactor);
+                    if(extactor && extactor.cooldown > 0)
+                    {
+                        creep.say('😴')
+                        return;
+                    }
+                }
+                else
+                {
+                    let extr = creep.pos.findInRange(FIND_MY_STRUCTURES, 1, {
+                        filter: { structureType: STRUCTURE_EXTRACTOR }
+                    })[0];
+                    if(extr)
+                        creep.memory.extactor = extr.id;
+                }
+            }
             
-            if( source.energy <= 1 )
+            if( source.energy && source.energy <= 1 || source.mineralAmount && source.mineralAmount < 1 )
             { 
                 creep.say('😴')
                 return;

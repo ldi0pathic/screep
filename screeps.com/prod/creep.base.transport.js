@@ -115,6 +115,7 @@ module.exports =
         if(creep.memory.home != creep.room.name)
             return false;
 
+        //ansonsten werden lnks nicht inden storage geleert :( 
         if(Memory.rooms[creep.memory.workroom].hasLinks && global.room[creep.memory.workroom].spawnLink)
         {
             var link = Game.getObjectById(global.room[creep.memory.home].spawnLink);

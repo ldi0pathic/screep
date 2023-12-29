@@ -172,12 +172,14 @@ global.room =
 
       //mining
       debitorProSource: 0,
-      debitorAsFreelancer: 1,
+      debitorAsFreelancer: 3,
       energySources: [
          '5bbcb08d9099fc012e63c58c',
          '5bbcb08d9099fc012e63c58a',
       ],
-      mineralSources: [],
+      mineralSources: [
+         '5bbcb72cd867df5e54207db0'
+      ],
 
       useLinks: true,
       targetLinks: [
@@ -397,7 +399,7 @@ global.room =
 
       //mining
       debitorProSource: 0,
-      debitorAsFreelancer: 1,
+      debitorAsFreelancer: 3,
       energySources: [
          '5bbcb09e9099fc012e63c70a',
          '5bbcb09e9099fc012e63c70b',

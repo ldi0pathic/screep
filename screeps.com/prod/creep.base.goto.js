@@ -33,7 +33,7 @@ module.exports =
 
     moveByMemory: function(creep, target)
     {
-        if(creep.pos.inRangeTo(target, 1))
+        if(creep.pos.isEqualTo(target))
         {
             delete creep.memory.path;
             delete creep.memory.pathTarget;
@@ -42,22 +42,20 @@ module.exports =
 
         if( creep.memory.dontMove > 3 )
         {
-            if(creep.moveTo(target) == OK)
-                creep.memory.dontMove = 0;
+            var path = creep.pos.findPathTo(target, { ignoreCreeps: false }); 
+            serializedPath = Room.serializePath(path);
+            creep.memory.path = serializedPath;
+
+            creep.memory.dontMove = 0;
+               
             return true; 
         }
 
         var serializedPath;
         var t = creep.memory.pathTarget;
         var p = creep.memory.path;
-
-/*        if (creep.memory.lastMoveTick && Game.time - creep.memory.lastMoveTick > maxTicksWithoutMove) {
-            delete creep.memory.path;
-            delete creep.memory.pathTarget;
-            return true; 
-        }
-*/
-        if(p && t && target.isEqualTo(t.x, t.y, t.roomName) )
+      
+        if(p && t && t.roomName && target.isEqualTo(new RoomPosition(t.x, t.y, t.roomName)) )
         {
             serializedPath = p;
         }
@@ -73,8 +71,10 @@ module.exports =
             creep.memory.pathTarget.roomName = target.roomName;
         }
 
+        
+
         var state = creep.moveByPath(serializedPath);
-        creep.say(state);
+        //creep.say(state);
         switch(state)
         {
             case OK: 

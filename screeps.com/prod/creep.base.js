@@ -66,13 +66,13 @@ module.exports =
             drop = Game.getObjectById(creep.memory.useRoomDrop);
         }
         else {
-            drop = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, { filter: (d) => d.resourceType === type && d.amount > 100 });
+            drop = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, { filter: (d) =>  d.amount > 100 });
         }
 
         if (drop) {
             switch (creep.pickup(drop)) {
                 case ERR_NOT_IN_RANGE:
-                    creep.moveTo(drop, { reusePath: 5 });
+                    creepBaseGoTo.moveByMemory(creep, drop.pos);
                     creep.memory.useRoomDrop = drop.id;
                     return true;
 
@@ -103,7 +103,7 @@ module.exports =
             switch (creep.withdraw(tombstone, type)) {
                 case ERR_NOT_IN_RANGE:
                     creep.memory.useTombstone = tombstone.id;
-                    creep.moveTo(tombstone, { reusePath: 5 });
+                    creepBaseGoTo.moveByMemory(creep,tombstone.pos);
                     return true;
 
                 case OK:
@@ -132,7 +132,7 @@ module.exports =
             for (var resourceType in tombstone.store) {
                 switch (creep.withdraw(tombstone, resourceType)) {
                     case ERR_NOT_IN_RANGE:
-                        creep.moveTo(tombstone, { reusePath: 5 });
+                        creepBaseGoTo.moveByMemory(creep,tombstone.pos);
                         creep.memory.useTombstone = tombstone.id;
                         return true;
 
@@ -162,7 +162,7 @@ module.exports =
         if (ruin) {
             switch (creep.withdraw(ruin, type)) {
                 case ERR_NOT_IN_RANGE:
-                    creep.moveTo(ruin, { reusePath: 5 });
+                    creepBaseGoTo.moveByMemory(creep,ruin.pos);
                     creep.memory.useRuin = ruin.id;
                     return true;
 
@@ -189,7 +189,7 @@ module.exports =
             var state  = creep.withdraw(storage, type); 
             switch (state) {
                 case ERR_NOT_IN_RANGE:
-                    creep.moveTo(storage, { reusePath: 5 });
+                    creepBaseGoTo.moveByMemory(creep,storage.pos);
                     return true;
                 case OK:
                     creep.memory.fromStorage = true;
@@ -221,7 +221,7 @@ module.exports =
         if (container) {
             switch (creep.withdraw(container, type)) {
                 case ERR_NOT_IN_RANGE:
-                    creep.moveTo(container, { reusePath: 5 });
+                    creepBaseGoTo.moveByMemory(creep,container.pos);
                     return true;
                 case OK:
                     creep.memory.fromStorage = false;
@@ -244,7 +244,7 @@ module.exports =
         if (link && link.store[type] > 100) {
             switch (creep.withdraw(link, type)) {
                 case ERR_NOT_IN_RANGE:
-                    creep.moveTo(link, { reusePath: 5 });
+                    creepBaseGoTo.moveByMemory(creep,link.pos);
                     return true;
                 case OK:
                     creep.memory.fromStorage = false;
@@ -267,7 +267,7 @@ module.exports =
         if (link && link.store[type] > 100) {
             switch (creep.withdraw(link, type)) {
                 case ERR_NOT_IN_RANGE:
-                    creep.moveTo(link, { reusePath: 5 });
+                    creepBaseGoTo.moveByMemory(creep,link.pos);
                     return true;
                 case OK:
                     creep.memory.fromStorage = false;
@@ -293,7 +293,7 @@ module.exports =
 
             switch (creep.withdraw(container, type)) {
                 case ERR_NOT_IN_RANGE:
-                    creep.moveTo(container, { reusePath: 5 });
+                    creepBaseGoTo.moveByMemory(creep,container.pos);
                     return true;
                 case OK:
                     creep.memory.fromStorage = false;
@@ -368,7 +368,7 @@ module.exports =
 
         const state = creep.upgradeController(controller);
         if (state === ERR_NOT_IN_RANGE) {
-            creep.moveTo(controller, { reusePath: 5 });
+            creepBaseGoTo.moveByMemory(creep,controller.pos);
         }
 
         if (!controller.sign ||
@@ -377,7 +377,7 @@ module.exports =
 
             var c = creep.signController(controller, '⚔')
             if (c === ERR_NOT_IN_RANGE) {
-                creep.moveTo(controller, { reusePath: 5 });
+                creepBaseGoTo.moveByMemory(creep,controller.pos);
             }
         }
 
