@@ -59,7 +59,7 @@ module.exports = {
                 
                 if (state === ERR_NOT_IN_RANGE) 
                 {
-                    creep.moveTo(target, {reusePath: 5});
+                    creepBase.moveByMemory(creep, target.pos);
                 } 
                
                 return true;   
@@ -106,7 +106,7 @@ module.exports = {
                 
                 if (state === ERR_NOT_IN_RANGE) 
                 {
-                    creep.moveTo(target, {reusePath: 5});
+                    creepBase.moveByMemory(creep, target.pos);    
                 } 
                
                 return true;   

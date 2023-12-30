@@ -276,15 +276,18 @@ module.exports = {
             }
             else
             {
+
                 if(container)
                 {
                     if(creep.store.getFreeCapacity() > 0 && container.store.getUsedCapacity() > 0)
                     {   
-                        creep.withdraw(container, source.mineral);                     
+                        creep.withdraw(container, source.mineralType);              
+
+                        return;       
                     }
     
                    
-                    if(container.store.getFreeCapacity() == 0 && !creep.memory.terminal)
+                    if(creep.store.getFreeCapacity() == 0 && container.store.getFreeCapacity() == 0 && !creep.memory.terminal)
                     {
                         creep.say('🚯');
                         return;
@@ -294,7 +297,7 @@ module.exports = {
                 if( creep.memory.terminal && creep.store.getFreeCapacity() == 0)
                 {
                     var terminal = Game.getObjectById(creep.memory.terminal);
-                    if(terminal && creep.transfer( terminal,source.mineral) == ERR_FULL)
+                    if(terminal && creep.transfer( terminal,source.mineralType) == ERR_FULL)
                     {
                         //todo markausführung
                     }

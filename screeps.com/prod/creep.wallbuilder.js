@@ -70,7 +70,7 @@ module.exports = {
             const repairResult = creep.repair(targetWall);
 
             if (repairResult === ERR_NOT_IN_RANGE) {
-                creep.moveTo(targetWall, { visualizePathStyle: { stroke: '#ffffff' }, reusePath: 5});
+                creepBase.moveByMemory(creep, targetWall.pos);
                 return true;
             }
 
