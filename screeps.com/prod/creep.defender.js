@@ -14,70 +14,71 @@ module.exports = {
     },
     _defend: function(creep)
     {
-        var enemies = creep.room.find(FIND_HOSTILE_CREEPS);
-
-        if (enemies.length > 0) {
-            
-            enemies.sort(function (a, b) 
+        if(creep.memory.attackId)
+        {
+            var target = Game.getObjectById(creep.memory.attackId);
+            if(target)
             {
-                var costA = a.body.reduce(function (total, part) 
+                var result = creep.attack(target);
+                creep.rangedAttack(target);
+                if (result === OK) {
+                    console.log(`${creep.name} greift ${enemies[0].name} an.`);
+                }
+                else
                 {
-                    return total + BODYPART_COST[part.type];
-                }, 0);
-
-                var costB = b.body.reduce(function (total, part) 
-                {
-                    return total + BODYPART_COST[part.type];
-                }, 0);
-
-                return costB - costA;
-            });
-
-            // Greife den teuersten feindlichen Creep an
-
-            const result = creep.attack(enemies[0]);
-            creep.rangedAttack(enemies[0]);
-
-            if (result === OK) {
-                console.log(`${creep.name} greift ${enemies[0].name} an.`);
+                    creep.say('✊')
+                    creep.moveTo(enemies[0], {reusePath: 5});
+                }     
             }
             else
             {
-                creep.say('✊')
-                creep.moveTo(enemies[0], {reusePath: 5});
-            }
-            return true;
+                delete creep.memory.attackId;
+            }     
         }
-        else
+        else if(Memory.rooms[creep.memory.workroom].needDefence)
         {
-            Memory.rooms[creep.memory.workroom].needDefence = false;     
-        }
-      
-        var core = creep.room.find(FIND_HOSTILE_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_INVADER_CORE});
-
-        if(core.length > 0)
-        {
-            const target = creep.pos.findClosestByRange(core);
-            const result = creep.attack(target);
-            creep.rangedAttack(target);
-
-            if (result === OK)  {
+            var enemies = creep.room.find(FIND_HOSTILE_CREEPS);
+            if (enemies.length > 0) 
+            {
                 
-                if(Game.time % 10 == 0)
-                    console.log(`${creep.name} greift ${target.structureType} an.`);
+                enemies.sort(function (a, b) 
+                {
+                    var costA = a.body.reduce(function (total, part) 
+                    {
+                        return total + BODYPART_COST[part.type];
+                    }, 0);
+
+                    var costB = b.body.reduce(function (total, part) 
+                    {
+                        return total + BODYPART_COST[part.type];
+                    }, 0);
+
+                    return costB - costA;
+                });
+
+                creep.memory.attackId = enemies[0].id;
+                return true;
             }
             else
             {
-                creep.say('✊')
-                creep.moveTo(target, {reusePath: 5});
+                Memory.rooms[creep.memory.workroom].needDefence = false;     
             }
-            return true;
         }
-        else
+        else if(Memory.rooms[creep.memory.workroom].invaderCore)
         {
-            Memory.rooms[creep.memory.workroom].invaderCore = false;
+            var core = creep.room.find(FIND_HOSTILE_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_INVADER_CORE});
+
+            if(core.length > 0)
+            {
+                creep.memory.attackId = core[0].id;     
+                return true;
+            }
+            else
+            {
+                Memory.rooms[creep.memory.workroom].invaderCore = false;
+            }
         }
-        
+
         if (creep.getActiveBodyparts(ATTACK) + creep.getActiveBodyparts(RANGED_ATTACK) == 0) 
         {        
             creep.say('💥 Bye!');

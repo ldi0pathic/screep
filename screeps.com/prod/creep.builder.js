@@ -1,4 +1,5 @@
 const creepBase = require('./creep.base');
+const creepBaseGoto = require('./creep.base.goto');
 require('./config');
 const role = "builder";
 
@@ -62,27 +63,12 @@ module.exports = {
             if (target && target.progressTotal != undefined) 
             {
                 let state = creep.build(target);
-                struc = target.structureType;
-                
+               
                 if (state === ERR_NOT_IN_RANGE) 
                 {
-                    creep.moveTo(target, {reusePath: 5});
+                    creepBase.moveByMemory(creep, target.pos)   
                 } 
-                else if(state === OK)
-                {        
-                    if(struc == STRUCTURE_RAMPART)
-                    {
-                        let rampart = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                            filter: (structure) => {
-                                return (structure.structureType == STRUCTURE_RAMPART && structure.hits < 10)
-                        }});
-                        if(rampart)
-                        {
-                            creep.memory.repId = rampart.id;
-                            creep.memory.id = null;        
-                        }
-                    }
-                }
+               
                 return true;   
             }
             else
@@ -98,7 +84,7 @@ module.exports = {
                 let state = creep.repair(target)
                 if (state === ERR_NOT_IN_RANGE) 
                 {
-                    creep.moveTo(target, {reusePath: 5});
+                    creepBase.moveByMemory(creep, target.pos)   
                 } 
             } 
             else

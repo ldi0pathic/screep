@@ -37,6 +37,8 @@ module.exports =
         {
             delete creep.memory.path;
             delete creep.memory.pathTarget;
+            delete creep.memory.dontMove;
+            delete creep.memory.lastPos;
             return false;
         }
 
@@ -100,6 +102,8 @@ module.exports =
             {
                 delete creep.memory.path;
                 delete creep.memory.pathTarget;
+                delete creep.memory.dontMove;
+                delete creep.memory.lastPos;
                 return true; //damit er sein script für diesen Tick beendet
             } 
 

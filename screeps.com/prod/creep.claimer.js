@@ -20,13 +20,13 @@ module.exports = {
             {
                 var s = creep.claimController(controller);
                 if (s === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(controller, {reusePath: 5});
+                    creepBase.moveByMemory(creep, controller.pos)   
                 }
                 return;
             }
             var state = creep.reserveController(controller);
             if (state === ERR_NOT_IN_RANGE) {
-                creep.moveTo(controller, {reusePath: 5});
+                creepBase.moveByMemory(creep, controller.pos)   
             }
             else if(state == ERR_INVALID_TARGET)
             {

@@ -1,3 +1,4 @@
+const creepBaseGoTo = require('./creep.base.goto');
 module.exports = 
 {
     _Transfer: function(creep, target, type)
@@ -6,7 +7,7 @@ module.exports =
             switch (creep.transfer(target, type))
             {
                 case ERR_NOT_IN_RANGE:
-                    creep.moveTo(target, {reusePath: 5});
+                    creepBaseGoTo.moveByMemory(creep, target.pos);
                     return true;
 
                 case OK:
@@ -38,22 +39,36 @@ module.exports =
 
         return this._Transfer(creep, target, type);    
     },
-    TransportToHomeTerminal: function(creep, type)
+    TransportToHomeTerminal: function(creep)
     {
         if(creep.memory.home != creep.room.name)
             return false;
 
-        var target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES,
+        var target = creep.room.find(FIND_MY_STRUCTURES,
             {
                 filter: (structure) => {
                     return (
                         structure.structureType === STRUCTURE_TERMINAL 
-                    ) && structure.store[type] < 150000 ;
+                    ) && structure.store.getFreeCapacity() > 0 ;
                 }
             });
 
-        return this._Transfer(creep, target, type);    
+        if(target.length > 0)
+        {
+            for (var resourceType in creep.store) 
+            {
+                //verhindern, das zuviel Energie eingelagert wird :/ 
+                if(resourceType == RESOURCE_ENERGY && 
+                    target[0].store[RESOURCE_ENERGY] > 50000) 
+                    continue;
+
+                this._Transfer(creep, target[0], resourceType);    
+            } 
+            return true;
+        }
+        return false;   
     },
+  
     TransportToHomeLab: function(creep, type)
     {
         if(creep.memory.home != creep.room.name)

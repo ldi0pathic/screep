@@ -129,23 +129,20 @@ module.exports =
             return;
         }
       
-
         if(creepBase.goToMyHome(creep))return;
 
-        if(creep.memory.mineral != RESOURCE_ENERGY)
+        if(creep.store.getUsedCapacity() > creep.store.getUsedCapacity(RESOURCE_ENERGY))
         {
-            if(creepBase.TransportToHomeTerminal(creep,creep.memory.mineral))return;   
-            if(creepBase.TransportToHomeStorage(creep))return;
-            return;     
-        }   
+            if(creepBase.TransportToHomeTerminal(creep))return;  
+            if(creepBase.TransportToHomeStorage(creep))return; 
+        }
         else if(creep.memory.home == creep.memory.workroom)
         {    
-           
             if(creepBase.TransportEnergyToHomeSpawn(creep))return;
             if(creepBase.TransportEnergyToHomeTower(creep))return;  
             if(creepBase.TransportToHomeStorage(creep))return;
             if(creepBase.TransportToHomeLab(creep, creep.memory.mineral))return;
-            if(creepBase.TransportToHomeTerminal(creep,creep.memory.mineral))return;        
+            if(creepBase.TransportToHomeTerminal(creep))return;        
         }
         else
         {  
@@ -153,7 +150,7 @@ module.exports =
             if(creepBase.TransportEnergyToHomeSpawn(creep))return;
             if(creepBase.TransportEnergyToHomeTower(creep))return;
             if(creepBase.TransportToHomeLab(creep, creep.memory.mineral))return;
-            if(creepBase.TransportToHomeTerminal(creep,creep.memory.mineral))return;   
+            if(creepBase.TransportToHomeTerminal(creep))return;   
         }
 
         //if(creepBase.TransportToHomeContainer(creep, creep.memory.mineral))return;
@@ -242,7 +239,7 @@ module.exports =
                         return true;
                 }
             }
-
+/*
             var room = Game.rooms[workroom]
             if(room && room.controller && room.controller.my && room.controller.level >= 6)
             {
@@ -256,6 +253,7 @@ module.exports =
                         return true;
                 }
             }
+            */
         }
 
         if(!global.room[workroom].sendFreeDebitor)

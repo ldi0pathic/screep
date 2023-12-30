@@ -179,10 +179,10 @@ module.exports = {
         else
         { 
             let source = Game.getObjectById(creep.memory.source);
+            var container = Game.getObjectById(creep.memory.container);
             
             if(creep.memory.mineEnergy)
-            { 
-                var container = Game.getObjectById(creep.memory.container);
+            {     
                 if(container)
                 {
                     if(container.store.getUsedCapacity() == 0 && source.energy <= 1)
@@ -276,10 +276,25 @@ module.exports = {
             }
             else
             {
+                if(container)
+                {
+                    if(creep.store.getFreeCapacity() > 0 && container.store.getUsedCapacity() > 0)
+                    {   
+                        creep.withdraw(container, source.mineral);                     
+                    }
+    
+                   
+                    if(container.store.getFreeCapacity() == 0 && !creep.memory.terminal)
+                    {
+                        creep.say('🚯');
+                        return;
+                    }
+                }
+
                 if( creep.memory.terminal && creep.store.getFreeCapacity() == 0)
                 {
                     var terminal = Game.getObjectById(creep.memory.terminal);
-                    if(terminal && creep.transfer( terminal,RESOURCE_ENERGY) == ERR_FULL)
+                    if(terminal && creep.transfer( terminal,source.mineral) == ERR_FULL)
                     {
                         //todo markausführung
                     }

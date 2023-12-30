@@ -317,7 +317,7 @@ module.exports =
 
             if (source) {
                 if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
-                    if (creep.moveTo(source) == ERR_NO_PATH) {
+                    if (creep.moveTo(source) == ERR_NO_PATH) { // z.B. falls durch miner blockiert
                         delete creep.memory.useRoomSource;
                         return false;
                     }
@@ -347,7 +347,7 @@ module.exports =
 
     TransportEnergyToHomeSpawn: function (creep) { return creepBaseTransport.TransportEnergyToHomeSpawn(creep); },
     TransportEnergyToHomeTower: function (creep) { return creepBaseTransport.TransportEnergyToHomeTower(creep); },
-    TransportToHomeTerminal: function (creep, type) { return creepBaseTransport.TransportToHomeTerminal(creep, type); },
+    TransportToHomeTerminal: function (creep) { return creepBaseTransport.TransportToHomeTerminal(creep); },
     TransportToHomeStorage: function (creep) { return creepBaseTransport.TransportToHomeStorage(creep); },
     TransportToHomeContainer: function (creep, type) { return creepBaseTransport.TransportToHomeContainer(creep, type); },
     TransportToHomeLab: function (creep, type) { return creepBaseTransport.TransportToHomeLab(creep, type); },

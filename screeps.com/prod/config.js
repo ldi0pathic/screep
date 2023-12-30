@@ -139,7 +139,7 @@ global.room =
          '5bbcb08d9099fc012e63c58f',
          '5bbcb08d9099fc012e63c590',
       ],
-      mineralSources: [],
+      mineralSources: ['5bbcb72cd867df5e54207db1'],
 
       useLinks: true,
       targetLinks: [
@@ -172,7 +172,7 @@ global.room =
 
       //mining
       debitorProSource: 0,
-      debitorAsFreelancer: 3,
+      debitorAsFreelancer: 1,
       energySources: [
          '5bbcb08d9099fc012e63c58c',
          '5bbcb08d9099fc012e63c58a',
@@ -399,12 +399,12 @@ global.room =
 
       //mining
       debitorProSource: 0,
-      debitorAsFreelancer: 3,
+      debitorAsFreelancer: 1,
       energySources: [
          '5bbcb09e9099fc012e63c70a',
          '5bbcb09e9099fc012e63c70b',
       ],
-      mineralSources: [],
+      mineralSources: ['5bbcb739d867df5e54207e1a'],
 
       useLinks: true,
       targetLinks: [
