@@ -10,10 +10,11 @@ module.exports = {
         var tick = Game.time;
 
         memoryControll.init();
-
+        defenceControll.tower();
+        
         if(tick % 2 == 0)
         {
-            spawnControll.clear();
+           // spawnControll.clear();
         }
 
         if(tick % 3 == 0)
@@ -44,14 +45,17 @@ module.exports = {
     },
     daylie: function()
     {
+        var dayTicks = 86400 / 3;
         let lastProcessedDay = Memory.lastProcessedDay || 0;
         var tick = Game.time;
 
-        if (tick % 1500 === 0 && tick / 1500 > lastProcessedDay) 
+        if (tick % dayTicks === 0 && tick / dayTicks > lastProcessedDay) 
         {
             memoryControll.FindAndSaveRoomWalls();
+            memoryControll.FindAndSaveRoomContainer();
+            memoryControll.FindAndSaveRoomTower();
 
-            Memory.lastProcessedDay = tick / 1500;
+            Memory.lastProcessedDay = tick / dayTicks;
         }
     }
     

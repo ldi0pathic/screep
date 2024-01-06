@@ -17,6 +17,8 @@ module.exports = {
     /** @param {Creep} creep **/
     doJob: function(creep) 
     {     
+        if(creep.memory.onPosition && Game.time % 2 == 1) return;
+
         if(creepBase.checkInvasion(creep)) {
             creep.memory.onPosition = false;
             return;
@@ -185,7 +187,8 @@ module.exports = {
             {     
                 if(container)
                 {
-                    if(container.store.getUsedCapacity() == 0 && source.energy <= 1)
+                    
+                    if((container.progressTotal == undefined && container.store.getUsedCapacity() == 0&& source.energy <= 1) || (container.progressTotal != undefined  && source.energy <= 1) )
                     {
                         creep.say('😴')
                         return;
@@ -206,7 +209,7 @@ module.exports = {
                         creep.say('🔧');   
                         creep.repair(container);     
                     }
-                    else if(container.store.getFreeCapacity() == 0 && !creep.memory.link)
+                    else if(container.store.getFreeCapacity() == 0 && creep.store.getFreeCapacity() == 0 && !creep.memory.link)
                     {
                         creep.say('🚯');
                         return;
@@ -237,19 +240,6 @@ module.exports = {
                         }
                     }
                 }
-/*
-                if(!creep.memory.link)
-                {
-                    const link = creep.pos.findInRange(FIND_STRUCTURES,1, {
-                        filter: (s) => s.structureType === STRUCTURE_LINK
-                    })[0];
-
-                    if(link)
-                    {
-                        creep.memory.link = link.id;
-                    }
-                }
-*/
 
                 if( creep.memory.link && creep.store.getFreeCapacity() == 0)
                 {
@@ -270,7 +260,15 @@ module.exports = {
                         if(target && target.store.getFreeCapacity(RESOURCE_ENERGY) > 50)
                         {
                             link.transferEnergy(target);
-                        }    
+                        }   
+                        else
+                        {
+                            if(container.store.getFreeCapacity() == 0 && creep.store.getFreeCapacity() == 0)
+                            {
+                                creep.say('🚯');
+                                return;
+                            }
+                        } 
                    }
                 }     
             }
@@ -279,15 +277,15 @@ module.exports = {
 
                 if(container)
                 {
-                    if(creep.store.getFreeCapacity() > 0 && container.store.getUsedCapacity() > 0)
+                    
+                    if(creep.store.getFreeCapacity() > 0 && container.progressTotal == undefined && container.store.getUsedCapacity() > 0)
                     {   
                         creep.withdraw(container, source.mineralType);              
 
                         return;       
-                    }
-    
-                   
-                    if(creep.store.getFreeCapacity() == 0 && container.store.getFreeCapacity() == 0 && !creep.memory.terminal)
+                    } 
+                    
+                    if(creep.store.getFreeCapacity() == 0 &&  ((container.progressTotal == undefined && container.store.getFreeCapacity() == 0) || (container.progressTotal != undefined))&& !creep.memory.terminal)
                     {
                         creep.say('🚯');
                         return;
@@ -297,10 +295,8 @@ module.exports = {
                 if( creep.memory.terminal && creep.store.getFreeCapacity() == 0)
                 {
                     var terminal = Game.getObjectById(creep.memory.terminal);
-                    if(terminal && creep.transfer( terminal,source.mineralType) == ERR_FULL)
-                    {
-                        //todo markausführung
-                    }
+                    if(terminal)
+                      creep.transfer( terminal,source.mineralType)    
                 }
 
                 if(creep.memory.extactor)
@@ -318,7 +314,14 @@ module.exports = {
                         filter: { structureType: STRUCTURE_EXTRACTOR }
                     })[0];
                     if(extr)
+                    {
                         creep.memory.extactor = extr.id;
+                        if(extr.cooldown > 0)
+                        {
+                            creep.say('😴')
+                            return;
+                        }
+                    }      
                 }
             }
             
@@ -329,7 +332,7 @@ module.exports = {
             }
                 
             var state = creep.harvest(source);
-        
+
             if( state != OK)
             {
                 if(state == ERR_TIRED || state == ERR_NOT_ENOUGH_ENERGY)
@@ -353,23 +356,12 @@ module.exports = {
      * @param {StructureSpawn} spawn 
      */
     _getProfil: function(spawn, workroom) {
+
+        const totalCost =  3* BODYPART_COST[WORK] + BODYPART_COST[CARRY] + 2*BODYPART_COST[MOVE];
         var maxEnergy = spawn.room.energyCapacityAvailable;
-        const maxWorkParts = Math.floor((maxEnergy-150) / BODYPART_COST[WORK]);
-      
-        const numberOfWorkParts = Math.min(maxWorkParts, 9);
+        var numberOfSets = Math.min(8,Math.floor(maxEnergy / totalCost));
         
-        let profil = Array(numberOfWorkParts).fill(WORK);
-        
-        profil.push(CARRY);
-        profil.push(CARRY);
-        profil.push(MOVE);
-        
-        var rest = Math.floor((maxEnergy-1000) / 50);
-        rest = Math.min(rest, 3);
-
-        if(rest < 1) rest = 0;
-
-        return profil.concat(Array(rest).fill(MOVE));;
+        return Array((numberOfSets*3)).fill(WORK).concat(Array((numberOfSets)).fill(CARRY).concat(Array((numberOfSets*2)).fill(MOVE)));
     },
    /**
     * 
@@ -419,14 +411,13 @@ module.exports = {
      */
     _spawn: function (spawn, workroom, source, mineEnergy) {
        
-        var time = 100;
+        var time = 300;
         if(workroom == spawn.room.name)
         {
-            time = 50;
+            time = 150;
         }
         var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
-                                                    creep.memory.workroom == workroom && 
-                                                    creep.memory.home == spawn.room.name && 
+                                                    creep.memory.workroom == workroom &&         
                                                     creep.memory.source == source && 
                                                     (creep.ticksToLive > time || creep.spawning)
                                                     ).length;
@@ -445,11 +436,10 @@ module.exports = {
             if(Memory.rooms[spawn.room.name].aktivPrioSpawnCount > 25)
             {
                if(_.filter(Game.creeps, (creep) => creep.memory.role == role && 
-                                                    creep.memory.workroom == workroom && 
-                                                    creep.memory.home == spawn.room.name ).length > 0)
+                                                    creep.memory.workroom == workroom).length > 0)
                 return false;
 
-                console.log("Spawn NotfallMiner!!!")
+                console.log("["+spawn.room.name+"|"+workroom+"] Spawn NotfallMiner!!!")
                 creepBase.spawn(spawn, [WORK,CARRY,MOVE], role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name, source: source, mineEnergy:mineEnergy })
                 Memory.rooms[spawn.room.name].aktivPrioSpawnCount = 0;
                 return true;

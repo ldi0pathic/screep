@@ -34,7 +34,7 @@ module.exports = {
         return global.prio.build[structureType] || 99;
     },  
     _build: function(creep){
-        if(!creep.memory.id && !creep.memory.repId)
+        if(!creep.memory.id)
         {
             let structuresToBuild = creep.room.find(FIND_CONSTRUCTION_SITES);
  
@@ -56,10 +56,9 @@ module.exports = {
                 return true;
             }
         }
-        else if(!creep.memory.repId)
+        else 
         {
             let target = Game.getObjectById(creep.memory.id);
-            var struc =  '';   
             if (target && target.progressTotal != undefined) 
             {
                 let state = creep.build(target);
@@ -76,35 +75,16 @@ module.exports = {
                 creep.memory.id = null;   
             }       
         }
-        else
-        {
-            let target = Game.getObjectById(creep.memory.repId);
-            if(target && target.hits < 1000)
-            {
-                let state = creep.repair(target)
-                if (state === ERR_NOT_IN_RANGE) 
-                {
-                    creepBase.moveByMemory(creep, target.pos)   
-                } 
-            } 
-            else
-            {
-                creep.memory.repId = null;   
-            } 
-            return true;
-        }
+       
         return false;
     },
     _getProfil: function(spawn)
     {
-        const totalCost = 3 * BODYPART_COST[WORK] + 2 * BODYPART_COST[CARRY] + 3 * BODYPART_COST[MOVE];
+        const totalCost =  3* BODYPART_COST[WORK] + 2* BODYPART_COST[CARRY] + 2*BODYPART_COST[MOVE];
         var maxEnergy = spawn.room.energyCapacityAvailable;
-        const numberOfSets = Math.min(3,Math.floor(maxEnergy / totalCost));
-        if(numberOfSets == 0)
-        {
-            return [WORK,CARRY,CARRY,MOVE,MOVE];
-        }
-        return Array((numberOfSets*3)).fill(WORK).concat(Array((numberOfSets*2)).fill(CARRY).concat(Array((numberOfSets*3)).fill(MOVE)));
+        var numberOfSets = Math.min(7,Math.floor(maxEnergy / totalCost));
+        
+        return Array((numberOfSets*3)).fill(WORK).concat(Array((numberOfSets*2)).fill(CARRY).concat(Array((numberOfSets*2)).fill(MOVE)));
     },
     spawn: function(spawn,workroom)
     {
@@ -116,8 +96,7 @@ module.exports = {
             return false;
         
         var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
-                                                    creep.memory.workroom == workroom && 
-                                                    creep.memory.home == spawn.room.name).length;
+                                                    creep.memory.workroom == workroom ).length;
         if(count == undefined)
             count = 0;
                                         

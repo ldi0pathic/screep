@@ -1,3 +1,4 @@
+const { toInteger } = require('lodash');
 const creepBase = require('./creep.base');
 require('./config');
 const role = "upgrader";
@@ -5,17 +6,37 @@ const role = "upgrader";
 module.exports = {
     sayJob: function() { this.creep.say('🔑') },
     doJob: function (creep) {
+
+        if(creep.memory.sparmodus && Game.time % creep.room.controller.level != 0) return;
+
         creepBase.checkHarvest(creep, RESOURCE_ENERGY);
 
         if (creep.memory.harvest) 
         {
             if(global.room[creep.memory.workroom].controllerLink && (creep.room.controller.my && creep.room.controller.level >= 5) )
             {
-                if(creepBase.harvestControllerLink(creep,RESOURCE_ENERGY)) return;
+                if(creepBase.harvestControllerLink(creep,RESOURCE_ENERGY)) return;         
             }
             else
             {
-                if(creepBase.harvest(creep)) return;
+                
+                if (creepBase.harvestRoomStorage(creep, RESOURCE_ENERGY))
+                    return;
+
+                if (creepBase.harvestRoomContainer(creep, RESOURCE_ENERGY, 0.25))
+                    return;
+
+                if (creepBase.harvestRoomDrops(creep, RESOURCE_ENERGY))
+                    return;
+        
+                if (creepBase.harvestRoomTombstones(creep, RESOURCE_ENERGY))
+                    return;
+
+                if (creepBase.harvestRoomRuins(creep, RESOURCE_ENERGY))
+                    return;
+
+                if (creepBase.harvestRoomEnergySource(creep))
+                    return;
             }
 
             if(creep.store.getUsedCapacity() > creep.store.getFreeCapacity())
@@ -30,21 +51,24 @@ module.exports = {
         if(creepBase.goToWorkroom(creep)) return;
         if(creepBase.checkWorkroomPrioSpawn(creep)) return;
 
-        creepBase.upgradeController(creep);
+        if(creepBase.upgradeController(creep))
+        {
+            creep.memory.sparmodus = true;
+        }
     },
-    _getProfil: function(spawn, link)
+    _getProfil: function(spawn, workroom)
     {   var numberOfSets = 0;
         
-        const totalCost = 2 * BODYPART_COST[WORK] + 2 * BODYPART_COST[CARRY] +BODYPART_COST[MOVE];
+        var multi = Game.rooms[workroom].controller.level > 7 ? 0.5 : 2;
+        const totalCost = multi * BODYPART_COST[WORK] + 2 * BODYPART_COST[CARRY] + 2* BODYPART_COST[MOVE];
         var maxEnergy = spawn.room.energyCapacityAvailable;
-        numberOfSets = Math.min(9,Math.floor(maxEnergy / totalCost));
+        numberOfSets = Math.min(Game.rooms[workroom].controller.level > 7 ? 9:8 ,Math.floor(maxEnergy / totalCost));
         if(numberOfSets == 0)
         {
             return [WORK,CARRY,MOVE,MOVE];
         }
-        var carry = Math.min(numberOfSets*2,16);
-        
-        return Array((numberOfSets*2)).fill(WORK).concat(Array(carry).fill(CARRY).concat(Array((numberOfSets)).fill(MOVE)));
+       
+        return Array(Math.floor(numberOfSets*multi)).fill(WORK).concat(Array(numberOfSets*2).fill(CARRY).concat(Array((numberOfSets*2)).fill(MOVE)));
       
     },
     spawn: function(spawn,workroom)
@@ -53,19 +77,21 @@ module.exports = {
         if(!uppis || uppis < 1)
             return false;
 
-        if(spawn.room.name != workroom && !Memory.rooms[workroom].claimed)
+        if(spawn.room.name != workroom)
+            return false;
+
+        if(spawn.room.controller.level > 7 && spawn.room.controller.ticksToDowngrade > 100000)
             return false;
            
         var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
-                                                    creep.memory.workroom == workroom && 
-                                                    creep.memory.home == spawn.room.name && 
-                                                    (creep.ticksToLive > 100 || creep.spawning)
+                                                    creep.memory.workroom == workroom &&          
+                                                    (creep.ticksToLive > 160 || creep.spawning)
                                                     ).length;
                                            
         if ( uppis <= count)
             return false;
 
-        var profil = this._getProfil(spawn, global.room[workroom].controllerLink);
+        var profil = this._getProfil(spawn, workroom);
 
         return creepBase.spawn(spawn, profil, role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name, repairs:0});
     },

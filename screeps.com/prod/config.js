@@ -8,7 +8,30 @@ global.const = global.const || {};
 global.const =
 {
    maxRepairs: 5,
-   logroom: '',//'E59N9',
+   logroom: ' ',//'E59N8',
+},
+global.minSalePrice =
+{
+   RESOURCE_HYDROGEN: "H",
+   RESOURCE_OXYGEN: "O",
+   RESOURCE_UTRIUM: "U",
+   RESOURCE_LEMERGIUM: "L",
+   RESOURCE_KEANIUM: "K",
+   RESOURCE_ZYNTHIUM: "Z",
+   RESOURCE_CATALYST: "X",
+   RESOURCE_GHODIUM: "G",
+},
+global.transfer =
+{
+   E59N7:
+   {
+      room: 'E59N7',
+      source: [
+         'E59N9',
+         'E58N7',
+         'E58N6',
+      ]
+   }
 }
 global.room =
 {
@@ -79,6 +102,10 @@ global.room =
       maxbuilder: 1,
       prioBuildings: [
       ],
+      destroy:[
+         '63adb4b3aeebaa08e3aa2851'
+         
+      ],
      
 
       //controller  
@@ -115,6 +142,10 @@ global.room =
       maxbuilder: 1,
       prioBuildings: [
       ],
+      destroy:[
+         '63542d26da5582631af71fcc',
+         '6255d32e5fdb145fecd7d923'
+      ],
      
 
       //controller  
@@ -123,7 +154,7 @@ global.room =
    E58N6:
    {
       room: 'E58N6',
-      spawnRoom: 'E58N6',
+   //   spawnRoom: 'E58N6',
       sendMiner: true,
       sendDebitor: true,
       minHostile : 2,
@@ -151,7 +182,7 @@ global.room =
 
       //structures
       repairer: 0,
-      maxwallRepairer: 2,
+      maxwallRepairer: 1,
       maxbuilder: 1,
       prioBuildings: [],
     
@@ -161,7 +192,7 @@ global.room =
    E58N7:
    {
       room: 'E58N7',
-      spawnRoom: 'E58N7',
+   //   spawnRoom: 'E58N7',
       sendMiner: true,
       sendDebitor: true,
       minHostile : 2,
@@ -180,6 +211,7 @@ global.room =
       mineralSources: [
          '5bbcb72cd867df5e54207db0'
       ],
+      mineralContainerId: '658f0b73615ae9c2e4995fb6',
 
       useLinks: true,
       targetLinks: [
@@ -191,7 +223,7 @@ global.room =
 
       //structures
       repairer: 0,
-      maxwallRepairer: 2,
+      maxwallRepairer: 1,
       maxbuilder: 2,
       prioBuildings: [],
      
@@ -240,7 +272,7 @@ global.room =
    E59N4:
    {
       room: 'E59N4',
-      spawnRoom: 'E59N4',
+ //     spawnRoom: 'E59N4',
       sendMiner: true,
       sendDebitor: true,
       minHostile : 2,
@@ -256,7 +288,7 @@ global.room =
          '5bbcb09f9099fc012e63c71a',
          '5bbcb09f9099fc012e63c71b'
       ],
-      mineralSources:[],// ['5bbcb73ad867df5e54207e1f'],
+      mineralSources: ['5bbcb73ad867df5e54207e1f'],
 
       useLinks: true,
       targetLinks: [
@@ -267,8 +299,8 @@ global.room =
       controllerLink: '65575938268cb37495966e50',
 
       //structures
-      repairer: 1,
-      maxwallRepairer: 2,
+      repairer: 0,
+      maxwallRepairer: 1,
       maxbuilder: 2,
       prioBuildings: [
       ],
@@ -308,6 +340,7 @@ global.room =
       maxbuilder: 1,
       prioBuildings: [
       ],
+     
       
 
       //controller  
@@ -315,37 +348,40 @@ global.room =
    },
    E59N7:
    {
+      transferEnergie: true,
       room: 'E59N7',
-      spawnRoom: 'E58N7',
+      spawnRoom: 'E59N9',
       sendMiner: true,
-      sendDebitor: true,
+      sendDebitor: false,
       sendFreeDebitor: false,
       sendBuilder: true,
       sendDefender: true,
-      sendClaimer: true,
+      sendClaimer: false,
 
       //mining
-      debitorProSource: 1,
+      debitorProSource: 0,
       debitorAsFreelancer: 0,
       energySources: [
          '5bbcb09e9099fc012e63c711',
       ],
-      mineralSources: [],
-      useLinks: false,
+      mineralSources: ['5bbcb739d867df5e54207e1c'],
+      mineralContainerId: '6592dc5cba752b84ab886eab',
+      useLinks: true,
       targetLinks: [
-
+         '659903aa1578e624f4b24c3a'
       ],
       spawnLink: null,
-      controllerLink: null,
+      controllerLink: '659903aa1578e624f4b24c3a',
 
       //structures
       repairer: 0,
       maxwallRepairer: 0,
       maxbuilder: 1,
       prioBuildings: [],
+     
     
       //controller  
-      upgrader: 0,
+      upgrader: 1,
    },
    E59N8:
    {
@@ -388,7 +424,7 @@ global.room =
    E59N9:
    {
       room: 'E59N9',
-      spawnRoom: 'E59N9',
+   //   spawnRoom: 'E59N9',
       sendMiner: true,
       sendDebitor: true,
       minHostile : 2,
@@ -416,7 +452,7 @@ global.room =
 
       //structures
       repairer: 0,
-      maxwallRepairer: 2,
+      maxwallRepairer: 1,
       maxbuilder: 3,
       prioBuildings: [],
       //controller  

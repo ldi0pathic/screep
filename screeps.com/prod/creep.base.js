@@ -10,7 +10,7 @@ module.exports =
                 action();
 
             creep.memory.harvest = true;
-            creep.memory.fromStorage = false;
+            creep.memory.fromId = null;
             creep.say('🛒');
             delete creep.memory.path;
             delete creep.memory.pathTarget;
@@ -45,13 +45,13 @@ module.exports =
         if (this.harvestRoomStorage(creep, RESOURCE_ENERGY))
             return;
 
-        if (this.harvestRoomContainer(creep, RESOURCE_ENERGY, 0.25))
-            return;
-
         if (this.harvestRoomDrops(creep, RESOURCE_ENERGY))
             return;
 
         if (this.harvestRoomTombstones(creep, RESOURCE_ENERGY))
+            return;
+
+        if (this.harvestRoomContainer(creep, RESOURCE_ENERGY, 0.25))
             return;
 
         if (this.harvestRoomEnergySource(creep))
@@ -78,6 +78,7 @@ module.exports =
 
                 case OK:
                     creep.memory.useRoomDrop = drop.id;
+                    creep.memory.fromId = drop.id;
                     return true;
 
                 case ERR_INVALID_TARGET:
@@ -108,6 +109,7 @@ module.exports =
 
                 case OK:
                     creep.memory.useTombstone = tombstone.id;
+                    creep.memory.fromId = tombstone.id;
                     return true;
 
                 case ERR_INVALID_TARGET:
@@ -138,6 +140,7 @@ module.exports =
 
                     case OK:
                         creep.memory.useTombstone = tombstone.id;
+                        creep.memory.fromId = tombstone.id;
                         return true;
 
                     case ERR_INVALID_TARGET:
@@ -168,7 +171,7 @@ module.exports =
 
                 case OK:
                     creep.memory.useRuin = ruin.id;
-                    creep.memory.fromStorage = false;
+                    creep.memory.fromId = ruin.id;
                     return true;
 
                 case ERR_INVALID_TARGET:
@@ -192,7 +195,7 @@ module.exports =
                     creepBaseGoTo.moveByMemory(creep,storage.pos);
                     return true;
                 case OK:
-                    creep.memory.fromStorage = true;
+                    creep.memory.fromId = storage.id;
                     return true;
 
                 default:  
@@ -207,15 +210,24 @@ module.exports =
         if (creep.memory.useContainer) {
             container = Game.getObjectById(creep.memory.useContainer);
         }
-        else {
-            container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: (structure) => {
-                    return (
-                        structure.structureType === STRUCTURE_CONTAINER
-                    ) && structure.store[type] > (creep.store.getFreeCapacity() * mul)
-                        ;
+        else if(Memory.rooms[creep.room.name].container) {
+            var distance = Infinity;
+            var minCap = creep.store.getFreeCapacity() * mul;
+            for(var id of Memory.rooms[creep.room.name].container)
+            {
+                var c = Game.getObjectById(id);
+                if(c && c.store.getUsedCapacity(type) >  minCap)
+                {
+                    console.log(c.pos)
+                    var d = Math.sqrt(Math.pow(creep.pos.x - c.pos.x, 2) + Math.pow(creep.pos.y - c.pos.y, 2));
+                    if(d < distance)
+                    {
+                        distance = d;
+                        container = c;
+                        creep.memory.useContainer = container.id;
+                    }         
                 }
-            });
+            }  
         }
 
         if (container) {
@@ -224,18 +236,18 @@ module.exports =
                     creepBaseGoTo.moveByMemory(creep,container.pos);
                     return true;
                 case OK:
-                    creep.memory.fromStorage = false;
+                    creep.memory.fromId = container.id;
                     return true;
 
                 default:
                     return false;
             }
         }
+        delete creep.memory.useContainer;
         return false;
     },
     harvestSpawnLink: function (creep, type) {
         if (creep.memory.workroom != creep.room.name ||
-            !Memory.rooms[creep.memory.workroom].hasLinks ||
             !global.room[creep.memory.workroom].spawnLink)
             return false;
 
@@ -247,7 +259,7 @@ module.exports =
                     creepBaseGoTo.moveByMemory(creep,link.pos);
                     return true;
                 case OK:
-                    creep.memory.fromStorage = false;
+                    creep.memory.fromId = link.id;
                     return true;
 
                 default:
@@ -257,9 +269,10 @@ module.exports =
         return false;
     },
     harvestControllerLink: function (creep, type) {
-        if (creep.memory.workroom != creep.room.name ||
-            !Memory.rooms[creep.memory.workroom].hasLinks ||
-            !global.room[creep.memory.workroom].controllerLink)
+        if (creep.memory.workroom != creep.room.name ||      
+            !global.room[creep.memory.workroom].controllerLink ||
+            !creep.room.controller.my ||
+             creep.room.controller.level <5)
             return false;
 
         var link = Game.getObjectById(global.room[creep.memory.workroom].controllerLink);
@@ -270,13 +283,12 @@ module.exports =
                     creepBaseGoTo.moveByMemory(creep,link.pos);
                     return true;
                 case OK:
-                    creep.memory.fromStorage = false;
+                    creep.memory.fromId = link.id;
                     return true;
 
                 default:
                     return false;
             }
-            return true;
         }
         return false;
     },
@@ -296,7 +308,7 @@ module.exports =
                     creepBaseGoTo.moveByMemory(creep,container.pos);
                     return true;
                 case OK:
-                    creep.memory.fromStorage = false;
+                    creep.memory.fromId = container.id;
                     return true;
 
                 default:
@@ -323,7 +335,7 @@ module.exports =
                     }
                 }
                 creep.memory.useRoomSource = source.id;
-                creep.memory.fromStorage = false;
+                creep.memory.fromId = source.id;
                 return true;
             }
             delete creep.memory.useRoomSource;
@@ -379,9 +391,10 @@ module.exports =
             if (c === ERR_NOT_IN_RANGE) {
                 creepBaseGoTo.moveByMemory(creep,controller.pos);
             }
+           
         }
 
-        return;
+        return state == OK;
     },
     spawn: function (spawn, profil, newName, memory) {
         if (spawn.spawnCreep(profil, newName, { dryRun: true }) === 0) {

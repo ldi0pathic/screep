@@ -8,3 +8,5 @@ recycle Job >> creep geht zum nächsten Spawn und lässt sich recyclen
 TowerController
 
 optimierungen durch sichern der ObjId
+
+nichtmehr alle spawns alle X ticks trigern, sondern verteilter

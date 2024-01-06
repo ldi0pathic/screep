@@ -63,8 +63,10 @@ module.exports = {
                 Memory.rooms[name] = {};
             }
 
-
             var room = Game.rooms[global.room[name].room];
+            
+            if(!room)
+                continue;
 
             var walls = room.find(FIND_STRUCTURES,  {filter: (structure) => 
                 {
@@ -74,6 +76,62 @@ module.exports = {
            
             Memory.rooms[name].wally = walls.map( w => {
                 return w.id
+            });           
+        }
+    },
+    FindAndSaveRoomContainer: function()
+    {
+        if(!Memory.rooms)
+        {
+            Memory.rooms = {};
+        }
+
+        for(var name in global.room)
+        {
+            if (!Memory.rooms[name]) 
+            {
+                Memory.rooms[name] = {};
+            }
+
+            var room = Game.rooms[global.room[name].room];
+            
+            if(!room)
+                continue;
+
+            var container = room.find(FIND_STRUCTURES,  {filter: (structure) => 
+                {
+                    return  structure.structureType === STRUCTURE_CONTAINER 
+                }});
+           
+            Memory.rooms[name].container = container.map( c => {
+                return c.id
+            });           
+        }
+    },
+    FindAndSaveRoomTower: function()
+    {
+        if(!Memory.rooms)
+        {
+            Memory.rooms = {};
+        }
+
+        for(var name in global.room)
+        {
+            if (!Memory.rooms[name]) 
+            {
+                Memory.rooms[name] = {};
+            }
+
+            var room = Game.rooms[global.room[name].room];
+            if(!room)
+                continue;
+            var tower = room.find(FIND_STRUCTURES,  {filter: (structure) => 
+                {
+                    return  structure.structureType === STRUCTURE_TOWER 
+                }});
+           
+            Memory.rooms[name].tower = tower.map( c => {
+                return c.id
             });           
         }
     }

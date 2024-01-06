@@ -48,6 +48,10 @@ module.exports = {
             for(var wallId in Memory.rooms[creep.memory.workroom].wally)
             {
                 var w = Game.getObjectById(Memory.rooms[creep.memory.workroom].wally[wallId]);
+                
+                if(!w)
+                    continue;
+
                 if(!wall || wall.hits > w.hits)
                 {
                     wall = w;
@@ -99,8 +103,7 @@ module.exports = {
             return false;
 
         var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
-                                                    creep.memory.workroom == workroom && 
-                                                    creep.memory.home == spawn.room.name).length;
+                                                    creep.memory.workroom == workroom).length;
                                 
         if (global.room[workroom].maxwallRepairer <= count)
             return false;

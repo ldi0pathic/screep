@@ -137,8 +137,7 @@ module.exports = {
             return false;
              
         var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
-                                                    creep.memory.workroom == workroom && 
-                                                    creep.memory.home == spawn.room.name).length;
+                                                    creep.memory.workroom == workroom).length;
         if(count == undefined)
             count = 0;      
 

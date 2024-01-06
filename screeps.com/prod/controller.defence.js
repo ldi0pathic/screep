@@ -79,4 +79,82 @@ module.exports = {
             Memory.rooms[name].nuke = nukes.length > 0;
         }
     },
+    tower: function()
+    {
+        for(var name in global.room)
+        {  
+            var room = Game.rooms[name];
+            if(!room ||  !room.controller || !room.controller.my|| !Memory.rooms[name].tower || Memory.rooms[name].tower.length == 0)
+                continue;  
+
+            if(Memory.rooms[name].needDefence)
+            {
+                var hostileCreeps = tower.room.find(FIND_HOSTILE_CREEPS);
+
+                if (hostileCreeps.length > 0) 
+                {
+                    // Sortiere die feindlichen Creeps nach ihren Bodypart-Kosten in absteigender Reihenfolge
+                    hostileCreeps.sort(function (a, b) 
+                    {
+                        var costA = a.body.reduce(function (total, part) 
+                        {
+                            return total + BODYPART_COST[part.type];
+                        }, 0);
+    
+                        var costB = b.body.reduce(function (total, part) 
+                        {
+                            return total + BODYPART_COST[part.type];
+                        }, 0);
+    
+                        return costB - costA;
+                    });
+    
+                    for(var towerid of Memory.rooms[name].tower)
+                    {
+                            var tower = Game.getObjectById(towerid);
+                            if(tower)
+                                tower.attack(hostileCreeps[0]);
+                    }
+                    
+                }
+                else
+                {
+                    Memory.rooms[name].needDefence = false;
+                }
+            }   
+            else if( Game.time %3 == 2)
+            {
+                var damagedStructures = room.find(FIND_STRUCTURES,
+                {
+                    filter: (structure) => 
+                    {
+                        return (structure.hits < (global.prio.hits[structure.structureType] || 0.5) * structure.hitsMax)
+                    }
+                });
+
+                if(damagedStructures.length > 0) 
+                {
+                    damagedStructures.sort((a, b) => {
+                        const priorityA = global.prio.repair[a.structureType] || 10;
+                        const priorityB = global.prio.repair[b.structureType] || 10;
+
+                        const damageA = a.hitsMax - a.hits;
+                        const damageB = b.hitsMax - b.hits;
+                    
+                        const scoreA = priorityA * damageA;
+                        const scoreB = priorityB * damageB;
+                        return scoreA - scoreB;
+                    });
+
+                    for(var towerid of Memory.rooms[name].tower)
+                    { 
+                        var tower = Game.getObjectById(towerid);
+                        if(tower)
+                            tower.repair(damagedStructures[0]);
+                    }
+                    
+                }
+            }
+        }
+    }
 };
