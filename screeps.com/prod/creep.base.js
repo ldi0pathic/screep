@@ -210,7 +210,7 @@ module.exports =
         if (creep.memory.useContainer) {
             container = Game.getObjectById(creep.memory.useContainer);
         }
-        else if(Memory.rooms[creep.room.name].container) {
+        else if(Memory.rooms[creep.room.name] && Memory.rooms[creep.room.name].container) {
             var distance = Infinity;
             var minCap = creep.store.getFreeCapacity() * mul;
             for(var id of Memory.rooms[creep.room.name].container)
@@ -218,7 +218,6 @@ module.exports =
                 var c = Game.getObjectById(id);
                 if(c && c.store.getUsedCapacity(type) >  minCap)
                 {
-                    console.log(c.pos)
                     var d = Math.sqrt(Math.pow(creep.pos.x - c.pos.x, 2) + Math.pow(creep.pos.y - c.pos.y, 2));
                     if(d < distance)
                     {
@@ -309,6 +308,38 @@ module.exports =
                     return true;
                 case OK:
                     creep.memory.fromId = container.id;
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+        return false;
+    },
+    harvestNotfall: function (creep) {
+
+        var notfall = creep.room.find(FIND_STRUCTURES,  {filter: (structure) => 
+        {
+            return  (structure.structureType === STRUCTURE_LINK ||  
+            structure.structureType === STRUCTURE_LAB ||  
+            structure.structureType === STRUCTURE_NUKER ||  
+            structure.structureType == STRUCTURE_TOWER)
+            && structure.store[RESOURCE_ENERGY] > 0
+        }});
+     
+        if(notfall.length > 0)
+        {
+            notfall.sort(function (a, b) 
+            {
+                return b.store[RESOURCE_ENERGY] - a.store[RESOURCE_ENERGY];
+            });
+                 
+            switch (creep.withdraw(notfall[0], RESOURCE_ENERGY)) {
+                case ERR_NOT_IN_RANGE:
+                    creepBaseGoTo.moveByMemory(creep, notfall[0].pos);
+                    return true;
+                case OK:
+                    creep.memory.fromId = notfall[0].id;
                     return true;
 
                 default:

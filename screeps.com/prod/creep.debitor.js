@@ -72,9 +72,15 @@ module.exports =
             if(creep.memory.harvest)
             {
                 if(creepBase.harvestSpawnLink(creep,creep.memory.mineral))return;
+                if(creepBase.harvestControllerLink(creep,creep.memory.mineral))return;
                 if(creepBase.harvestRoomStorage(creep,creep.memory.mineral)) return;
-                if(creepBase.harvestRoomContainer(creep,creep.memory.mineral,0.25)) return;   
-                return;
+                if(creepBase.harvestRoomContainer(creep,creep.memory.mineral,0.1)) return;   
+                if(creepBase.harvestNotfall(creep)) return;   
+
+                if(creep.room.energyAvailable < 1000 && creep.store.getUsedCapacity() > 0)
+                {
+                    creep.memory.harvest = false;  
+                }
             }
             else
             {
@@ -85,7 +91,6 @@ module.exports =
         }
 
         if (creep.memory.harvest) {
-          
             if(creepBase.goToWorkroom(creep)) return;
             
             if(creepBase.harvestCompleteRoomTombstones(creep)) return;
@@ -108,8 +113,8 @@ module.exports =
                     if(creepBase.harvestRoomStorage(creep,creep.memory.mineral)) return;
                     if(creepBase.harvestRoomContainer(creep,creep.memory.mineral,0.25)) return;   
                 }
-                
-                if(creep.room.energyAvailable < 300 && creep.store.getUsedCapacity() > 0)
+               
+                if(creep.room.energyAvailable < 1000 && creep.store.getUsedCapacity() > 0)
                 {
                     creep.memory.harvest = false;  
                 }
@@ -130,8 +135,9 @@ module.exports =
 
         if(creepBase.goToMyHome(creep))return;
        
+       
         if(creep.store.getUsedCapacity() > creep.store.getUsedCapacity(RESOURCE_ENERGY))
-        {
+        { 
             if(creepBase.TransportToHomeTerminal(creep))return;  
             if(creepBase.TransportToHomeStorage(creep))return; 
         }
@@ -140,7 +146,7 @@ module.exports =
             if(creepBase.TransportEnergyToHomeSpawn(creep))return;
             if(creepBase.TransportEnergyToHomeTower(creep))return;  
             if(creepBase.TransportToHomeStorage(creep))return;
-            if(creepBase.TransportToHomeLab(creep, creep.memory.mineral))return;
+            if(creepBase.TransportToHomeLab(creep, RESOURCE_ENERGY))return;
             if(creepBase.TransportToHomeTerminal(creep))return;        
         }
         else
@@ -148,7 +154,7 @@ module.exports =
             if(creepBase.TransportToHomeStorage(creep))return;
             if(creepBase.TransportEnergyToHomeSpawn(creep))return;
             if(creepBase.TransportEnergyToHomeTower(creep))return;
-            if(creepBase.TransportToHomeLab(creep, creep.memory.mineral))return;
+            if(creepBase.TransportToHomeLab(creep, RESOURCE_ENERGY))return;
             if(creepBase.TransportToHomeTerminal(creep))return;   
         }
 
@@ -250,6 +256,7 @@ module.exports =
      */
     _spawn: function (spawn, workroom, source, mineraltype) 
     { 
+        global.logWorkroom(workroom,'here');
         let containerId = ''
         if(source != '')
         { 
@@ -290,6 +297,7 @@ module.exports =
         }
         else
         {
+            global.logWorkroom(workroom,'2');
             var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
                                                         creep.memory.workroom == workroom && 
                                                         creep.memory.container == '' && 
@@ -299,12 +307,12 @@ module.exports =
             
             if (global.room[workroom].debitorAsFreelancer <= count)
                 return false;
-
+                global.logWorkroom(workroom,'3');
             containerId = '';
         }
       
         var profil = this.getProfil(spawn, workroom, mineraltype, containerId);
-        
+        global.logWorkroom(workroom,'4');
         //wenn im aktuellen raum kein Debitor ist
         
        if(!creepBase.spawn(spawn,profil, role + '_' + Game.time, { role: role, harvest: true, workroom: workroom, home: spawn.room.name, mineral: mineraltype, container: containerId, notfall:false }))

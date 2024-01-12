@@ -66,7 +66,7 @@ module.exports =
             }
         }
        
-        if(terminal)
+        if(terminal && terminal.store.getFreeCapacity() > 0)
         {
             for (var resourceType in creep.store) 
             {
@@ -75,7 +75,7 @@ module.exports =
                     terminal.store[RESOURCE_ENERGY] > 50000) 
                     continue;
 
-                this._Transfer(creep, terminal, resourceType);    
+                this._Transfer(creep, terminal, resourceType);               
             } 
             return true;
         }

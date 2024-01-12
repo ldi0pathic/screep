@@ -204,11 +204,12 @@ module.exports = {
                         creep.say('🛠');
                         creep.build(container); 
                     }
-                    else if(container.progressTotal == undefined && container.hits < container.hitsMax)
+                    else if(container.progressTotal == undefined && ((container.hits < container.hitsMax && !creep.memory.notfall) || container.hits < 100))
                     {   
                         creep.say('🔧');   
                         creep.repair(container);     
                     }
+
                     else if(container.store.getFreeCapacity() == 0 && creep.store.getFreeCapacity() == 0 && !creep.memory.link)
                     {
                         creep.say('🚯');
@@ -248,7 +249,7 @@ module.exports = {
                    if(creep.transfer(link,RESOURCE_ENERGY) == ERR_FULL)
                    {     
                         var target;
-                        if(creep.room.storage && creep.room.storage.store.getUsedCapacity() > creep.room.storage.store.getFreeCapacity())
+                        if(creep.room.storage && creep.room.storage.store.getUsedCapacity()*0.5 > creep.room.storage.store.getFreeCapacity())
                         {
                             target = Game.getObjectById(global.room[creep.room.name].controllerLink);   
                         }
@@ -428,7 +429,7 @@ module.exports = {
             return false;
         }
            
-        if(!creepBase.spawn(spawn, this._getProfil(spawn, workroom), role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name, source: source, mineEnergy:mineEnergy }))
+        if(!creepBase.spawn(spawn, this._getProfil(spawn, workroom), role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name, source: source, mineEnergy:mineEnergy,notfall:false }))
         {
             Memory.rooms[spawn.room.name].aktivPrioSpawn = true;
             Memory.rooms[spawn.room.name].aktivPrioSpawnCount = Memory.rooms[spawn.room.name].aktivPrioSpawnCount +1;
@@ -436,11 +437,11 @@ module.exports = {
             if(Memory.rooms[spawn.room.name].aktivPrioSpawnCount > 25)
             {
                if(_.filter(Game.creeps, (creep) => creep.memory.role == role && 
-                                                    creep.memory.workroom == workroom).length > 0)
+                                                    creep.memory.workroom == workroom && creep.memory.source == source ).length > 0)
                 return false;
 
                 console.log("["+spawn.room.name+"|"+workroom+"] Spawn NotfallMiner!!!")
-                creepBase.spawn(spawn, [WORK,CARRY,MOVE], role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name, source: source, mineEnergy:mineEnergy })
+                creepBase.spawn(spawn, [WORK,CARRY,MOVE], role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name, source: source, mineEnergy:mineEnergy, notfall:true })
                 Memory.rooms[spawn.room.name].aktivPrioSpawnCount = 0;
                 return true;
             }

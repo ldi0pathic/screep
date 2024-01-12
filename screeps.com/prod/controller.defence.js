@@ -89,7 +89,7 @@ module.exports = {
 
             if(Memory.rooms[name].needDefence)
             {
-                var hostileCreeps = tower.room.find(FIND_HOSTILE_CREEPS);
+                var hostileCreeps = room.find(FIND_HOSTILE_CREEPS);
 
                 if (hostileCreeps.length > 0) 
                 {
@@ -149,7 +149,7 @@ module.exports = {
                     for(var towerid of Memory.rooms[name].tower)
                     { 
                         var tower = Game.getObjectById(towerid);
-                        if(tower)
+                        if(tower && tower.store.getUsedCapacity([RESOURCE_ENERGY]) * 0.5 > tower.store.getFreeCapacity([RESOURCE_ENERGY]))
                             tower.repair(damagedStructures[0]);
                     }
                     

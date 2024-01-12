@@ -8,18 +8,15 @@ global.const = global.const || {};
 global.const =
 {
    maxRepairs: 5,
-   logroom: ' ',//'E59N8',
+   logroom: ''//'E59N4',
 },
 global.minSalePrice =
 {
-   RESOURCE_HYDROGEN: "H",
-   RESOURCE_OXYGEN: "O",
-   RESOURCE_UTRIUM: "U",
-   RESOURCE_LEMERGIUM: "L",
-   RESOURCE_KEANIUM: "K",
-   RESOURCE_ZYNTHIUM: "Z",
-   RESOURCE_CATALYST: "X",
-   RESOURCE_GHODIUM: "G",
+   RESOURCE_HYDROGEN: 100,
+   RESOURCE_OXYGEN: 35,
+   RESOURCE_UTRIUM: 50,
+   RESOURCE_LEMERGIUM: 29,
+
 },
 global.transfer =
 {
@@ -27,8 +24,8 @@ global.transfer =
    {
       room: 'E59N7',
       source: [
-         'E59N9',
-         'E58N7',
+      //  'E59N9',
+         'E58N7',  
          'E58N6',
       ]
    }
@@ -301,7 +298,7 @@ global.room =
       //structures
       repairer: 0,
       maxwallRepairer: 1,
-      maxbuilder: 2,
+      maxbuilder: 3,
       prioBuildings: [
       ],
     
@@ -350,7 +347,7 @@ global.room =
    {
       transferEnergie: true,
       room: 'E59N7',
-      spawnRoom: 'E59N9',
+      spawnRoom: 'E58N7',
       sendMiner: true,
       sendDebitor: false,
       sendFreeDebitor: false,
@@ -368,10 +365,12 @@ global.room =
       mineralContainerId: '6592dc5cba752b84ab886eab',
       useLinks: true,
       targetLinks: [
-         '659903aa1578e624f4b24c3a'
+         '659903aa1578e624f4b24c3a',
+         '65a16966b72bfe3c7f3cd753'
       ],
       spawnLink: null,
       controllerLink: '659903aa1578e624f4b24c3a',
+      terminalLink: '65a16966b72bfe3c7f3cd753',
 
       //structures
       repairer: 0,

@@ -3,9 +3,9 @@ const  timer = require('./controller.timing');
 const jobs = require('./creep.jobs');
 const profiler = require('./profiler');
 
-profiler.enable();
+//profiler.enable();
 module.exports.loop = function () {
-    profiler.wrap(function() 
+    //profiler.wrap(function() 
     {
         try {
             for(var name in global.room)
@@ -72,5 +72,5 @@ module.exports.loop = function () {
             throw error;
         }
         timer.controll();
-    });
+    }//);
 }

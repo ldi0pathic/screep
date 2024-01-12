@@ -10,9 +10,17 @@ module.exports = {
             if(spawn.spawning) 
                 continue;
 
+            var count = _.filter(Game.creeps, (creep) => 
+                creep.memory.home == spawn.room.name && 
+                creep.memory.notfall
+                ).length;
+
              for(var room in global.room)
              {   
                 var workroom = global.room[room].room;
+
+                if(count > 0 && workroom != spawn.room.name)
+                    continue;
 
                 if(global.transfer[workroom] && global.transfer[workroom].source.includes(spawn.room.name))
                 { 
