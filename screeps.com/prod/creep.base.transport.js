@@ -25,18 +25,45 @@ module.exports =
     },
     TransportToHomeContainer: function(creep, type)
     {
-        var target = creep.pos.findClosestByPath(FIND_STRUCTURES,
+        if (creep.memory.useContainer) {
+            container = Game.getObjectById(creep.memory.useContainer);
+        }
+        else if(Memory.rooms[creep.room.name] && Memory.rooms[creep.room.name].container) {
+            var distance = Infinity;
+            var minCap = creep.store.getFreeCapacity() * mul;
+            for(var id of Memory.rooms[creep.room.name].container)
             {
-                filter: (structure) => {
-                    return (
-                        structure.structureType === STRUCTURE_CONTAINER 
-                    ) && structure.store.getFreeCapacity([type]) > 0 
-                    && structure.id != global.room[creep.room.name].mineralContainerId 
-                    && structure.id != creep.memory.fromId;;
+                var c = Game.getObjectById(id);
+                if(c && c.store.getUsedCapacity(type) >  minCap && c.id != global.room[creep.room.name].mineralContainerId && c.id != creep.memory.fromId )
+                {
+                    var d = Math.sqrt(Math.pow(creep.pos.x - c.pos.x, 2) + Math.pow(creep.pos.y - c.pos.y, 2));
+                    if(d < distance)
+                    {
+                        distance = d;
+                        container = c;
+                        creep.memory.useContainer = container.id;
+                    }         
                 }
-            });
+            }  
+        }
 
-        return this._Transfer(creep, target, type);    
+        if (container) {
+            switch (creep.transfer(container, type))
+            {
+                case ERR_NOT_IN_RANGE:
+                    creepBaseGoTo.moveByMemory(creep, container.pos);
+                    return true;
+
+                case OK:
+                    delete creep.memory.useContainer;
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+        delete creep.memory.useContainer;
+        return false;   
     },
     TransportToHomeTerminal: function(creep)
     {
@@ -47,6 +74,8 @@ module.exports =
         if(Memory.rooms[creep.memory.workroom].terminalId )
         {
             terminal = Game.getObjectById(Memory.rooms[creep.memory.workroom].terminalId);
+            if(!terminal)
+                delete Memory.rooms[creep.memory.workroom].terminalId;
         }
         else
         {
@@ -84,9 +113,6 @@ module.exports =
   
     TransportToHomeLab: function(creep, type)
     {
-        if(creep.memory.home != creep.room.name)
-            return false;
-
         var target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES,
             {
                 filter: (structure) => {
