@@ -5,9 +5,9 @@ const role = "wally";
 module.exports = {
     sayJob: function() { this.creep.say('🔧') },
     doJob: function (creep) {
-        creepBase.checkHarvest(creep,RESOURCE_ENERGY);
+        creep.checkHarvest();
 
-        if(creepBase.checkInvasion(creep))
+        if(creep.checkInvasion())
         {
             if(creep.memory.harvest)
             {

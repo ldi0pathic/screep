@@ -1,25 +1,36 @@
+const { isFunction } = require('lodash');
 const creepBase = require('./creep.base');
 require('./config');
 const role = "miner";
 
 module.exports = {
 
+    _clearMemory : function(creep)
+    {
+        delete creep.memory.pos;
+        delete creep.memory._move;
+        delete creep.memory.path;
+        delete creep.memory.pathTarget;
+        delete creep.memory.lastPos;
+        delete creep.memory.dontMove;
+    },
     /** @param {Creep} creep **/
     doJob: function(creep) 
     {     
+        if(creep.memory.onPosition && Game.time % 2 == 1) return;
+
+        if(creep.checkInvasion()) {
+            creep.memory.onPosition = false;
+            return;
+        };
+       
         if(!creep.memory.onPosition)
         {
-            if(creep.memory.workroom != creep.room.name)
-            {
-                var room = new RoomPosition(25, 25, creep.memory.workroom); 
-                creep.moveTo(room, {reusePath: 5});
-                return;
-            }
-            
+            if(creepBase.goToWorkroom(creep)) return;
+           
             let finalLocation;
             if(!creep.memory.pos)
-            {
-                
+            {      
                var source = Game.getObjectById(creep.memory.source);
 
                 let container = source.pos.findInRange(FIND_STRUCTURES, 1, {
@@ -79,8 +90,7 @@ module.exports = {
             }
             
             if (creep.pos.x == creep.memory.pos.x && creep.pos.y == creep.memory.pos.y) 
-            {
-               
+            {   
                 var source = creep.pos.findClosestByPath(creep.memory.mineEnergy ? FIND_SOURCES : FIND_MINERALS); 
                 var state = creep.harvest(source);
                 if (state === ERR_NOT_IN_RANGE) 
@@ -90,11 +100,22 @@ module.exports = {
                 else
                 {
                     creep.memory.source = source.id;        
-                    if((creep.room.controller.my && creep.room.controller.level < 6) || !creep.room.controller.my)
+                    if((creep.room.controller.my && creep.room.controller.level < 4) || !creep.room.controller.my || !creep.memory.mineEnergy)
                     {
                         creep.memory.onPosition = true;
-                        delete creep.memory.pos;
-                        delete creep.memory._move;
+                        this._clearMemory(creep);
+
+                        if(!creep.memory.mineEnergy)
+                        {
+                            var terminal = creep.pos.findInRange(FIND_STRUCTURES,1, {
+                                filter: (s) => s.structureType === STRUCTURE_TERMINAL
+                            })[0];
+
+                            if(terminal)
+                            {
+                                creep.memory.terminal = terminal.id;
+                            }
+                        }
                         return;
                     }
 
@@ -106,8 +127,7 @@ module.exports = {
                     {
                         creep.memory.link = link.id;
                         creep.memory.onPosition = true;
-                        delete creep.memory.pos;
-                        delete creep.memory._move;
+                        this._clearMemory(creep);
                     }
                     else
                     {
@@ -119,11 +139,10 @@ module.exports = {
                         {
                             creep.memory.build = build.id;
                             creep.memory.onPosition = true;
-                            delete creep.memory.pos;
-                            delete creep.memory._move;
+                            this._clearMemory(creep);
               
                         }
-                        else
+                        else if(creep.room.controller.level >= 6 && creep.memory.mineEnergy)
                         {
                             var creepPos = creep.pos;
                             var adjacentSpots = [];
@@ -147,35 +166,55 @@ module.exports = {
                                 }
                             }
                         }
+                        else
+                        {
+                            creep.memory.onPosition = true;
+                            this._clearMemory(creep);
+                            return; 
+                        }
                     }
                 } 
             } 
-            else if(!creep.moveTo(new RoomPosition(finalLocation.x, finalLocation.y,finalLocation.roomName)) == OK)
-            {
-                  const blockingCreep = creep.pos.findInRange(FIND_MY_CREEPS, 1, {
-                    filter: (otherCreep) => otherCreep.memory.role !== 'miner'
-                })[0];
-    
-                if (blockingCreep) 
-                { 
-                    blockingCreep.move(TOP_LEFT);
-                }
-            } 
+            else 
+                creepBase.moveByMemory(creep, new RoomPosition(finalLocation.x, finalLocation.y,finalLocation.roomName))
         }
         else
         { 
+            let source = Game.getObjectById(creep.memory.source);
+            var container = Game.getObjectById(creep.memory.container);
+            
             if(creep.memory.mineEnergy)
-            { 
-                var container = Game.getObjectById(creep.memory.container);
-                if(container && container.progressTotal == undefined && container.hits < container.hitsMax)
-                {   
-                    creep.say('🔧');   
-                    creep.repair(container);     
-                }
-                else if(container && container.progressTotal != undefined && container.progressTotal > container.progress)
+            {     
+                if(container)
                 {
-                    creep.say('🛠');
-                    creep.build(container); 
+                    
+                    if((container.progressTotal == undefined && container.store.getUsedCapacity() == 0&& source.energy <= 1) || (container.progressTotal != undefined  && source.energy <= 1) )
+                    {
+                        creep.say('😴')
+                        return;
+                    }
+
+                    if(creep.store.getFreeCapacity() > 0 && container.progressTotal == undefined && container.store.getUsedCapacity() > 0)
+                    {   
+                        creep.withdraw(container, RESOURCE_ENERGY);                     
+                    }
+    
+                    if(container.progressTotal != undefined && container.progressTotal > container.progress)
+                    {
+                        creep.say('🛠');
+                        creep.build(container); 
+                    }
+                    else if(container.progressTotal == undefined && ((container.hits < container.hitsMax && !creep.memory.notfall) || container.hits < 100))
+                    {   
+                        creep.say('🔧');   
+                        creep.repair(container);     
+                    }
+
+                    else if(container.store.getFreeCapacity() == 0 && creep.store.getFreeCapacity() == 0 && !creep.memory.link)
+                    {
+                        creep.say('🚯');
+                        return;
+                    }
                 }
 
                 //link bauen
@@ -186,7 +225,7 @@ module.exports = {
                     if(build && build.progressTotal != undefined && build.progressTotal > build.progress)
                     {
                         creep.say('🛠');
-                        creep.build(build); 
+                        creep.build(build);
                     }
                     else if(!build)
                     {
@@ -209,23 +248,101 @@ module.exports = {
 
                    if(creep.transfer(link,RESOURCE_ENERGY) == ERR_FULL)
                    {     
-                        var target = Game.getObjectById(global.room[creep.room.name].targetLinks[[Math.floor((Math.random()*global.room[creep.room.name].targetLinks.length))]]);   
+                        var target;
+                        if(creep.room.storage && creep.room.storage.store.getUsedCapacity()*0.5 > creep.room.storage.store.getFreeCapacity())
+                        {
+                            target = Game.getObjectById(global.room[creep.room.name].controllerLink);   
+                        }
+                        else
+                        {
+                            target = Game.getObjectById(global.room[creep.room.name].targetLinks[[Math.floor((Math.random()*global.room[creep.room.name].targetLinks.length))]]);   
+                        }
+          
                         if(target && target.store.getFreeCapacity(RESOURCE_ENERGY) > 50)
                         {
                             link.transferEnergy(target);
-                        }    
+                        }   
+                        else
+                        {
+                            if(container.store.getFreeCapacity() == 0 && creep.store.getFreeCapacity() == 0)
+                            {
+                                creep.say('🚯');
+                                return;
+                            }
+                        } 
                    }
+                }     
+            }
+            else
+            {
+
+                if(container)
+                {
+                    
+                    if(creep.store.getFreeCapacity() > 0 && container.progressTotal == undefined && container.store.getUsedCapacity() > 0)
+                    {   
+                        creep.withdraw(container, source.mineralType);              
+
+                        return;       
+                    } 
+                    
+                    if(creep.store.getFreeCapacity() == 0 &&  ((container.progressTotal == undefined && container.store.getFreeCapacity() == 0) || (container.progressTotal != undefined))&& !creep.memory.terminal)
+                    {
+                        creep.say('🚯');
+                        return;
+                    }
+                }
+
+                if( creep.memory.terminal && creep.store.getFreeCapacity() == 0)
+                {
+                    var terminal = Game.getObjectById(creep.memory.terminal);
+                    if(terminal)
+                      creep.transfer( terminal,source.mineralType)    
+                }
+
+                if(creep.memory.extactor)
+                {
+                    var extactor = Game.getObjectById(creep.memory.extactor);
+                    if(extactor && extactor.cooldown > 0)
+                    {
+                        creep.say('😴')
+                        return;
+                    }
+                }
+                else
+                {
+                    let extr = creep.pos.findInRange(FIND_MY_STRUCTURES, 1, {
+                        filter: { structureType: STRUCTURE_EXTRACTOR }
+                    })[0];
+                    if(extr)
+                    {
+                        creep.memory.extactor = extr.id;
+                        if(extr.cooldown > 0)
+                        {
+                            creep.say('😴')
+                            return;
+                        }
+                    }      
                 }
             }
             
-            let source = Game.getObjectById(creep.memory.source);
-            let state = creep.harvest(source);
-        
+            if( source.energy && source.energy <= 1 || source.mineralAmount && source.mineralAmount < 1 )
+            { 
+                creep.say('😴')
+                return;
+            }
+                
+            var state = creep.harvest(source);
+
             if( state != OK)
             {
                 if(state == ERR_TIRED || state == ERR_NOT_ENOUGH_ENERGY)
                 {
                     creep.say('😴')
+                }
+                else if(state == ERR_NO_BODYPART)
+                {
+                    creep.suicide();
                 }
                 else
                 {
@@ -239,23 +356,13 @@ module.exports = {
      * 
      * @param {StructureSpawn} spawn 
      */
-    _getProfil: function(spawn) {
+    _getProfil: function(spawn, workroom) {
+
+        const totalCost =  3* BODYPART_COST[WORK] + BODYPART_COST[CARRY] + 2*BODYPART_COST[MOVE];
         var maxEnergy = spawn.room.energyCapacityAvailable;
-        const maxWorkParts = Math.floor((maxEnergy-100) / BODYPART_COST[WORK]);
-      
-        const numberOfWorkParts = Math.min(maxWorkParts, 5);
+        var numberOfSets = Math.min(8,Math.floor(maxEnergy / totalCost));
         
-        let profil = Array(numberOfWorkParts).fill(WORK);
-        
-        profil.push(CARRY);
-        profil.push(MOVE);
-        
-        var rest = Math.floor((maxEnergy-800) / 50);
-        rest = Math.min(rest, 3);
-
-        if(rest < 1) rest = 0;
-
-        return profil.concat(Array(rest).fill(MOVE));;
+        return Array((numberOfSets*3)).fill(WORK).concat(Array((numberOfSets)).fill(CARRY).concat(Array((numberOfSets*2)).fill(MOVE)));
     },
    /**
     * 
@@ -265,10 +372,11 @@ module.exports = {
     */
     spawn: function(spawn,workroom)
     {
+        global.logWorkroom(workroom,'Miner Spawn start');
         if(!global.room[workroom].sendMiner)
             return false;
 
-        if(spawn.room.name != workroom && !Memory.rooms[workroom].claimed)
+        if(spawn.room.name != workroom && !Memory.rooms[workroom].claimed && !global.room[workroom].claim)
             return false;
         
         for(var id in global.room[workroom].energySources)
@@ -303,10 +411,17 @@ module.exports = {
      * @returns 
      */
     _spawn: function (spawn, workroom, source, mineEnergy) {
+       
+        var time = 300;
+        if(workroom == spawn.room.name)
+        {
+            time = 150;
+        }
         var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
-                                                    creep.memory.workroom == workroom && 
-                                                    creep.memory.home == spawn.room.name && 
-                                                    creep.memory.source == source).length;
+                                                    creep.memory.workroom == workroom &&         
+                                                    creep.memory.source == source && 
+                                                    (creep.ticksToLive > time || creep.spawning)
+                                                    ).length;
 
         if (1 <= count)
         {
@@ -314,10 +429,26 @@ module.exports = {
             return false;
         }
            
-        Memory.rooms[spawn.room.name].aktivPrioSpawn = !creepBase.spawn(spawn, this._getProfil(spawn), role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name, source: source, mineEnergy:mineEnergy });
+        if(!creepBase.spawn(spawn, this._getProfil(spawn, workroom), role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name, source: source, mineEnergy:mineEnergy,notfall:false }))
+        {
+            Memory.rooms[spawn.room.name].aktivPrioSpawn = true;
+            Memory.rooms[spawn.room.name].aktivPrioSpawnCount = Memory.rooms[spawn.room.name].aktivPrioSpawnCount +1;
 
-        //creepBase.spawn(spawn, [WORK,CARRY,MOVE], role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name, source: source, mineEnergy:mineEnergy })
-        
+            if(Memory.rooms[spawn.room.name].aktivPrioSpawnCount > 25)
+            {
+               if(_.filter(Game.creeps, (creep) => creep.memory.role == role && 
+                                                    creep.memory.workroom == workroom && creep.memory.source == source ).length > 0)
+                return false;
+
+                console.log("["+spawn.room.name+"|"+workroom+"] Spawn NotfallMiner!!!")
+                creepBase.spawn(spawn, [WORK,CARRY,MOVE], role + '_' + Game.time,{ role: role, workroom: workroom, home: spawn.room.name, source: source, mineEnergy:mineEnergy, notfall:true })
+                Memory.rooms[spawn.room.name].aktivPrioSpawnCount = 0;
+                return true;
+            }
+            return false;        
+        }
+       
+        Memory.rooms[spawn.room.name].aktivPrioSpawnCount = 0;
         return true;
     },
 };

@@ -4,37 +4,8 @@ const creepBaseGoTo = require('./creep.base.goto');
 
 module.exports =
 {
-    checkHarvest: function (creep, type, action, action2) {
-        if (!creep.memory.harvest && creep.store.getUsedCapacity() === 0) {
-            if (typeof (action) == "function")
-                action();
+   
 
-            creep.memory.harvest = true;
-            creep.memory.fromId = null;
-            creep.say('🛒');
-            delete creep.memory.path;
-            delete creep.memory.pathTarget;
-        }
-        if (creep.memory.harvest && creep.store.getFreeCapacity() === 0) {
-            if (typeof (action2) == "function")
-                action();
-
-            creep.memory.harvest = false;
-            delete creep.memory.useRoomSource;
-            delete creep.memory.path;
-            delete creep.memory.pathTarget;
-        }
-    },
-    checkInvasion: function (creep) {
-        if (Memory.rooms[creep.memory.workroom].needDefence || (Memory.rooms[creep.memory.workroom].invaderCore
-            && Game.rooms[creep.memory.workroom]
-            && Game.rooms[creep.memory.workroom].controller.reservation.username != creep.owner.username)) {
-            creep.say('☎');
-
-            return true;
-        }
-        return false;
-    },
     harvest: function (creep) {
         if (!creep.memory.harvest)
             return;

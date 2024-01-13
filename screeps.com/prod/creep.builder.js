@@ -6,8 +6,8 @@ const role = "builder";
 module.exports = {
     sayJob: function() { this.creep.say('🔨') },
     doJob: function (creep) {
-        creepBase.checkHarvest(creep, RESOURCE_ENERGY);
-
+        creep.checkHarvest();
+       
         if (creep.memory.harvest) {
             creep.memory.repId = null;
             if(creepBase.harvest(creep)) return;
@@ -22,7 +22,7 @@ module.exports = {
             return;
         } 
         
-        if(creepBase.checkInvasion(creep)) return;
+        if(creep.checkInvasion()) return;
         if(creepBase.goToWorkroom(creep)) return;
         if(creepBase.checkWorkroomPrioSpawn(creep)) return;
 

@@ -3,6 +3,10 @@ const  timer = require('./controller.timing');
 const jobs = require('./creep.jobs');
 const profiler = require('./profiler');
 
+//require('./prototype.creep.checks')();
+
+require('./prototype');
+
 //profiler.enable();
 module.exports.loop = function () {
     //profiler.wrap(function() 

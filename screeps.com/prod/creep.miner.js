@@ -19,7 +19,7 @@ module.exports = {
     {     
         if(creep.memory.onPosition && Game.time % 2 == 1) return;
 
-        if(creepBase.checkInvasion(creep)) {
+        if(creep.checkInvasion()) {
             creep.memory.onPosition = false;
             return;
         };

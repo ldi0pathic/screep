@@ -1,12 +1,13 @@
 const creepBase = require('./creep.base');
+const creepBaseGoto = require('./creep.base.goto');
 require('./config');
 const role = "builder";
 
 module.exports = {
     sayJob: function() { this.creep.say('🔨') },
     doJob: function (creep) {
-        creepBase.checkHarvest(creep, RESOURCE_ENERGY);
-
+        creep.checkHarvest();
+       
         if (creep.memory.harvest) {
             creep.memory.repId = null;
             if(creepBase.harvest(creep)) return;
@@ -21,6 +22,7 @@ module.exports = {
             return;
         } 
         
+        if(creep.checkInvasion()) return;
         if(creepBase.goToWorkroom(creep)) return;
         if(creepBase.checkWorkroomPrioSpawn(creep)) return;
 
@@ -32,7 +34,7 @@ module.exports = {
         return global.prio.build[structureType] || 99;
     },  
     _build: function(creep){
-        if(!creep.memory.id && !creep.memory.repId)
+        if(!creep.memory.id)
         {
             let structuresToBuild = creep.room.find(FIND_CONSTRUCTION_SITES);
  
@@ -54,34 +56,18 @@ module.exports = {
                 return true;
             }
         }
-        else if(!creep.memory.repId)
+        else 
         {
             let target = Game.getObjectById(creep.memory.id);
-            var struc =  '';   
             if (target && target.progressTotal != undefined) 
             {
                 let state = creep.build(target);
-                struc = target.structureType;
-                
+               
                 if (state === ERR_NOT_IN_RANGE) 
                 {
-                    creep.moveTo(target, {reusePath: 5});
+                    creepBase.moveByMemory(creep, target.pos)   
                 } 
-                else if(state === OK)
-                {        
-                    if(struc == STRUCTURE_RAMPART)
-                    {
-                        let rampart = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                            filter: (structure) => {
-                                return (structure.structureType == STRUCTURE_RAMPART && structure.hits < 10)
-                        }});
-                        if(rampart)
-                        {
-                            creep.memory.repId = rampart.id;
-                            creep.memory.id = null;        
-                        }
-                    }
-                }
+               
                 return true;   
             }
             else
@@ -89,35 +75,16 @@ module.exports = {
                 creep.memory.id = null;   
             }       
         }
-        else
-        {
-            let target = Game.getObjectById(creep.memory.repId);
-            if(target && target.hits < 1000)
-            {
-                let state = creep.repair(target)
-                if (state === ERR_NOT_IN_RANGE) 
-                {
-                    creep.moveTo(target, {reusePath: 5});
-                } 
-            } 
-            else
-            {
-                creep.memory.repId = null;   
-            } 
-            return true;
-        }
+       
         return false;
     },
     _getProfil: function(spawn)
     {
-        const totalCost = 3 * BODYPART_COST[WORK] + 2 * BODYPART_COST[CARRY] + 3 * BODYPART_COST[MOVE];
+        const totalCost =  3* BODYPART_COST[WORK] + 2* BODYPART_COST[CARRY] + 2*BODYPART_COST[MOVE];
         var maxEnergy = spawn.room.energyCapacityAvailable;
-        const numberOfSets = Math.min(3,Math.floor(maxEnergy / totalCost));
-        if(numberOfSets == 0)
-        {
-            return [WORK,CARRY,CARRY,MOVE,MOVE];
-        }
-        return Array((numberOfSets*3)).fill(WORK).concat(Array((numberOfSets*2)).fill(CARRY).concat(Array((numberOfSets*3)).fill(MOVE)));
+        var numberOfSets = Math.min(7,Math.floor(maxEnergy / totalCost));
+        
+        return Array((numberOfSets*3)).fill(WORK).concat(Array((numberOfSets*2)).fill(CARRY).concat(Array((numberOfSets*2)).fill(MOVE)));
     },
     spawn: function(spawn,workroom)
     {
@@ -125,13 +92,11 @@ module.exports = {
         if(!global.room[workroom].sendBuilder || maxbuilder < 1)
             return false;
 
-        if(spawn.room.name != workroom && !Memory.rooms[workroom].claimed)
+        if(spawn.room.name != workroom && !Memory.rooms[workroom].claimed && !global.room[workroom].claim)
             return false;
         
-          
         var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
-                                                    creep.memory.workroom == workroom && 
-                                                    creep.memory.home == spawn.room.name).length;
+                                                    creep.memory.workroom == workroom ).length;
         if(count == undefined)
             count = 0;
                                         
@@ -145,7 +110,7 @@ module.exports = {
 
         if(sites == 0 || Math.max(sites / 5, 1) <= count)
             return false;
-    
+        
         return creepBase.spawn(spawn, this._getProfil(spawn), role + '_' + Game.time, { role: role, workroom: workroom, home: spawn.room.name});      
     },
 

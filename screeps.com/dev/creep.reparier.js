@@ -3,9 +3,13 @@ require('./config');
 const role = "repairer";
 
 module.exports = {
+    _actionHarvestTrue: function()
+    {
+        creep.memory.repairs +=1
+    },
     sayJob: function() { this.creep.say('🔧') },
     doJob: function (creep) {
-        creepBase.checkHarvest(creep,RESOURCE_ENERGY,function(){creep.memory.repairs +=1} );
+        creep.checkHarvest(this._actionHarvestTrue());
 
         if (creep.memory.harvest) {
             if(creepBase.harvest(creep)) return;
@@ -19,6 +23,7 @@ module.exports = {
             creep.memory.id = null;
         }
         
+        if(creep.checkInvasion()) return;
         if(creepBase.goToWorkroom(creep)) return;
         if(creepBase.checkWorkroomPrioSpawn(creep)) return;
 
@@ -58,7 +63,7 @@ module.exports = {
                 
                 if (state === ERR_NOT_IN_RANGE) 
                 {
-                    creep.moveTo(target, {reusePath: 5});
+                    creepBase.moveByMemory(creep, target.pos);
                 } 
                
                 return true;   
@@ -105,7 +110,7 @@ module.exports = {
                 
                 if (state === ERR_NOT_IN_RANGE) 
                 {
-                    creep.moveTo(target, {reusePath: 5});
+                    creepBase.moveByMemory(creep, target.pos);    
                 } 
                
                 return true;   
@@ -136,15 +141,14 @@ module.exports = {
             return false;
              
         var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 
-                                                    creep.memory.workroom == workroom && 
-                                                    creep.memory.home == spawn.room.name).length;
+                                                    creep.memory.workroom == workroom).length;
         if(count == undefined)
             count = 0;      
 
         if ( minRepairer <= count)
             return false;
 
-            let structuresToRepair = creep.room.find(FIND_STRUCTURES, {
+            let structuresToRepair = Game.rooms[workroom].find(FIND_STRUCTURES, {
                 filter: (structure) => {
                     return (structure.hits < this._getMinHitRange(structure.structureType) * structure.hitsMax)
             }});

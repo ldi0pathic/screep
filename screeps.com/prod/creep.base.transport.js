@@ -75,7 +75,11 @@ module.exports =
         {
             terminal = Game.getObjectById(Memory.rooms[creep.memory.workroom].terminalId);
             if(!terminal)
+            {
                 delete Memory.rooms[creep.memory.workroom].terminalId;
+                return false;
+            }
+                
         }
         else
         {
@@ -94,9 +98,10 @@ module.exports =
                 terminal = target[0];
             }
         }
-       
+        
         if(terminal && terminal.store.getFreeCapacity() > 0)
         {
+            var t = false;
             for (var resourceType in creep.store) 
             {
                 //verhindern, das zuviel Energie eingelagert wird :/ 
@@ -104,9 +109,12 @@ module.exports =
                     terminal.store[RESOURCE_ENERGY] > 50000) 
                     continue;
 
-                this._Transfer(creep, terminal, resourceType);               
+                if(this._Transfer(creep, terminal, resourceType) && !t)
+                {
+                    t = true;
+                }             
             } 
-            return true;
+            return t;
         }
         return false;   
     },

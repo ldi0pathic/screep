@@ -3,9 +3,13 @@ require('./config');
 const role = "repairer";
 
 module.exports = {
+    _actionHarvestTrue: function()
+    {
+        creep.memory.repairs +=1
+    },
     sayJob: function() { this.creep.say('🔧') },
     doJob: function (creep) {
-        creepBase.checkHarvest(creep,RESOURCE_ENERGY,function(){creep.memory.repairs +=1} );
+        creep.checkHarvest(this._actionHarvestTrue());
 
         if (creep.memory.harvest) {
             if(creepBase.harvest(creep)) return;
@@ -19,7 +23,7 @@ module.exports = {
             creep.memory.id = null;
         }
         
-        if(creepBase.checkInvasion(creep)) return;
+        if(creep.checkInvasion()) return;
         if(creepBase.goToWorkroom(creep)) return;
         if(creepBase.checkWorkroomPrioSpawn(creep)) return;
 

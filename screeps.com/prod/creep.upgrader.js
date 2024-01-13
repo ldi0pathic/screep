@@ -9,7 +9,7 @@ module.exports = {
 
         if(creep.memory.sparmodus && Game.time % creep.room.controller.level != 0) return;
 
-        creepBase.checkHarvest(creep, RESOURCE_ENERGY);
+        creep.checkHarvest();
 
         if (creep.memory.harvest) 
         {
@@ -47,7 +47,7 @@ module.exports = {
             return;
         } 
 
-        if(creepBase.checkInvasion(creep)) return;
+        if(creep.checkInvasion()) return;
         if(creepBase.goToWorkroom(creep)) return;
         if(creepBase.checkWorkroomPrioSpawn(creep)) return;
 
