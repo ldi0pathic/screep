@@ -8,19 +8,24 @@ global.const = global.const || {};
 global.const =
 {
    maxRepairs: 5,
-   logroom: ''//'E59N4',
+   logroom: '',//'E56N2'//'E59N4',
 },
 global.minSalePrice =
 {
-   RESOURCE_HYDROGEN: 100,
-   RESOURCE_OXYGEN: 35,
-   RESOURCE_UTRIUM: 50,
-   RESOURCE_LEMERGIUM: 29,
+   H: 100,
+   O: 32,
+   U: 48,
+   L: 31,
+   X: 140,
 
+},
+global.maxOrderPrice =
+{
+   pixel: 35000,
 },
 global.transfer =
 {
-   E59N7:
+   /*E59N7:
    {
       room: 'E59N7',
       source: [
@@ -28,10 +33,99 @@ global.transfer =
          'E58N7',  
          'E58N6',
       ]
-   }
+   },*/
+   E56N2:
+   {
+      room: 'E56N2',
+      source: [
+         'E59N4',
+         'E58N6',
+         'E58N7',  
+      ]
+   },
+  
 }
 global.room =
 {
+   E56N2:
+   {
+     
+      room: 'E56N2',
+      spawnRoom: 'E56N2',
+      transferEnergie: true,
+      sendMiner: true,
+      sendDebitor: true,
+      sendFreeDebitor: true,
+      sendBuilder: true,
+      sendDefender: true,
+      sendClaimer: false,
+
+      //mining
+      debitorProSource: 1,
+      debitorAsFreelancer: 1,
+      energySources: [
+        '5bbcb06a9099fc012e63c22a',
+        '5bbcb06a9099fc012e63c228'
+      ],
+      mineralSources: ['5bbcb712d867df5e54207cef'],
+      mineralContainerId: '65a3f92c47d4ab5dbc49ab20',
+
+      useLinks: false,
+      targetLinks: [
+
+      ],
+      spawnLink: null,
+      controllerLink: null,
+
+      //structures
+      repairer: 1,
+      maxwallRepairer: 2,
+      maxbuilder: 2,
+      prioBuildings: [
+      ],
+   
+      //controller  
+      upgrader: 3,
+   },
+   E56N3:
+   {
+     
+      room: 'E56N3',
+      spawnRoom: 'E56N2',
+      sendMiner: true,
+      sendDebitor: true,
+      sendFreeDebitor: false,
+      sendBuilder: false,
+      sendDefender: true,
+      sendClaimer: true,
+
+      //mining
+      debitorProSource: 1,
+      debitorAsFreelancer: 0,
+      energySources: [
+        '5bbcb06a9099fc012e63c225',
+       
+      ],
+      mineralSources: null,
+      mineralContainerId: null,
+
+      useLinks: false,
+      targetLinks: [
+
+      ],
+      spawnLink: null,
+      controllerLink: null,
+
+      //structures
+      repairer: 0,
+      maxwallRepairer: 0,
+      maxbuilder: 0,
+      prioBuildings: [
+      ],
+   
+      //controller  
+      upgrader: 0,
+   },
    E57N6:
    {
       room: 'E57N6',
@@ -461,10 +555,10 @@ global.room =
    global.prio =
    {
       build: {
-         [STRUCTURE_RAMPART]: 1,
-         [STRUCTURE_WALL]: 1,
-         [STRUCTURE_EXTENSION]: 3,
-         [STRUCTURE_SPAWN]: 2,
+         [STRUCTURE_RAMPART]: 3,
+         [STRUCTURE_WALL]: 3,
+         [STRUCTURE_EXTENSION]: 1,
+         [STRUCTURE_SPAWN]: 1,
          [STRUCTURE_TOWER]: 2,
          [STRUCTURE_CONTAINER]: 3,
          [STRUCTURE_LINK]: 1,

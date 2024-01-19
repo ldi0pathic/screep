@@ -14,6 +14,8 @@ module.exports = {
         {
             if(creepBase.harvestControllerLink(creep,RESOURCE_ENERGY))return;
             if(creepBase.harvestRoomStorage(creep, RESOURCE_ENERGY))return; 
+            if(creepBase.harvestRoomContainer(creep, RESOURCE_ENERGY))return; 
+            if(creepBase.harvestRoomEnergySource(creep)) return;
         } 
        
         creepBase.upgradeController(creep);

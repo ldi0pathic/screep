@@ -42,10 +42,11 @@ module.exports =
             return false;
         }
 
+        var deserializePath;
         if( creep.memory.dontMove > 3 )
         {
-            var path = creep.pos.findPathTo(target, { ignoreCreeps: false }); 
-            serializedPath = Room.serializePath(path);
+            deserializePath = creep.pos.findPathTo(target, { ignoreCreeps: false }); 
+            serializedPath = Room.serializePath(deserializePath);
             creep.memory.path = serializedPath;
 
             creep.memory.dontMove = 0;
@@ -63,8 +64,8 @@ module.exports =
         }
         else
         {
-            var path = creep.pos.findPathTo(target, { ignoreCreeps: true }); 
-            serializedPath = Room.serializePath(path);
+            deserializePath = creep.pos.findPathTo(target, { ignoreCreeps: true }); 
+            serializedPath = Room.serializePath(deserializePath);
             creep.memory.path = serializedPath;
 
             creep.memory.pathTarget = {};
@@ -72,10 +73,25 @@ module.exports =
             creep.memory.pathTarget.y = target.y;
             creep.memory.pathTarget.roomName = target.roomName;
         }
-
-        
-
         var state = creep.moveByPath(serializedPath);
+
+       if(!deserializePath)
+            deserializePath = Room.deserializePath(serializedPath);
+
+        const currentPos = creep.pos;
+        
+        const index = deserializePath.findIndex(pos => pos.x === currentPos.x && pos.y === currentPos.y);
+
+        if(index > 0)
+        {   const visual = new RoomVisual(creep.room.name);
+            for (let i = index+1; i < deserializePath.length; i++) {
+                visual.circle(deserializePath[i].x, deserializePath[i].y, 
+                    { fill: 'transparent', radius: 0.25, stroke: 'red' }); 
+            }
+        }
+       
+          
+
         //creep.say(state);
         switch(state)
         {

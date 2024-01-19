@@ -23,18 +23,20 @@ module.exports =
     {
         return creep.memory.container == '';
     },
-    TransportToHomeContainer: function(creep, type)
+    TransportToHomeContainer: function(creep, type, mul)
     {
+        var container;
+        if(!mul) mul = 0.5;
         if (creep.memory.useContainer) {
             container = Game.getObjectById(creep.memory.useContainer);
         }
         else if(Memory.rooms[creep.room.name] && Memory.rooms[creep.room.name].container) {
             var distance = Infinity;
-            var minCap = creep.store.getFreeCapacity() * mul;
+            var minCap = creep.store.getUsedCapacity() * mul;
             for(var id of Memory.rooms[creep.room.name].container)
             {
                 var c = Game.getObjectById(id);
-                if(c && c.store.getUsedCapacity(type) >  minCap && c.id != global.room[creep.room.name].mineralContainerId && c.id != creep.memory.fromId )
+                if(c && c.store.getFreeCapacity(type) >  minCap && c.id != global.room[creep.room.name].mineralContainerId && c.id != creep.memory.fromId )
                 {
                     var d = Math.sqrt(Math.pow(creep.pos.x - c.pos.x, 2) + Math.pow(creep.pos.y - c.pos.y, 2));
                     if(d < distance)
@@ -46,8 +48,21 @@ module.exports =
                 }
             }  
         }
+        else if(Memory.rooms[creep.room.name] && !Memory.rooms[creep.room.name].container)
+        {
+            var containers = creep.room.find(FIND_STRUCTURES,  {filter: (structure) => 
+            {
+                return  structure.structureType === STRUCTURE_CONTAINER 
+            }});
+           
+            Memory.rooms[creep.room.name].container = containers.map( c => {
+                return c.id
+            });   
 
-        if (container) {
+            return (containers.length > 0);    
+        }
+
+        if (container && container.store.getFreeCapacity() > 0) {
             switch (creep.transfer(container, type))
             {
                 case ERR_NOT_IN_RANGE:
@@ -106,7 +121,7 @@ module.exports =
             {
                 //verhindern, das zuviel Energie eingelagert wird :/ 
                 if(resourceType == RESOURCE_ENERGY && 
-                    terminal.store[RESOURCE_ENERGY] > 50000) 
+                    terminal.store[RESOURCE_ENERGY] > 100000) 
                     continue;
 
                 if(this._Transfer(creep, terminal, resourceType) && !t)
@@ -176,6 +191,9 @@ module.exports =
     TransportToHomeStorage: function(creep)
     {  
         var target = creep.room.storage;
+
+        if(!target)
+            return false;
 
         //ansonsten werden lnks nicht inden storage geleert :( 
         if(global.room[creep.memory.workroom].spawnLink)

@@ -22,6 +22,10 @@ module.exports = {
                 if (s === ERR_NOT_IN_RANGE) {
                     creepBase.moveByMemory(creep, controller.pos)   
                 }
+                if(s === OK)
+                {
+                    Memory.rooms[creep.room.name].claimed = true;
+                }
                 return;
             }
             var state = creep.reserveController(controller);

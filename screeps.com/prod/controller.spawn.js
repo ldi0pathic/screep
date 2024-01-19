@@ -18,14 +18,22 @@ module.exports = {
              for(var room in global.room)
              {   
                 var workroom = global.room[room].room;
-
                 if(count > 0 && workroom != spawn.room.name)
+                {
+                    global.logWorkroom(workroom,'has NotfallCreep! >> '+JSON.stringify(_.filter(Game.creeps, (creep) => 
+                    creep.memory.home == spawn.room.name && 
+                    creep.memory.notfall
+                    )));
                     continue;
-
+                }
+                    
                 if(global.transfer[workroom] && global.transfer[workroom].source.includes(spawn.room.name))
                 { 
                     if(jobs.transfer.spawn(spawn,workroom))
-                        break;        
+                    {
+                        global.logWorkroom(workroom,'Spawn Transfer'); 
+                        break;
+                    }       
                 }
 
                 if(global.room[workroom].sendDefender && (Memory.rooms[workroom].needDefence || Memory.rooms[workroom].invaderCore))

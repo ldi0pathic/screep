@@ -18,12 +18,17 @@ module.exports =
                 if (creepBase.harvestRoomRuins(creep, RESOURCE_ENERGY))return;
                 if (creepBase.harvestRoomDrops(creep, RESOURCE_ENERGY))return;
                 if (creepBase.harvestRoomTombstones(creep, RESOURCE_ENERGY))return;
+
+                if(creep.store.getUsedCapacity() > 1)
+                    creep.memory.harvest = false;
             }
 
             if(creepBase.goToMyHome(creep)) return;
             
             if(creepBase.harvestRoomStorage(creep,creep.memory.mineral)) return;
             if(creepBase.harvestRoomContainer(creep,creep.memory.mineral,0.25)) return;  
+
+           
             if(creepBase.goToRoomFlag(creep)) return;
             
             return;           
@@ -34,7 +39,25 @@ module.exports =
         if(creepBase.TransportToHomeTerminal(creep))return;
         if(creepBase.TransportToHomeLab(creep, RESOURCE_ENERGY))return;
         if(creepBase.TransportToHomeStorage(creep))return; 
+      
         if(creepBase.TransportToHomeContainer(creep, creep.memory.mineral))return;
+        var other = creep.room.find(FIND_MY_CREEPS, {filter: (c) => 
+            {
+                return (c.memory.role == 'builder'  ) && c.store.getFreeCapacity() > 0
+            }});
+           
+            if(other.length > 0)
+        
+            {
+                switch(creep.transfer(other[0],RESOURCE_ENERGY, other[0].store.getFreeCapacity()))
+                {
+                    case ERR_NOT_IN_RANGE:
+                        creep.moveTo(other[0]);
+                        return true;
+                    case OK:
+                        return true;
+                }
+            }
         if(creepBase.goToRoomFlag(creep)) return;
         return;        
     },

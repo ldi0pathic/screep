@@ -18,6 +18,7 @@ module.exports = function () {
             delete this.memory.useRoomSource;
             delete this.memory.path;
             delete this.memory.pathTarget;
+            delete this.memory.useContainer;
         }
     };
 

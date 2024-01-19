@@ -17,7 +17,7 @@ module.exports = {
     /** @param {Creep} creep **/
     doJob: function(creep) 
     {     
-        if(creep.memory.onPosition && Game.time % 2 == 1) return;
+        if(creep.body.length > 30 && creep.memory.onPosition && Game.time % 2 == 1) return;
 
         if(creep.checkInvasion()) {
             creep.memory.onPosition = false;
@@ -246,7 +246,7 @@ module.exports = {
                 {
                     var link = Game.getObjectById( creep.memory.link);
 
-                   if(creep.transfer(link,RESOURCE_ENERGY) == ERR_FULL)
+                   if(link.cooldown < 1 && creep.transfer(link,RESOURCE_ENERGY) == ERR_FULL)
                    {     
                         var target;
                         if(creep.room.storage && creep.room.storage.store.getUsedCapacity()*0.5 > creep.room.storage.store.getFreeCapacity())
@@ -297,7 +297,12 @@ module.exports = {
                 {
                     var terminal = Game.getObjectById(creep.memory.terminal);
                     if(terminal)
-                      creep.transfer( terminal,source.mineralType)    
+                    {
+                        creep.transfer( terminal,source.mineralType)  
+                    }
+                      
+
+                        
                 }
 
                 if(creep.memory.extactor)

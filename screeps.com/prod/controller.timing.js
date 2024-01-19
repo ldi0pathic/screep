@@ -11,11 +11,12 @@ module.exports = {
 
         memoryControll.init();
         defenceControll.tower();
-        
-        if(tick % 2 == 0)
-        {
-           // spawnControll.clear();
-        }
+
+
+
+        var t = Game.getObjectById(Memory.terminals[tick % Memory.terminals.length]);
+        t.sell();
+        t.buy();
 
         if(tick % 3 == 0)
         {
@@ -45,18 +46,15 @@ module.exports = {
     },
     daylie: function()
     {
-        var dayTicks = 86400 / 3;
-        let lastProcessedDay = Memory.lastProcessedDay || 0;
+        const dayTicks = 86400 / 3;
         var tick = Game.time;
 
-        if (tick % dayTicks === 0 && tick / dayTicks > lastProcessedDay) 
+        switch(tick % dayTicks)
         {
-            memoryControll.FindAndSaveRoomWalls();
-            memoryControll.FindAndSaveRoomContainer();
-            memoryControll.FindAndSaveRoomTower();
-
-            Memory.lastProcessedDay = tick / dayTicks;
+            case 0: memoryControll.FindAndSaveRoomWalls();      return;
+            case 1: memoryControll.FindAndSaveRoomContainer();  return;
+            case 2: memoryControll.FindAndSaveRoomTower();      return;
+            case 3: memoryControll.FindAndSaveTerminals();      return;
         }
-    }
-    
+    } 
 }

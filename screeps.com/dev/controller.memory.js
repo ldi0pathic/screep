@@ -134,5 +134,24 @@ module.exports = {
                 return c.id
             });           
         }
+    },
+    FindAndSaveTerminals: function()
+    {
+        Memory.terminals = [];
+        
+        for(var name in global.room)
+        { 
+            var room = Game.rooms[global.room[name].room];
+            if(!room)
+                continue;
+
+            var terminal = room.find(FIND_STRUCTURES,  {filter: (structure) => 
+                {
+                    return  structure.structureType === STRUCTURE_TERMINAL 
+                }});
+           
+            if(terminal.length > 0)
+                Memory.terminals.push(terminal[0].id);     
+        }
     }
 };

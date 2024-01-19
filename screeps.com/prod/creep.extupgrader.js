@@ -14,6 +14,8 @@ module.exports = {
         {
             if(creepBase.harvestControllerLink(creep,RESOURCE_ENERGY))return;
             if(creepBase.harvestRoomStorage(creep, RESOURCE_ENERGY))return; 
+            if(creepBase.harvestRoomContainer(creep, RESOURCE_ENERGY))return; 
+            if(creepBase.harvestRoomEnergySource(creep)) return;
         } 
        
         creepBase.upgradeController(creep);
@@ -21,7 +23,7 @@ module.exports = {
     _getProfil: function(spawn, workroom)
     {   var numberOfSets = 0;
         
-        var multi = Game.rooms[workroom].controller.level >= 6 ? 1 : 2;
+        var multi = Game.rooms[workroom] && Game.rooms[workroom].controller.level >= 6 ? 1 : 2;
         const totalCost = multi * BODYPART_COST[WORK] + 2 * BODYPART_COST[CARRY] +BODYPART_COST[MOVE];
         var maxEnergy = spawn.room.energyCapacityAvailable;
         numberOfSets = Math.min(9,Math.floor(maxEnergy / totalCost));

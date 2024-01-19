@@ -53,7 +53,7 @@ module.exports = {
 
         if(creepBase.upgradeController(creep))
         {
-            creep.memory.sparmodus = true;
+            creep.memory.sparmodus = creep.room.controller.level > 5;
         }
     },
     _getProfil: function(spawn, workroom)

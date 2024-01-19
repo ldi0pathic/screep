@@ -10,7 +10,8 @@ require('./prototype');
 //profiler.enable();
 module.exports.loop = function () {
     //profiler.wrap(function() 
-    {
+    {   
+      //  controllerMemory.FindAndSaveTerminals();
         try {
             for(var name in global.room)
             {  

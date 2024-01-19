@@ -3,13 +3,13 @@ require('./config');
 const role = "repairer";
 
 module.exports = {
-    _actionHarvestTrue: function()
-    {
-        creep.memory.repairs +=1
-    },
+    
     sayJob: function() { this.creep.say('🔧') },
     doJob: function (creep) {
-        creep.checkHarvest(this._actionHarvestTrue());
+        creep.checkHarvest(function()
+        {
+            creep.memory.repairs +=1
+        });
 
         if (creep.memory.harvest) {
             if(creepBase.harvest(creep)) return;

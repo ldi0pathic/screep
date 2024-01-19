@@ -53,7 +53,7 @@ module.exports = {
 
         if(creepBase.upgradeController(creep))
         {
-            creep.memory.sparmodus = true;
+            creep.memory.sparmodus = creep.room.controller.level > 5;
         }
     },
     _getProfil: function(spawn, workroom)
@@ -80,7 +80,7 @@ module.exports = {
         if(spawn.room.name != workroom)
             return false;
 
-        if(spawn.room.controller.level > 7 && spawn.room.controller.ticksToDowngrade > 100000)
+        if(spawn.room.controller.level > 7 && spawn.room.controller.ticksToDowngrade > 100000 && spawn.room.storage.store.getUsedCapacity(RESOURCE_ENERGY) < 250000)
             return false;
            
         var count = _.filter(Game.creeps, (creep) => creep.memory.role == role && 

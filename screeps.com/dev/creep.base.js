@@ -189,18 +189,31 @@ module.exports =
                 var c = Game.getObjectById(id);
                 if(c && c.store.getUsedCapacity(type) >  minCap)
                 {
-                    var d = Math.sqrt(Math.pow(creep.pos.x - c.pos.x, 2) + Math.pow(creep.pos.y - c.pos.y, 2));
+                    var d = Math.sqrt(Math.pow(c.pos.x - creep.pos.x, 2) + Math.pow(c.pos.y - creep.pos.y, 2));
                     if(d < distance)
                     {
+                     //   console.log('['+creep.room.name+'] d: '+d + ' << distance: '+distance + ' count >'+Memory.rooms[creep.room.name].container.length );
                         distance = d;
                         container = c;
-                        creep.memory.useContainer = container.id;
+                        creep.memory.useContainer = c.id;
                     }         
                 }
             }  
+        } else if(Memory.rooms[creep.room.name] && !Memory.rooms[creep.room.name].container)
+        {
+            var containers = creep.room.find(FIND_STRUCTURES,  {filter: (structure) => 
+            {
+                return  structure.structureType === STRUCTURE_CONTAINER 
+            }});
+           
+            Memory.rooms[creep.room.name].container = containers.map( c => {
+                return c.id
+            });   
+
+            return (containers.length > 0);    
         }
 
-        if (container) {
+        if (container && container.store.getUsedCapacity(type)  > creep.store.getFreeCapacity() * mul) {
             switch (creep.withdraw(container, type)) {
                 case ERR_NOT_IN_RANGE:
                     creepBaseGoTo.moveByMemory(creep,container.pos);
@@ -210,6 +223,7 @@ module.exports =
                     return true;
 
                 default:
+                    delete creep.memory.useContainer;
                     return false;
             }
         }
