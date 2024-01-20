@@ -26,6 +26,8 @@ module.exports = function () {
         if (Memory.rooms[this.memory.workroom].needDefence ||
             (Memory.rooms[this.memory.workroom].invaderCore &&
                 Game.rooms[this.memory.workroom] &&
+                Game.rooms[this.memory.workroom].controller && 
+                Game.rooms[this.memory.workroom].controller.reservation &&
                 Game.rooms[this.memory.workroom].controller.reservation.username != this.owner.username)) {
             this.say('☎');
             return true;

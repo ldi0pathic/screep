@@ -21,7 +21,7 @@ global.minSalePrice =
 },
 global.maxOrderPrice =
 {
-   pixel: 35000,
+   pixel: 33000,
 },
 global.transfer =
 {
