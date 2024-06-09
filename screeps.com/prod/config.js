@@ -33,7 +33,7 @@ global.transfer =
          'E58N7',  
          'E58N6',
       ]
-   },*/
+   },
    E56N2:
    {
       room: 'E56N2',
@@ -42,7 +42,7 @@ global.transfer =
          'E58N6',
          'E58N7',  
       ]
-   },
+   },*/
    E59N3:
    {
       room: 'E59N3',
@@ -55,84 +55,7 @@ global.transfer =
 }
 global.room =
 {
-   E56N2:
-   {
-      room: 'E56N2',
-      spawnRoom: 'E56N2',
-      transferEnergie: true,
-      sendMiner: true,
-      sendDebitor: true,
-      sendFreeDebitor: true,
-      sendBuilder: true,
-      sendDefender: true,
-      sendClaimer: false,
-
-      //mining
-      debitorProSource: 1,
-      debitorAsFreelancer: 1,
-      energySources: [
-        '5bbcb06a9099fc012e63c22a',
-        '5bbcb06a9099fc012e63c228'
-      ],
-      mineralSources: ['5bbcb712d867df5e54207cef'],
-      mineralContainerId: '65a3f92c47d4ab5dbc49ab20',
-
-      useLinks: false,
-      targetLinks: [
-         '65a8e102a9f76183fcfea635'
-      ],
-      spawnLink: '65a8e102a9f76183fcfea635',
-      controllerLink: null,
-
-      //structures
-      repairer: 0,
-      maxwallRepairer: 2,
-      maxbuilder: 2,
-      prioBuildings: [
-      ],
-   
-      //controller  
-      upgrader: 2,
-   },
-   E56N3:
-   {
-     
-      room: 'E56N3',
-      spawnRoom: 'E56N2',
-      sendMiner: true,
-      sendDebitor: true,
-      sendFreeDebitor: false,
-      sendBuilder: false,
-      sendDefender: true,
-      sendClaimer: true,
-
-      //mining
-      debitorProSource: 1,
-      debitorAsFreelancer: 0,
-      energySources: [
-        '5bbcb06a9099fc012e63c225',
-       
-      ],
-      mineralSources: null,
-      mineralContainerId: null,
-
-      useLinks: false,
-      targetLinks: [
-
-      ],
-      spawnLink: null,
-      controllerLink: null,
-
-      //structures
-      repairer: 0,
-      maxwallRepairer: 0,
-      maxbuilder: 0,
-      prioBuildings: [
-      ],
-   
-      //controller  
-      upgrader: 0,
-   },
+  
    E57N6:
    {
       room: 'E57N6',
@@ -143,6 +66,8 @@ global.room =
       sendBuilder: true,
       sendDefender: true,
       sendClaimer: true,
+
+   
 
       //mining
       debitorProSource: 1,
@@ -260,6 +185,8 @@ global.room =
       sendBuilder: true,
       sendDefender: true,
       sendClaimer: false,
+      
+      saveRoads: true,
 
       //mining
       debitorProSource: 1,
@@ -298,6 +225,8 @@ global.room =
       sendBuilder: true,
       sendDefender: true,
       sendClaimer: false,
+
+      saveRoads: true,
 
       //mining
       debitorProSource: 0,
@@ -370,7 +299,7 @@ global.room =
    E59N3:
    {
       room: 'E59N3',
-      spawnRoom: 'E59N4',
+    //  spawnRoom: 'E59N3',
       transferEnergie: true,
       sendMiner: true,
       sendDebitor: true,
@@ -378,6 +307,8 @@ global.room =
       sendBuilder: true,
       sendDefender: true,
       sendClaimer: false,
+
+      saveRoads: true,
 
       //mining
       debitorProSource: 1,
@@ -390,9 +321,9 @@ global.room =
       mineralContainerId: null,
       useLinks: false,
       targetLinks: [
-        
+        '65ad15e5e25690e38e742550'
       ],
-      spawnLink: null,
+      spawnLink: '65ad15e5e25690e38e742550',
       controllerLink: null,
 
       //structures
@@ -567,6 +498,8 @@ global.room =
       sendBuilder: true,
       sendDefender: true,
       sendClaimer: false,
+      
+      saveRoads: true,
 
       //mining
       debitorProSource: 0,

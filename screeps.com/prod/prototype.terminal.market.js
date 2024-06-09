@@ -53,7 +53,7 @@ module.exports = function () {
 
         var terminalEnergy = this.store.getUsedCapacity(RESOURCE_ENERGY)
 
-        if(terminalEnergy < 1000 || this.store.getFreeCapacity() <= 1000)
+        if(terminalEnergy < 1000 || this.store.getFreeCapacity() <= 10)
             return;
 
         for(var resource in global.maxOrderPrice)

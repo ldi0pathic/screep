@@ -15,9 +15,12 @@ module.exports = {
 
 
         var t = Game.getObjectById(Memory.terminals[tick % Memory.terminals.length]);
-        t.sell();
-        t.buy();
-
+        if(t)
+        {
+            t.sell();
+            t.buy();
+        }
+       
         if(tick % 3 == 0)
         {
             if(Game.cpu.bucket == 10000) {

@@ -2,6 +2,7 @@ const jobs = require('./creep.jobs');
 const memoryControll = require('./controller.memory');
 const spawnControll = require('./controller.spawn');
 const defenceControll = require('./controller.defence')
+const rebuildControll = require('./controller.rebuild')
 
 module.exports = {
     
@@ -12,11 +13,17 @@ module.exports = {
         memoryControll.init();
         defenceControll.tower();
 
-
-
-        var t = Game.getObjectById(Memory.terminals[tick % Memory.terminals.length]);
-        t.sell();
-        t.buy();
+        var mod = tick % (Memory.terminals.length*3) ;
+        if(mod < Memory.terminals.length)
+        {
+            var t = Game.getObjectById(Memory.terminals[mod]);
+            if(t)
+            {
+                t.sell();
+                t.buy();
+            }    
+        }
+       
 
         if(tick % 3 == 0)
         {
@@ -50,11 +57,14 @@ module.exports = {
         var tick = Game.time;
 
         switch(tick % dayTicks)
-        {
-            case 0: memoryControll.FindAndSaveRoomWalls();      return;
-            case 1: memoryControll.FindAndSaveRoomContainer();  return;
-            case 2: memoryControll.FindAndSaveRoomTower();      return;
-            case 3: memoryControll.FindAndSaveTerminals();      return;
+        {  
+            case 0: memoryControll.clear();                     return;
+            case 1: memoryControll.FindAndSaveRoomWalls();      return;
+            case 2: memoryControll.FindAndSaveRoomContainer();  return;
+            case 3: memoryControll.FindAndSaveRoomTower();      return;
+            case 4: memoryControll.FindAndSaveTerminals();      return;
+            case 5: rebuildControll.rebuildRoads();             return;    
+            case 6: memoryControll.FindAndSaveRoads();          return;
         }
     } 
 }

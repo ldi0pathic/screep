@@ -12,6 +12,8 @@ module.exports.loop = function () {
     //profiler.wrap(function() 
     {   
       //  controllerMemory.FindAndSaveTerminals();
+      //controllerMemory.FindAndSaveRoads();
+      //controllerMemory.clear();
         try {
             for(var name in global.room)
             {  
@@ -51,8 +53,9 @@ module.exports.loop = function () {
                     
                 if(!creep.memory.role)
                 {
-                    creep.suicide();
-                    delete Memory.creeps[name];
+                    if(creep.suicide() == OK)
+                        delete Memory.creeps[name];
+
                     continue;
                 }
 

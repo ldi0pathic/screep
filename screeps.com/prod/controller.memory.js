@@ -1,3 +1,4 @@
+
 module.exports = {
     init: function()
     { 
@@ -23,6 +24,25 @@ module.exports = {
             Memory.rooms[name].nuke =  Memory.rooms[name].nuke ? true : false;
         
             Memory.init = true;
+        }
+    },
+    clear: function()
+    {
+        if(Memory.rooms)
+        {
+            for( var name in Memory.rooms)
+            {
+                if(!global.room[name])
+                {
+                    delete Memory.rooms[name]     
+                    continue;
+                }
+
+                if(!global.room[name].saveRoads && Memory.rooms[name].roads)
+                {
+                    delete Memory.rooms[name].roads;
+                }         
+            }
         }
     },
     writeStatus: function()
@@ -152,6 +172,30 @@ module.exports = {
            
             if(terminal.length > 0)
                 Memory.terminals.push(terminal[0].id);     
+        }
+    },
+    FindAndSaveRoads: function()
+    {
+        for(var name in global.room)
+        {
+            if(!global.room[name].saveRoads)
+                continue;
+
+            var room = Game.rooms[global.room[name].room];
+            if(!room)
+                continue;
+
+            const roads = room.find(FIND_STRUCTURES, {
+                filter: (structure) => structure.structureType === STRUCTURE_ROAD
+            });
+
+            Memory.rooms = Memory.rooms || {};
+            Memory.rooms[name] = Memory.rooms[name] || {};
+            Memory.rooms[name].roads = roads.map(road => ({
+                id: road.id,
+                pos: road.pos
+            }));
+
         }
     }
 };
