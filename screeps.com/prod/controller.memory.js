@@ -189,12 +189,24 @@ module.exports = {
                 filter: (structure) => structure.structureType === STRUCTURE_ROAD
             });
 
+            const constructionSites = room.find(FIND_CONSTRUCTION_SITES, {
+                filter: (site) => site.structureType === STRUCTURE_ROAD
+            });
+
             Memory.rooms = Memory.rooms || {};
             Memory.rooms[name] = Memory.rooms[name] || {};
-            Memory.rooms[name].roads = roads.map(road => ({
+            Memory.rooms[name].roads = [
+            ...roads.map(road => ({
                 id: road.id,
-                pos: road.pos
-            }));
+                pos: road.pos,
+                type: 'b'
+            })),
+            ...constructionSites.map(site => ({
+                id: site.id,
+                pos: site.pos,
+                type: 'c'
+            }))
+    ];
 
         }
     }

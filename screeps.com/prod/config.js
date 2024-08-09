@@ -319,15 +319,16 @@ global.room =
       ],
       mineralSources: ['5bbcb73ad867df5e54207e20'],
       mineralContainerId: null,
-      useLinks: false,
+      useLinks: true,
       targetLinks: [
-        '65ad15e5e25690e38e742550'
+         '6666029dda8491c8c7f5b5f8',
+         '65ad15e5e25690e38e742550'
       ],
       spawnLink: '65ad15e5e25690e38e742550',
-      controllerLink: null,
+      controllerLink: '6666029dda8491c8c7f5b5f8',
 
       //structures
-      repairer: 1,
+      repairer: 0,
       maxwallRepairer: 2,
       maxbuilder: 2,
       prioBuildings: [
@@ -348,6 +349,7 @@ global.room =
       sendDefender: true,
       sendClaimer: false,
 
+      saveRoads: true,
       //mining
       debitorProSource: 0,
       debitorAsFreelancer: 1,
@@ -396,7 +398,7 @@ global.room =
       mineralSources: [],
       useLinks: false,
       targetLinks: [
-
+        
       ],
       spawnLink: null,
       controllerLink: null,

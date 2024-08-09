@@ -64,7 +64,7 @@ module.exports = {
             case 3: memoryControll.FindAndSaveRoomTower();      return;
             case 4: memoryControll.FindAndSaveTerminals();      return;
             case 5: rebuildControll.rebuildRoads();             return;    
-            case 6: memoryControll.FindAndSaveRoads();          return;
+           // case 6: memoryControll.FindAndSaveRoads();          return;
         }
     } 
 }
